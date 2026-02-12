@@ -52,8 +52,8 @@ module testbench;
 
         for (i = 0; i < 1000; i++) begin
 
-            A_i = $signed(4'($urandom()));
-            B_i = $signed(8'($urandom()));
+            A_i = $signed($urandom());
+            B_i = $signed($urandom());
 
             tmp = $signed(A_i) * $signed(B_i);
             #1;

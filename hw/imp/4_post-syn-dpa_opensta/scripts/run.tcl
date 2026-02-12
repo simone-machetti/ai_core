@@ -30,7 +30,7 @@ set_output_delay 0 -clock vclk [all_outputs]
 # -----------------------------------------------------------------------------
 # VCD-based switching activity
 # -----------------------------------------------------------------------------
-read_vcd -scope testbench/multsigned_i $env(HUAWEI_CODE)/ai_core/hw/imp/3_post-syn-sim_verilator/activity.vcd
+read_vcd -scope testbench/multsigned_i $env(HUAWEI_CODE)/ai_core/hw/imp/3_post-syn-sim_verilator/output/activity.vcd
 
 report_activity_annotation -report_annotated   > $REPORT_DIR/vcd_annotated.rpt
 report_activity_annotation -report_unannotated > $REPORT_DIR/vcd_unannotated.rpt

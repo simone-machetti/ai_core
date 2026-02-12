@@ -18,7 +18,7 @@ source $env(HUAWEI_CODE)/ai_core/hw/imp/3_post-syn-sim_modelsim/scripts/compile.
 
 vlog -work work $env(HUAWEI_CODE)/ai_core/hw/src/tb/testbench.sv
 
-vsim -gui -wlf $env(HUAWEI_CODE)/ai_core/hw/imp/3_post-syn-sim_modelsim/build/build.wlf work.testbench -voptargs="+acc"
+vsim -gui -wlf $env(HUAWEI_CODE)/ai_core/hw/imp/3_post-syn-sim_modelsim/work/build.wlf work.testbench -voptargs="+acc"
 
 if {!$env(SEL_SIM_GUI)} {
 run -all
