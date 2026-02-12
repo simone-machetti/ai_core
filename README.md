@@ -1,6 +1,6 @@
 # AI Core
 
-This work explores the Huawei AI Core architecture.
+This work explores the AI Core architecture.
 
 ## Repository structure
 

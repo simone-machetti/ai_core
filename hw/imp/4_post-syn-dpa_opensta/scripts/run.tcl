@@ -4,20 +4,20 @@
 #
 # Author: Simone Machetti - simone.machetti@epfl.ch
 
-set REPORT_DIR $env(HUAWEI_CODE)/ai_core/hw/imp/4_post-syn-dpa_opensta/report
+set REPORT_DIR $env(CODE_HOME)/ai_core/hw/imp/4_post-syn-dpa_opensta/report
 
 # -----------------------------------------------------------------------------
 # Libraries (timing/power models)
 # -----------------------------------------------------------------------------
-read_liberty $env(HUAWEI_TOOLS)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SEQ_RVT_TT_nldm_220123.lib
-read_liberty $env(HUAWEI_TOOLS)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib
-read_liberty $env(HUAWEI_TOOLS)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_INVBUF_RVT_TT_nldm_220122.lib
-read_liberty $env(HUAWEI_TOOLS)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_AO_RVT_TT_nldm_211120.lib
+read_liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SEQ_RVT_TT_nldm_220123.lib
+read_liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib
+read_liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_INVBUF_RVT_TT_nldm_220122.lib
+read_liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_AO_RVT_TT_nldm_211120.lib
 
 # -----------------------------------------------------------------------------
 # Netlist & top-level linking
 # -----------------------------------------------------------------------------
-read_verilog $env(HUAWEI_CODE)/ai_core/hw/imp/1_syn_yosys/output/netlist.v
+read_verilog $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output/netlist.v
 link_design multsigned
 
 # -----------------------------------------------------------------------------
@@ -30,7 +30,7 @@ set_output_delay 0 -clock vclk [all_outputs]
 # -----------------------------------------------------------------------------
 # VCD-based switching activity
 # -----------------------------------------------------------------------------
-read_vcd -scope testbench/multsigned_i $env(HUAWEI_CODE)/ai_core/hw/imp/3_post-syn-sim_verilator/output/activity.vcd
+read_vcd -scope testbench/multsigned_i $env(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output/activity.vcd
 
 report_activity_annotation -report_annotated   > $REPORT_DIR/vcd_annotated.rpt
 report_activity_annotation -report_unannotated > $REPORT_DIR/vcd_unannotated.rpt
