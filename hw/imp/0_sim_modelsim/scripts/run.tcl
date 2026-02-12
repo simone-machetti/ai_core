@@ -18,7 +18,7 @@ source $env(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/scripts/compile.tcl
 
 vlog -work work $env(HUAWEI_CODE)/ai_core/hw/src/tb/testbench.sv
 
-vsim -gui -wlf $env(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/work/build.wlf work.testbench -voptargs="+acc"
+vsim -wlf $env(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/work/build.wlf -gIN_SIZE_0=$env(SEL_IN_SIZE_0) -gIN_SIZE_1=$env(SEL_IN_SIZE_1) work.testbench -voptargs="+acc"
 
 if {!$env(SEL_SIM_GUI)} {
 run -all

@@ -22,30 +22,44 @@ ifeq ($(SIM_GUI), 0)
 
 sim_modelsim: clean-sim_modelsim
 	export SEL_SIM_GUI=$(SIM_GUI) && \
+	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
+	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
 	cd $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim && \
 	mkdir -p $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/output && \
-	vsim -c -gIN_SIZE_0=$(IN_SIZE_0) -gIN_SIZE_1=$(IN_SIZE_1) -do $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/scripts/run.tcl && \
-	mv $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/activity.vcd $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/output && \
+	vsim -c -do $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/scripts/run.tcl && \
 	mv $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/transcript $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/output
+
+sim_verilator: clean-sim_verilator
+	export SEL_SIM_GUI=$(SIM_GUI) && \
+	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
+	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
+	cd $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_verilator && \
+	mkdir -p $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_verilator/build && \
+	./scripts/run.sh
 
 else
 
 sim_modelsim: clean-sim_modelsim
 	export SEL_SIM_GUI=$(SIM_GUI) && \
+	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
+	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
 	cd $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim && \
 	mkdir -p $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/output && \
-	vsim -gui -gIN_SIZE_0=$(IN_SIZE_0) -gIN_SIZE_1=$(IN_SIZE_1) -do $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/scripts/run.tcl && \
-	mv $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/activity.vcd $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/output && \
+	vsim -gui -do $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/scripts/run.tcl && \
 	mv $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/transcript $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_modelsim/output
 
-endif
-
 sim_verilator: clean-sim_verilator
+	export SEL_SIM_GUI=$(SIM_GUI) && \
+	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
+	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
 	cd $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_verilator && \
-	mkdir -p $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_verilator/output && \
 	mkdir -p $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_verilator/build && \
+	mkdir -p $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_verilator/output && \
 	./scripts/run.sh && \
-	mv $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_verilator/activity.vcd $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_verilator/output
+	mv $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_verilator/activity.vcd $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_verilator/output && \
+	gtkwave $(HUAWEI_CODE)/ai_core/hw/imp/0_sim_verilator/output/activity.vcd
+
+endif
 
 syn_yosys: clean-syn_yosys
 	cd $(HUAWEI_CODE)/ai_core/hw/imp/1_syn_yosys && \

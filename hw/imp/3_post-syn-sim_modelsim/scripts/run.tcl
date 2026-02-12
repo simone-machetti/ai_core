@@ -16,7 +16,7 @@
 
 source $env(HUAWEI_CODE)/ai_core/hw/imp/3_post-syn-sim_modelsim/scripts/compile.tcl
 
-vlog -work work $env(HUAWEI_CODE)/ai_core/hw/src/tb/testbench.sv
+vlog -work work $env(HUAWEI_CODE)/ai_core/hw/src/tb/testbench.sv -define POST_SYN_SIM
 
 vsim -gui -wlf $env(HUAWEI_CODE)/ai_core/hw/imp/3_post-syn-sim_modelsim/work/build.wlf work.testbench -voptargs="+acc"
 

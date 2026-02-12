@@ -17,16 +17,39 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-verilator \
-    -sv \
-    --binary \
-    --timing \
-    --trace-fst \
-    -Wall \
-    -Wno-fatal \
-    --top-module testbench \
-    -f "${HUAWEI_CODE}/ai_core/hw/imp/0_sim_verilator/scripts/filelist.f" \
-    -Mdir "${HUAWEI_CODE}/ai_core/hw/imp/0_sim_verilator/build/obj_dir" \
-    -o "${HUAWEI_CODE}/ai_core/hw/imp/0_sim_verilator/build/simv"
+if [[ "${SEL_SIM_GUI:-0}" -eq 0 ]]; then
+
+    verilator \
+        -sv \
+        --binary \
+        --timing \
+        --trace \
+        -Wall \
+        -Wno-fatal \
+        -GIN_SIZE_0=${SEL_IN_SIZE_0} \
+        -GIN_SIZE_1=${SEL_IN_SIZE_1} \
+        --top-module testbench \
+        -f "${HUAWEI_CODE}/ai_core/hw/imp/0_sim_verilator/scripts/filelist.f" \
+        -Mdir "${HUAWEI_CODE}/ai_core/hw/imp/0_sim_verilator/build/obj_dir" \
+        -o "${HUAWEI_CODE}/ai_core/hw/imp/0_sim_verilator/build/simv"
+
+else
+
+    verilator \
+        -sv \
+        --binary \
+        --timing \
+        --trace \
+        -Wall \
+        -Wno-fatal \
+        -DVCD \
+        -GIN_SIZE_0=${SEL_IN_SIZE_0} \
+        -GIN_SIZE_1=${SEL_IN_SIZE_1} \
+        --top-module testbench \
+        -f "${HUAWEI_CODE}/ai_core/hw/imp/0_sim_verilator/scripts/filelist.f" \
+        -Mdir "${HUAWEI_CODE}/ai_core/hw/imp/0_sim_verilator/build/obj_dir" \
+        -o "${HUAWEI_CODE}/ai_core/hw/imp/0_sim_verilator/build/simv"
+
+fi
 
 exec "${HUAWEI_CODE}/ai_core/hw/imp/0_sim_verilator/build/simv" "$@"

@@ -16,14 +16,14 @@
 
 `timescale 1 ns/1 ps
 
-module testbench;
+module testbench #(
+    parameter int IN_SIZE_0 = 4,
+    parameter int IN_SIZE_1 = 8
+);
 
     // ---------------------------
-    // Generic sizes
+    // Local parameters
     // ---------------------------
-    parameter int IN_SIZE_0 = 4;
-    parameter int IN_SIZE_1 = 8;
-
     localparam int OUT_SIZE = IN_SIZE_0 + IN_SIZE_1;
 
     // ---------------------------
@@ -38,17 +38,37 @@ module testbench;
     // ---------------------------
     // DUT
     // ---------------------------
+`ifdef POST_SYN_SIM
+
     multsigned multsigned_i (
         .in_0_i(A_i),
         .in_1_i(B_i),
         .out_o (O_o)
     );
 
+`else
+
+    multsigned #(
+        .IN_SIZE_0(IN_SIZE_0),
+        .IN_SIZE_1(IN_SIZE_1)
+    ) multsigned_i (
+        .in_0_i(A_i),
+        .in_1_i(B_i),
+        .out_o (O_o)
+    );
+
+`endif
+
     int i;
     initial begin
         $display("\nStarting random signed multiplication test... A=%0d bits, B=%0d bits\n", IN_SIZE_0, IN_SIZE_1);
+
+`ifdef VCD
+
         $dumpfile("activity.vcd");
         $dumpvars(0, testbench.multsigned_i);
+
+`endif
 
         for (i = 0; i < 1000; i++) begin
 
@@ -65,7 +85,11 @@ module testbench;
             end
         end
 
+`ifdef VCD
+
         $dumpoff;
+
+`endif
         $display("All tests PASSED!\n");
         $finish;
     end
