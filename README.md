@@ -24,7 +24,7 @@ This work explores the AI Core architecture.
 
 ## Getting started
 
-(1) Clone the repository:
+Clone the repository:
 
 ```
 https://github.com/simone-machetti/ai_core.git
