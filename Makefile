@@ -25,6 +25,26 @@ sim_verilator: clean-sim_verilator
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/build && \
 	./scripts/run.sh
 
+post-syn-sim_modelsim: clean-post-syn-sim_modelsim
+	export SEL_SIM_GUI=$(SIM_GUI) && \
+	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
+	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
+	cd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim && \
+	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output && \
+	vsim -c -gIN_SIZE_0=$(IN_SIZE_0) -gIN_SIZE_1=$(IN_SIZE_0) -do $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/scripts/run.tcl && \
+	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/activity.vcd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output && \
+	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/transcript $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output
+
+post-syn-sim_verilator: clean-post-syn-sim_verilator
+	export SEL_SIM_GUI=$(SIM_GUI) && \
+	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
+	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
+	cd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator && \
+	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/build && \
+	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output && \
+	./scripts/run.sh && \
+	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/activity.vcd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output
+
 else
 
 sim_modelsim: clean-sim_modelsim
@@ -47,48 +67,42 @@ sim_verilator: clean-sim_verilator
 	mv $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/activity.vcd $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/output && \
 	gtkwave $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/output/activity.vcd
 
-endif
-
-syn_yosys: clean-syn_yosys
-	cd $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/report && \
-	yosys -l $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output/yosys.log -s $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/scripts/run.tcl
-
-post-syn-sta_opensta: clean-post-syn-sta_opensta
-	cd $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta/report && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta/output && \
-	sta -no_splash -exit $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta/scripts/run.tcl | tee $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta/output/opensta.log
-
-ifeq ($(SIM_GUI), 0)
-
 post-syn-sim_modelsim: clean-post-syn-sim_modelsim
 	export SEL_SIM_GUI=$(SIM_GUI) && \
-	cd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output && \
-	vsim -c -gIN_SIZE_0=$(IN_SIZE_0) -gIN_SIZE_1=$(IN_SIZE_0) -do $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/scripts/run.tcl && \
-	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/activity.vcd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output && \
-	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/transcript $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output
-
-else
-
-post-syn-sim_modelsim: clean-post-syn-sim_modelsim
-	export SEL_SIM_GUI=$(SIM_GUI) && \
+	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
+	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
 	cd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output && \
 	vsim -gui -gIN_SIZE_0=$(IN_SIZE_0) -gIN_SIZE_1=$(IN_SIZE_0) -do $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/scripts/run.tcl && \
 	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/activity.vcd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output && \
 	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/transcript $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output
 
-endif
-
 post-syn-sim_verilator: clean-post-syn-sim_verilator
+	export SEL_SIM_GUI=$(SIM_GUI) && \
+	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
+	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
 	cd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/build && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output && \
 	./scripts/run.sh && \
-	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/activity.vcd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output
+	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/activity.vcd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output && \
+	gtkwave $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output/activity.vcd
+
+endif
+
+syn_yosys: clean-syn_yosys
+	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
+	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
+	cd $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys && \
+	mkdir -p $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output && \
+	mkdir -p $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/report && \
+	yosys -l $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output/yosys.log -c $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/scripts/run.tcl
+
+post-syn-sta_opensta: clean-post-syn-sta_opensta
+	cd $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta && \
+	mkdir -p $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta/report && \
+	mkdir -p $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta/output && \
+	sta -no_splash -exit $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta/scripts/run.tcl | tee $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta/output/opensta.log
 
 post-syn-dpa_opensta: clean-post-syn-dpa_opensta
 	cd $(CODE_HOME)/ai_core/hw/imp/4_post-syn-dpa_opensta && \

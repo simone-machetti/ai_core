@@ -3,58 +3,67 @@
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
-# Load RTL + technology
+# Load RTL + technology (compile.tcl is a Tcl file -> use Tcl 'source')
 # -----------------------------------------------------------------------------
-script /home/simone/my_code/ai_core/hw/imp/1_syn_yosys/scripts/compile.tcl
+
+source $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/scripts/compile.tcl
+
+# -----------------------------------------------------------------------------
+# Override top parameters
+# -----------------------------------------------------------------------------
+yosys "chparam -set IN_SIZE_0 $env(SEL_IN_SIZE_0) -set IN_SIZE_1 $env(SEL_IN_SIZE_1) multsigned"
 
 # -----------------------------------------------------------------------------
 # Elaboration / hierarchy
 # -----------------------------------------------------------------------------
-hierarchy -check -top multsigned
-check
+yosys "hierarchy -check -top multsigned"
+yosys "rename -top multsigned"
+yosys "check"
 
 # -----------------------------------------------------------------------------
 # Synthesis & optimizations
 # -----------------------------------------------------------------------------
-proc
-opt
-fsm
-opt
-memory
-opt
-techmap
-opt
+yosys "proc"
+yosys "opt"
+yosys "fsm"
+yosys "opt"
+yosys "memory"
+yosys "opt"
+yosys "techmap"
+yosys "opt"
 
 # -----------------------------------------------------------------------------
 # Technology mapping
 # -----------------------------------------------------------------------------
-dfflibmap -liberty \
-    /home/simone/my_tools/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SEQ_RVT_TT_nldm_220123.lib
-opt
-abc -liberty /home/simone/my_tools/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib \
-    -liberty /home/simone/my_tools/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_INVBUF_RVT_TT_nldm_220122.lib \
-    -liberty /home/simone/my_tools/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_AO_RVT_TT_nldm_211120.lib \
-    -script  /home/simone/my_code/ai_core/hw/imp/1_syn_yosys/scripts/abc.tcl
-opt
-clean
+yosys "dfflibmap -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SEQ_RVT_TT_nldm_220123.lib"
+yosys "opt"
+
+yosys "abc \
+  -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib \
+  -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_INVBUF_RVT_TT_nldm_220122.lib \
+  -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_AO_RVT_TT_nldm_211120.lib \
+  -script  $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/scripts/abc.tcl"
+
+yosys "opt"
+yosys "clean"
 
 # -----------------------------------------------------------------------------
 # Generate cells reports
 # -----------------------------------------------------------------------------
-tee -o /home/simone/my_code/ai_core/hw/imp/1_syn_yosys/report/cell_SIMPLE.rpt stat \
-    -liberty /home/simone/my_tools/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib
+yosys "tee -o $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/report/cell_SIMPLE.rpt stat \
+  -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib"
 
 # -----------------------------------------------------------------------------
 # Flatten & optimize & clean
 # -----------------------------------------------------------------------------
-flatten
-opt_clean
-rename -hide
+yosys "flatten"
+yosys "opt_clean"
+yosys "rename -hide"
 
-tee -o /home/simone/my_code/ai_core/hw/imp/1_syn_yosys/report/cell_SIMPLE.rpt stat \
-    -liberty /home/simone/my_tools/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib
+yosys "tee -o $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/report/cell_SIMPLE_flat.rpt stat \
+  -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib"
 
 # -----------------------------------------------------------------------------
 # Write synthesized netlist
 # -----------------------------------------------------------------------------
-write_verilog -noattr -noexpr -nodec /home/simone/my_code/ai_core/hw/imp/1_syn_yosys/output/netlist.v
+yosys "write_verilog -noattr -noexpr -nodec $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output/netlist.v"

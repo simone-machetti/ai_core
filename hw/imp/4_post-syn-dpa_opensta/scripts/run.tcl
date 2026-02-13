@@ -30,7 +30,14 @@ set_output_delay 0 -clock vclk [all_outputs]
 # -----------------------------------------------------------------------------
 # VCD-based switching activity
 # -----------------------------------------------------------------------------
-read_vcd -scope testbench/multsigned_i $env(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output/activity.vcd
+set vcd_modelsim  "$env(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output/activity.vcd"
+set vcd_verilator "$env(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output/activity.vcd"
+
+if {[file exists $vcd_modelsim]} {
+    read_vcd -scope testbench/multsigned_i $vcd_modelsim
+} else {
+    read_vcd -scope testbench/multsigned_i $vcd_verilator
+}
 
 report_activity_annotation -report_annotated   > $REPORT_DIR/vcd_annotated.rpt
 report_activity_annotation -report_unannotated > $REPORT_DIR/vcd_unannotated.rpt
