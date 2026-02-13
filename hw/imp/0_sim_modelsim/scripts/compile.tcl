@@ -11,4 +11,13 @@ vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/multsigned/Mux9x1.s
 vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/multsigned/Shifter1.sv
 vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/multsigned/Shifter2.sv
 
+vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/full_adder.sv
+vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/sign_extender.sv
+vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/compressor_4_2_cell.sv
+vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/compressor_4_2_n_bit.sv
+vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/compressor_8_2_n_bit.sv
+vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/compressor_24_2.sv
 vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/multsigned.sv
+
+vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/multsigned_array.sv
+vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/baseline.sv
