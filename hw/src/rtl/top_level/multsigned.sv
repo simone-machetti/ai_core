@@ -8,27 +8,24 @@ module multsigned #(
     parameter int IN_SIZE_0 = 4,
     parameter int IN_SIZE_1 = 8
 )(
-    input  logic [            IN_SIZE_0-1:0] in_0_i, // A (multiplicand)
-    input  logic [            IN_SIZE_1-1:0] in_1_i, // B (multiplier)
-    output logic [(IN_SIZE_0+IN_SIZE_1)-1:0] out_o   // O (product)
+    input  logic [            IN_SIZE_0-1:0] in_0_i,
+    input  logic [            IN_SIZE_1-1:0] in_1_i,
+    output logic [(IN_SIZE_0+IN_SIZE_1)-1:0] out_o [0:((IN_SIZE_1+2)/3)-1]
 );
 
-    localparam int OUT_SIZE     = IN_SIZE_0 + IN_SIZE_1;
-    localparam int NUM_ENCODERS = (IN_SIZE_1 + 2) / 3;
+    localparam int OUT_SIZE             = IN_SIZE_0 + IN_SIZE_1;
+    localparam int NUM_PARTIAL_PRODUCTS = (IN_SIZE_1 + 2) / 3;
 
     // -------------------------------------------------------------------------
     // Internal signals
     // -------------------------------------------------------------------------
-    logic [         3:0] m  [0:NUM_ENCODERS-1];
+    logic [         3:0] m  [0:NUM_PARTIAL_PRODUCTS-1];
     logic [OUT_SIZE-1:0] e;
 
-    logic [OUT_SIZE-1:0] s0 [0:NUM_ENCODERS-1];
-    logic [OUT_SIZE-1:0] s1 [0:NUM_ENCODERS-1];
-    logic [OUT_SIZE-1:0] s2 [0:NUM_ENCODERS-1];
-    logic [OUT_SIZE-1:0] s3 [0:NUM_ENCODERS-1];
-
-    logic [OUT_SIZE-1:0] x  [0:NUM_ENCODERS-1];
-    logic [OUT_SIZE-1:0] w  [0:NUM_ENCODERS-1];
+    logic [OUT_SIZE-1:0] s0 [0:NUM_PARTIAL_PRODUCTS-1];
+    logic [OUT_SIZE-1:0] s1 [0:NUM_PARTIAL_PRODUCTS-1];
+    logic [OUT_SIZE-1:0] s2 [0:NUM_PARTIAL_PRODUCTS-1];
+    logic [OUT_SIZE-1:0] s3 [0:NUM_PARTIAL_PRODUCTS-1];
 
     // -------------------------------------------------------------------------
     // Safe access to multiplier bits
@@ -49,7 +46,7 @@ module multsigned #(
     // -------------------------------------------------------------------------
     genvar i;
     generate
-      for (i = 0; i < NUM_ENCODERS; i++) begin : gen_enc
+      for (i = 0; i < NUM_PARTIAL_PRODUCTS; i++) begin : gen_enc
         logic [3:0] win;
 
         always_comb begin
@@ -89,7 +86,7 @@ module multsigned #(
     // -------------------------------------------------------------------------
     genvar j;
     generate
-        for (j = 0; j < NUM_ENCODERS-1; j++) begin : gen_stage
+        for (j = 0; j < NUM_PARTIAL_PRODUCTS-1; j++) begin : gen_stage
             Shifter2 #(
                 .SIZE(OUT_SIZE)
             ) shifter2_i (
@@ -111,7 +108,7 @@ module multsigned #(
                 .in_2_i (s2[j]),
                 .in_3_i (s3[j]),
                 .sel_i  (m[j]),
-                .out_o  (x[j])
+                .out_o  (out_o[j])
             );
         end
     endgenerate
@@ -120,44 +117,12 @@ module multsigned #(
     Mux9x1 #(
         .SIZE(OUT_SIZE)
     ) mux9x1_last_i (
-        .in_0_i (s0[NUM_ENCODERS-1]),
-        .in_1_i (s1[NUM_ENCODERS-1]),
-        .in_2_i (s2[NUM_ENCODERS-1]),
-        .in_3_i (s3[NUM_ENCODERS-1]),
-        .sel_i  (m[NUM_ENCODERS-1]),
-        .out_o  (x[NUM_ENCODERS-1])
+        .in_0_i (s0[NUM_PARTIAL_PRODUCTS-1]),
+        .in_1_i (s1[NUM_PARTIAL_PRODUCTS-1]),
+        .in_2_i (s2[NUM_PARTIAL_PRODUCTS-1]),
+        .in_3_i (s3[NUM_PARTIAL_PRODUCTS-1]),
+        .sel_i  (m[NUM_PARTIAL_PRODUCTS-1]),
+        .out_o  (out_o[NUM_PARTIAL_PRODUCTS-1])
     );
-
-    // -------------------------------------------------------------------------
-    // Add partial products (linear reduction)
-    // Handle NUM_ENCODERS == 1
-    // -------------------------------------------------------------------------
-    generate
-        if (NUM_ENCODERS == 1) begin : gen_sum_1
-            assign out_o = x[0];
-        end else begin : gen_sum_n
-
-            AdderN #(
-                .SIZE(OUT_SIZE)
-            ) add_first (
-                .in_0_i(x[0]),
-                .in_1_i(x[1]),
-                .out_o(w[0])
-            );
-
-            genvar z;
-            for (z = 1; z < NUM_ENCODERS-1; z++) begin : gen_add
-                AdderN #(
-                    .SIZE(OUT_SIZE)
-                ) add_i (
-                    .in_0_i(w[z-1]),
-                    .in_1_i(x[z+1]),
-                    .out_o(w[z])
-                );
-            end
-
-            assign out_o = w[NUM_ENCODERS-2];
-        end
-    endgenerate
 
 endmodule
