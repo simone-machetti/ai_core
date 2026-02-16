@@ -33,6 +33,12 @@ yosys "techmap"
 yosys "opt"
 
 # -----------------------------------------------------------------------------
+# Visualize netlist
+# -----------------------------------------------------------------------------
+# yosys "write_json $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output/graph.json"
+# exec netlistsvg $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output/graph.json -o $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output/graph.svg
+
+# -----------------------------------------------------------------------------
 # Technology mapping
 # -----------------------------------------------------------------------------
 yosys "dfflibmap -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SEQ_RVT_TT_nldm_220123.lib"
