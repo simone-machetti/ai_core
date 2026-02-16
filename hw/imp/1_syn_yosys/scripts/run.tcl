@@ -11,7 +11,7 @@ source $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/scripts/compile.tcl
 # -----------------------------------------------------------------------------
 # Override top parameters
 # -----------------------------------------------------------------------------
-# yosys "chparam -set IN_SIZE_0 $env(SEL_IN_SIZE_0) -set IN_SIZE_1 $env(SEL_IN_SIZE_1) baseline"
+# yosys "chparam -G IN_SIZE_0=$env(SEL_IN_SIZE_0) -G IN_SIZE_1=$env(SEL_IN_SIZE_1) baseline"
 
 # -----------------------------------------------------------------------------
 # Elaboration / hierarchy
