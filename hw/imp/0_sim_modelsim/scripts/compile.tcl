@@ -18,6 +18,6 @@ vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/compressor_4_2_n_bi
 vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/compressor_8_2_n_bit.sv
 vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/compressor_24_2.sv
 vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/multsigned.sv
+vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/multsigned_array.sv
 
-vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/multsigned_array.sv
 vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/baseline.sv
