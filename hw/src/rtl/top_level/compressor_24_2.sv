@@ -8,8 +8,8 @@ module compressor_24_2 #(
     parameter int IN_SIZE  = 12,
     parameter int OUT_SIZE = 20
 )(
-    input  logic [IN_SIZE-1:0]  in_i  [0:23],
-    output logic [OUT_SIZE-1:0] out_o [0:1]
+    input  logic [ IN_SIZE-1:0] in_i  [0:23],
+    output logic [OUT_SIZE-1:0] out_o [ 0:1]
 );
 
     localparam logic is_signed = 1'b1;

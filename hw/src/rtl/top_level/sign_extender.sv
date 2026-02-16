@@ -7,7 +7,7 @@ module sign_extender #(
     parameter int OUT_WIDTH = 16
 )(
     input  logic                 is_signed,
-    input  logic [IN_WIDTH-1:0]  data_in,
+    input  logic [ IN_WIDTH-1:0] data_in,
     output logic [OUT_WIDTH-1:0] data_out
 );
     logic extended_bit;

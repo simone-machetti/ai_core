@@ -7,7 +7,7 @@ module compressor_8_2_n_bit #(
     parameter int OUTPUT_WIDTH = 16,
     parameter bit SHIFT_CARRY  = 1
 )(
-    input  logic [INPUT_WIDTH-1:0]  inputs [8],
+    input  logic [ INPUT_WIDTH-1:0] inputs [8],
     input  logic                    is_signed,
     output logic [OUTPUT_WIDTH-1:0] sum,
     output logic [OUTPUT_WIDTH-1:0] carry

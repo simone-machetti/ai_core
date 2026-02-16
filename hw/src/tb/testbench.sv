@@ -18,9 +18,9 @@ module testbench #(
     // -------------------------------------------------------------------------
     // DUT signals (signed)
     // -------------------------------------------------------------------------
-    logic [             IN_SIZE_0-1:0]  in_0 [0:SIZE_ARRAY-1];
-    logic [             IN_SIZE_1-1:0]  in_1 [0:SIZE_ARRAY-1];
-    logic [(IN_SIZE_0+IN_SIZE_1)+8-1:0] out  [0:1];
+    logic [              IN_SIZE_0-1:0] in_0 [0:SIZE_ARRAY-1];
+    logic [              IN_SIZE_1-1:0] in_1 [0:SIZE_ARRAY-1];
+    logic [(IN_SIZE_0+IN_SIZE_1)+8-1:0] out  [           0:1];
     logic [(IN_SIZE_0+IN_SIZE_1)+8-1:0] acc;
 
     // -------------------------------------------------------------------------

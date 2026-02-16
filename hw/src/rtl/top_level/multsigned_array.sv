@@ -9,9 +9,9 @@ module multsigned_array #(
     parameter int IN_SIZE_1  = 8,
     parameter int SIZE_ARRAY = 8
 )(
-    input  logic [             IN_SIZE_0-1:0] in_0_i [0:SIZE_ARRAY-1],
-    input  logic [             IN_SIZE_1-1:0] in_1_i [0:SIZE_ARRAY-1],
-    output logic [(IN_SIZE_0+IN_SIZE_1)-1:0]  out_o  [0:(((IN_SIZE_1+2)/3)*SIZE_ARRAY)-1]
+    input  logic [            IN_SIZE_0-1:0] in_0_i [                    0:SIZE_ARRAY-1],
+    input  logic [            IN_SIZE_1-1:0] in_1_i [                    0:SIZE_ARRAY-1],
+    output logic [(IN_SIZE_0+IN_SIZE_1)-1:0] out_o  [0:(((IN_SIZE_1+2)/3)*SIZE_ARRAY)-1]
 );
 
     localparam int NUM_PARTIAL_PRODUCTS = (IN_SIZE_1 + 2) / 3;
