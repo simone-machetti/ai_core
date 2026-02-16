@@ -4,6 +4,7 @@
 
 hw/imp/0_sim_modelsim/work
 hw/imp/0_sim_modelsim/output
+hw/imp/0_sim_modelsim/transcript
 
 hw/imp/0_sim_verilator/build
 hw/imp/0_sim_verilator/output
