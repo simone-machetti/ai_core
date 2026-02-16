@@ -16,7 +16,7 @@ read_liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLD
 # Netlist + top-level linking
 # -----------------------------------------------------------------------------
 read_verilog $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output/netlist.v
-link_design multsigned
+link_design baseline
 
 # -----------------------------------------------------------------------------
 # Constraints (combinational I/O timing)
