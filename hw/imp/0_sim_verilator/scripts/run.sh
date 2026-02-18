@@ -18,6 +18,7 @@ if [[ "${SEL_SIM_GUI:-0}" -eq 0 ]]; then
         -GIN_SIZE_1=${SEL_IN_SIZE_1} \
         --top-module testbench \
         -f "${CODE_HOME}/ai_core/hw/imp/0_sim_verilator/scripts/filelist.f" \
+           "${CODE_HOME}/ai_core/hw/src/tb/testbench_${SEL_TOP_LEVEL}.sv" \
         -Mdir "${CODE_HOME}/ai_core/hw/imp/0_sim_verilator/build/obj_dir" \
         -o "${CODE_HOME}/ai_core/hw/imp/0_sim_verilator/build/simv"
 
@@ -35,6 +36,7 @@ else
         -GIN_SIZE_1=${SEL_IN_SIZE_1} \
         --top-module testbench \
         -f "${CODE_HOME}/ai_core/hw/imp/0_sim_verilator/scripts/filelist.f" \
+           "${CODE_HOME}/ai_core/hw/src/tb/testbench_${SEL_TOP_LEVEL}.sv" \
         -Mdir "${CODE_HOME}/ai_core/hw/imp/0_sim_verilator/build/obj_dir" \
         -o "${CODE_HOME}/ai_core/hw/imp/0_sim_verilator/build/simv"
 

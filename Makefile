@@ -5,30 +5,27 @@
 SIM_GUI   ?= 0
 IN_SIZE_0 ?= 4
 IN_SIZE_1 ?= 8
+TOP_LEVEL ?= baseline
+
+export SEL_SIM_GUI   :=$(SIM_GUI)
+export SEL_IN_SIZE_0 :=$(IN_SIZE_0)
+export SEL_IN_SIZE_1 :=$(IN_SIZE_1)
+export SEL_TOP_LEVEL :=$(TOP_LEVEL)
 
 ifeq ($(SIM_GUI), 0)
 
 sim_modelsim: clean-sim_modelsim
-	export SEL_SIM_GUI=$(SIM_GUI) && \
-	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
-	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
 	cd $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/output && \
 	vsim -c -do $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/scripts/run.tcl && \
 	mv $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/transcript $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/output
 
 sim_verilator: clean-sim_verilator
-	export SEL_SIM_GUI=$(SIM_GUI) && \
-	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
-	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
 	cd $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/build && \
 	./scripts/run.sh
 
 post-syn-sim_modelsim: clean-post-syn-sim_modelsim
-	export SEL_SIM_GUI=$(SIM_GUI) && \
-	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
-	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
 	cd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output && \
 	vsim -c -gIN_SIZE_0=$(IN_SIZE_0) -gIN_SIZE_1=$(IN_SIZE_0) -do $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/scripts/run.tcl && \
@@ -36,9 +33,6 @@ post-syn-sim_modelsim: clean-post-syn-sim_modelsim
 	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/transcript $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output
 
 post-syn-sim_verilator: clean-post-syn-sim_verilator
-	export SEL_SIM_GUI=$(SIM_GUI) && \
-	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
-	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
 	cd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/build && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output && \
@@ -48,18 +42,13 @@ post-syn-sim_verilator: clean-post-syn-sim_verilator
 else
 
 sim_modelsim: clean-sim_modelsim
-	export SEL_SIM_GUI=$(SIM_GUI) && \
-	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
-	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
 	cd $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/output && \
-	vsim -gui -do $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/scripts/run.tcl && \
-	mv $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/transcript $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/output
+	vsim -debugDB -gui -do $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/scripts/run.tcl && \
+	mv $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/transcript $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/output && \
+	mv $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/vsim.dbg $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/output
 
 sim_verilator: clean-sim_verilator
-	export SEL_SIM_GUI=$(SIM_GUI) && \
-	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
-	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
 	cd $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/build && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/output && \
@@ -68,19 +57,14 @@ sim_verilator: clean-sim_verilator
 	gtkwave $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/output/activity.vcd
 
 post-syn-sim_modelsim: clean-post-syn-sim_modelsim
-	export SEL_SIM_GUI=$(SIM_GUI) && \
-	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
-	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
 	cd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output && \
-	vsim -gui -gIN_SIZE_0=$(IN_SIZE_0) -gIN_SIZE_1=$(IN_SIZE_0) -do $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/scripts/run.tcl && \
+	vsim -debugDB -gui -gIN_SIZE_0=$(IN_SIZE_0) -gIN_SIZE_1=$(IN_SIZE_0) -do $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/scripts/run.tcl && \
 	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/activity.vcd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output && \
-	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/transcript $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output
+	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/transcript $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output && \
+	mv $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/vsim.dbg $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/output
 
 post-syn-sim_verilator: clean-post-syn-sim_verilator
-	export SEL_SIM_GUI=$(SIM_GUI) && \
-	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
-	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
 	cd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/build && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output && \
@@ -91,8 +75,6 @@ post-syn-sim_verilator: clean-post-syn-sim_verilator
 endif
 
 syn_yosys: clean-syn_yosys
-	export SEL_IN_SIZE_0=$(IN_SIZE_0) && \
-	export SEL_IN_SIZE_1=$(IN_SIZE_1) && \
 	cd $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/report && \

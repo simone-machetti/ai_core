@@ -13,6 +13,15 @@ yosys "design -reset"
 yosys "plugin -i $env(YOSYS_SLANG_HOME)/bin/slang.so"
 
 # -----------------------------------------------------------------------------
+# Read libraries to Yosys database
+# -----------------------------------------------------------------------------
+yosys "read_liberty -lib $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SEQ_RVT_TT_nldm_220123.lib"
+yosys "read_liberty -lib $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib"
+yosys "read_liberty -lib $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_INVBUF_RVT_TT_nldm_220122.lib"
+yosys "read_liberty -lib $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_AO_RVT_TT_nldm_211120.lib"
+yosys "read_liberty -lib $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_OA_RVT_TT_nldm_211120.lib"
+
+# -----------------------------------------------------------------------------
 # Read SystemVerilog sources
 # -----------------------------------------------------------------------------
 yosys "read_slang \
@@ -28,6 +37,9 @@ yosys "read_slang \
     $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/compressor_4_2_n_bit.sv \
     $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/compressor_8_2_n_bit.sv \
     $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/compressor_24_2.sv \
+    $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/compressor_12_2.sv \
     $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/multsigned.sv \
     $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/multsigned_array.sv \
-    $env(CODE_HOME)/ai_core/hw/src/rtl/baseline.sv -G IN_SIZE_0=$env(SEL_IN_SIZE_0) -G IN_SIZE_1=$env(SEL_IN_SIZE_1)"
+    $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/add_mult_array.sv \
+    $env(CODE_HOME)/ai_core/hw/src/rtl/baseline.sv -G IN_SIZE_0=$env(SEL_IN_SIZE_0) -G IN_SIZE_1=$env(SEL_IN_SIZE_1) \
+    $env(CODE_HOME)/ai_core/hw/src/rtl/winograd.sv -G IN_SIZE_0=$env(SEL_IN_SIZE_0) -G IN_SIZE_1=$env(SEL_IN_SIZE_1)"

@@ -3,9 +3,8 @@
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
-# Load RTL + technology (compile.tcl is a Tcl file -> use Tcl 'source')
+# Load RTL & technology
 # -----------------------------------------------------------------------------
-
 source $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/scripts/compile.tcl
 
 # -----------------------------------------------------------------------------
@@ -16,8 +15,7 @@ source $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/scripts/compile.tcl
 # -----------------------------------------------------------------------------
 # Elaboration / hierarchy
 # -----------------------------------------------------------------------------
-yosys "hierarchy -check -top baseline"
-# yosys "rename -top baseline"
+yosys "hierarchy -check -top $env(SEL_TOP_LEVEL)"
 yosys "check"
 
 # -----------------------------------------------------------------------------
@@ -29,6 +27,8 @@ yosys "fsm"
 yosys "opt"
 yosys "memory"
 yosys "opt"
+# yosys "extract_fa"
+# yosys "techmap -map $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/yoSys/cells_adders_R.v"
 yosys "techmap"
 yosys "opt"
 
@@ -45,19 +45,14 @@ yosys "dfflibmap -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/
 yosys "opt"
 
 yosys "abc \
-  -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib \
-  -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_INVBUF_RVT_TT_nldm_220122.lib \
-  -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_AO_RVT_TT_nldm_211120.lib \
-  -script  $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/scripts/abc.tcl"
+    -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib \
+    -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_INVBUF_RVT_TT_nldm_220122.lib \
+    -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_AO_RVT_TT_nldm_211120.lib \
+    -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_OA_RVT_TT_nldm_211120.lib \
+    -script  $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/scripts/abc.tcl"
 
 yosys "opt"
 yosys "clean"
-
-# -----------------------------------------------------------------------------
-# Generate cells reports
-# -----------------------------------------------------------------------------
-yosys "tee -o $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/report/cell_SIMPLE.rpt stat \
-  -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib"
 
 # -----------------------------------------------------------------------------
 # Flatten & optimize & clean
@@ -66,8 +61,15 @@ yosys "flatten"
 yosys "opt_clean"
 yosys "rename -hide"
 
-yosys "tee -o $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/report/cell_SIMPLE_flat.rpt stat \
-  -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib"
+# -----------------------------------------------------------------------------
+# Generate cells reports
+# -----------------------------------------------------------------------------
+yosys "tee -o $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/report/cell.rpt stat \
+    -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SEQ_RVT_TT_nldm_220123.lib \
+    -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib \
+    -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_INVBUF_RVT_TT_nldm_220122.lib \
+    -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_AO_RVT_TT_nldm_211120.lib \
+    -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_OA_RVT_TT_nldm_211120.lib"
 
 # -----------------------------------------------------------------------------
 # Write synthesized netlist

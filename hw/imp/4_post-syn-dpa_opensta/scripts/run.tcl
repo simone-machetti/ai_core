@@ -13,19 +13,19 @@ read_liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLD
 read_liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib
 read_liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_INVBUF_RVT_TT_nldm_220122.lib
 read_liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_AO_RVT_TT_nldm_211120.lib
+read_liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_OA_RVT_TT_nldm_211120.lib
 
 # -----------------------------------------------------------------------------
 # Netlist & top-level linking
 # -----------------------------------------------------------------------------
 read_verilog $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output/netlist.v
-link_design baseline
+link_design $env(SEL_TOP_LEVEL)
 
 # -----------------------------------------------------------------------------
 # Virtual clock & I/O constraints (required to avoid "No clocks defined")
 # -----------------------------------------------------------------------------
-create_clock -name vclk -period 1000
-set_input_delay 0 -clock vclk [all_inputs]
-set_output_delay 0 -clock vclk [all_outputs]
+set CLK_PERIOD_PS 1100
+create_clock -name clk_i -period $CLK_PERIOD_PS [get_ports clk_i]
 
 # -----------------------------------------------------------------------------
 # VCD-based switching activity
@@ -34,9 +34,9 @@ set vcd_modelsim  "$env(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output
 set vcd_verilator "$env(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output/activity.vcd"
 
 if {[file exists $vcd_modelsim]} {
-    read_vcd -scope testbench/baseline_i $vcd_modelsim
+    read_vcd -scope testbench/$env(SEL_TOP_LEVEL)_i $vcd_modelsim
 } else {
-    read_vcd -scope testbench/baseline_i $vcd_verilator
+    read_vcd -scope testbench/$env(SEL_TOP_LEVEL)_i $vcd_verilator
 }
 
 report_activity_annotation -report_annotated   > $REPORT_DIR/vcd_annotated.rpt
