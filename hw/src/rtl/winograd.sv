@@ -12,11 +12,11 @@ module winograd #(
     input  logic                           rst_ni,
     input  logic [          IN_SIZE_0-1:0] in_0_i [0:7],
     input  logic [          IN_SIZE_1-1:0] in_1_i [0:7],
-    output logic [((IN_SIZE_1+1)*2)+6-1:0] out_o  [0:1]
+    output logic [((IN_SIZE_1+1)*2)+3-1:0] out_o  [0:1]
 );
 
     localparam int SIZE_PARTIAL_PRODUCTS = (IN_SIZE_1 + 1) * 2;
-    localparam int SIZE_OUT              = SIZE_PARTIAL_PRODUCTS + 6;
+    localparam int SIZE_OUT              = SIZE_PARTIAL_PRODUCTS + 3;
 
     // -------------------------------------------------------------------------
     // Input registers
@@ -39,8 +39,8 @@ module winograd #(
     // -------------------------------------------------------------------------
     // Internal wires
     // -------------------------------------------------------------------------
-    logic [    SIZE_PARTIAL_PRODUCTS-1:0] m     [0:11];
-    logic [(SIZE_PARTIAL_PRODUCTS+6)-1:0] out_d [ 0:1];
+    logic [SIZE_PARTIAL_PRODUCTS-1:0] m     [0:11];
+    logic [             SIZE_OUT-1:0] out_d [ 0:1];
 
     // -------------------------------------------------------------------------
     // Adder-Multiplier array

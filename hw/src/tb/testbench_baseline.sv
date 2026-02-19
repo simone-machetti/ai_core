@@ -106,6 +106,7 @@ module testbench #(
                     in_0[i] = a_fixed;
                     in_1[i] = b_fixed;
                 end
+
                 acc = $signed(acc) + ($signed(in_0[i]) * $signed(in_1[i]));
             end
 

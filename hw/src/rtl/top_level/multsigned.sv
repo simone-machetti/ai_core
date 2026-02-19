@@ -21,7 +21,6 @@ module multsigned #(
     // -------------------------------------------------------------------------
     logic [         3:0] m  [0:NUM_PARTIAL_PRODUCTS-1];
     logic [OUT_SIZE-1:0] e;
-
     logic [OUT_SIZE-1:0] s0 [0:NUM_PARTIAL_PRODUCTS-1];
     logic [OUT_SIZE-1:0] s1 [0:NUM_PARTIAL_PRODUCTS-1];
     logic [OUT_SIZE-1:0] s2 [0:NUM_PARTIAL_PRODUCTS-1];

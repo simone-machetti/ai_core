@@ -6,7 +6,7 @@
 
 module compressor_12_2 #(
     parameter int IN_SIZE  = 18,
-    parameter int OUT_SIZE = 24
+    parameter int OUT_SIZE = 21
 )(
     input  logic [ IN_SIZE-1:0] in_i  [0:11],
     output logic [OUT_SIZE-1:0] out_o [0:1]
@@ -14,16 +14,16 @@ module compressor_12_2 #(
 
     localparam logic is_signed = 1'b1;
 
-    logic [(IN_SIZE+2)-1:0] s0[0:1];
+    logic [(IN_SIZE+1)-1:0] s0[0:1];
 
-    logic [(IN_SIZE+2+2)-1:0] s1[0:3];
+    logic [(IN_SIZE+1+1)-1:0] s1[0:3];
 
     // -------------------------------------------------------------------------
     // Stage 0
     // -------------------------------------------------------------------------
     compressor_8_2_n_bit #(
         .INPUT_WIDTH(IN_SIZE),
-        .OUTPUT_WIDTH(IN_SIZE+4),
+        .OUTPUT_WIDTH(IN_SIZE+1+1),
         .SHIFT_CARRY(1)
     ) compressor_8_2_stage_0_i (
         .inputs(in_i[0:7]),
@@ -34,7 +34,7 @@ module compressor_12_2 #(
 
     compressor_4_2_n_bit #(
         .INPUT_WIDTH(IN_SIZE),
-        .OUTPUT_WIDTH(IN_SIZE+2),
+        .OUTPUT_WIDTH(IN_SIZE+1),
         .SHIFT_CARRY(1)
     ) compressor_4_2_stage_0_i (
         .inputs(in_i[8:11]),
@@ -44,8 +44,8 @@ module compressor_12_2 #(
     );
 
     sign_extender #(
-        .IN_WIDTH(IN_SIZE+2),
-        .OUT_WIDTH(IN_SIZE+2+2)
+        .IN_WIDTH(IN_SIZE+1),
+        .OUT_WIDTH(IN_SIZE+1+1)
     ) i_sign_extender_stage_0_0_i (
         .is_signed(is_signed),
         .data_in(s0[0]),
@@ -53,8 +53,8 @@ module compressor_12_2 #(
     );
 
     sign_extender #(
-        .IN_WIDTH(IN_SIZE+2),
-        .OUT_WIDTH(IN_SIZE+2+2)
+        .IN_WIDTH(IN_SIZE+1),
+        .OUT_WIDTH(IN_SIZE+1+1)
     ) i_sign_extender_stage_0_1_i (
         .is_signed(is_signed),
         .data_in(s0[1]),
@@ -65,8 +65,8 @@ module compressor_12_2 #(
     // Stage 1
     // -------------------------------------------------------------------------
     compressor_4_2_n_bit #(
-        .INPUT_WIDTH(IN_SIZE+2+2),
-        .OUTPUT_WIDTH(IN_SIZE+2+2+2),
+        .INPUT_WIDTH(IN_SIZE+1+1),
+        .OUTPUT_WIDTH(IN_SIZE+1+1+1),
         .SHIFT_CARRY(1)
     ) compressor_4_2_stage_1_i (
         .inputs(s1),
