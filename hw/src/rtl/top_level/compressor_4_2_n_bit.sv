@@ -2,45 +2,9 @@
 // Author: Jaime Joven Murillo
 // -----------------------------------------------------------------------------
 
-// ------------------------------------------------------------------------------------
-// Example with 8 bits input and 10 bits output
-// Weight:    9  8  7  6  5  4  3  2  1  0
-// ---------------------------------------
-// Sum:             S7 S6 S5 S4 S3 S2 S1 S0
-// Carry:        C7 C6 C5 C4 C3 C2 C1 C0  0   <-- Shifted Left
-// Extra:        cn                           <-- The cout from the MSB
-// ---------------------------------------
-// RESULT:    R9 R8 R7 R6 R5 R4 R3 R2 R1 R0   (The 10-bit Final Sum, not part of this block)
-// ------------------------------------------------------------------------------------
-// Imprtant notes:
-// ------------------------------------------------------------------------------------
-// In many tree designs, cout_chain[INTERNAL_WIDTH] is actually ignored or
-// handled by sign-extending the inputs beforehand.
-// To ensure your signed 2's complement math never overflows, the bit-width INPUT_WIDTH must
-// grow as the tree gets deeper.
-// General rule is NEXT_WIDTH_INPUT = INPUT_WIDTH + log2(N_INPUTS)
-// For 4:2 tree INPUT_WIDTH+2
-// For 8:2 tree INPUT_WIDTH+3
-// For 16:2 tree INPUT_WIDTH+4
-// ------------------------------------------------------------------------------------
-// Example bit level (4 bit word):
-// ------------------------------------------------------------------------------------
-// Imagine all inputs are 3 4'b0011. We expect a sum of 3 x 4 = 12 (4'b1100)
-// Bit Position 2^3 2^2 2^1 2^0
-// x1             0   0   1   1
-// x2             0   0   1   1
-// x3             0   0   1   1
-// x4             0   0   1   1
-// sum            0   0   0   0
-// carry          0   1   1   0
-// ------------------------------------------------------------------------------------
-// Result         1   1   0   0
-// Result = S + (carry << 1)
-// ------------------------------------------------------------------------------------
-
 module compressor_4_2_n_bit #(
-    parameter int INPUT_WIDTH  = 12,
-    parameter int OUTPUT_WIDTH = 14,
+    parameter int INPUT_WIDTH  = 14,
+    parameter int OUTPUT_WIDTH = 15,
     parameter bit SHIFT_CARRY  = 1
 )(
     input  logic [ INPUT_WIDTH-1:0] inputs [4],
