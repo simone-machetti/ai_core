@@ -18,6 +18,7 @@ $(CODE_HOME)/ai_core/hw/src/rtl/top_level/compressor_24_2.sv
 $(CODE_HOME)/ai_core/hw/src/rtl/top_level/compressor_12_2.sv
 $(CODE_HOME)/ai_core/hw/src/rtl/top_level/multsigned.sv
 $(CODE_HOME)/ai_core/hw/src/rtl/top_level/multsigned_array.sv
+$(CODE_HOME)/ai_core/hw/src/rtl/top_level/add_mult.sv
 $(CODE_HOME)/ai_core/hw/src/rtl/top_level/add_mult_array.sv
 
 $(CODE_HOME)/ai_core/hw/src/rtl/baseline.sv

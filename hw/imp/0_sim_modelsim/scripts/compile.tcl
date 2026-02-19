@@ -20,6 +20,7 @@ vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/compressor_24_2.sv
 vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/compressor_12_2.sv
 vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/multsigned.sv
 vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/multsigned_array.sv
+vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/add_mult.sv
 vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/add_mult_array.sv
 
 vlog -work work $env(CODE_HOME)/ai_core/hw/src/rtl/baseline.sv

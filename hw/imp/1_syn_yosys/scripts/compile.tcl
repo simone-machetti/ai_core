@@ -40,6 +40,7 @@ yosys "read_slang \
     $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/compressor_12_2.sv \
     $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/multsigned.sv \
     $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/multsigned_array.sv \
+    $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/add_mult.sv \
     $env(CODE_HOME)/ai_core/hw/src/rtl/top_level/add_mult_array.sv \
     $env(CODE_HOME)/ai_core/hw/src/rtl/baseline.sv -G IN_SIZE_0=$env(SEL_IN_SIZE_0) -G IN_SIZE_1=$env(SEL_IN_SIZE_1) \
     $env(CODE_HOME)/ai_core/hw/src/rtl/winograd.sv -G IN_SIZE_0=$env(SEL_IN_SIZE_0) -G IN_SIZE_1=$env(SEL_IN_SIZE_1)"
