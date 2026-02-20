@@ -4,7 +4,7 @@
 
 module compressor_8_2_n_bit #(
     parameter int INPUT_WIDTH  = 12,
-    parameter int OUTPUT_WIDTH = 14,
+    parameter int OUTPUT_WIDTH = 16,
     parameter bit SHIFT_CARRY  = 1
 )(
     input  logic [ INPUT_WIDTH-1:0] inputs [8],

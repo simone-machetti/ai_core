@@ -12,7 +12,7 @@ module baseline #(
     input  logic                               rst_ni,
     input  logic [              IN_SIZE_0-1:0] in_0_i [0:7],
     input  logic [              IN_SIZE_1-1:0] in_1_i [0:7],
-    output logic [(IN_SIZE_0+IN_SIZE_1)+4-1:0] out_o  [0:1]
+    output logic [(IN_SIZE_0+IN_SIZE_1)+8-1:0] out_o  [0:1]
 );
 
     // -------------------------------------------------------------------------
@@ -43,7 +43,7 @@ module baseline #(
     // Internal wires
     // -------------------------------------------------------------------------
     logic [    SIZE_PARTIAL_PRODUCTS-1:0] m     [0:NUM_PARTIAL_PRODUCTS-1];
-    logic [(SIZE_PARTIAL_PRODUCTS+4)-1:0] out_d [                     0:1];
+    logic [(SIZE_PARTIAL_PRODUCTS+8)-1:0] out_d [                     0:1];
 
     // -------------------------------------------------------------------------
     // Multiplier array
@@ -63,7 +63,7 @@ module baseline #(
     // -------------------------------------------------------------------------
     compressor_24_2 #(
         .IN_SIZE (SIZE_PARTIAL_PRODUCTS),
-        .OUT_SIZE(SIZE_PARTIAL_PRODUCTS+4)
+        .OUT_SIZE(SIZE_PARTIAL_PRODUCTS+8)
     ) compressor_24_2_i (
         .in_i (m),
         .out_o(out_d)

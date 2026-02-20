@@ -6,7 +6,7 @@
 
 module compressor_24_2 #(
     parameter int IN_SIZE  = 12,
-    parameter int OUT_SIZE = 16
+    parameter int OUT_SIZE = 20
 )(
     input  logic [ IN_SIZE-1:0] in_i  [0:23],
     output logic [OUT_SIZE-1:0] out_o [ 0:1]
@@ -14,10 +14,10 @@ module compressor_24_2 #(
 
     localparam logic is_signed = 1'b1;
 
-    localparam int STAGE_0_SIZE = IN_SIZE + 2;
+    localparam int STAGE_0_SIZE = IN_SIZE + 4;
     logic [STAGE_0_SIZE-1:0] s0[0:5];
 
-    localparam int STAGE_1_SIZE = STAGE_0_SIZE + 1;
+    localparam int STAGE_1_SIZE = STAGE_0_SIZE + 2;
     logic [STAGE_1_SIZE-1:0] s1[0:3];
 
     // -------------------------------------------------------------------------

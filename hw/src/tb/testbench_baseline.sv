@@ -9,7 +9,7 @@ module testbench #(
     parameter int IN_SIZE_1 = 8
 );
 
-    localparam int OUT_SIZE = IN_SIZE_0 + IN_SIZE_1 + 4;
+    localparam int OUT_SIZE = IN_SIZE_0 + IN_SIZE_1 + 8;
 
     real clk_period = 10;
 
