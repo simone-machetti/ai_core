@@ -15,18 +15,17 @@ module baseline #(
     output logic [(IN_SIZE_0+IN_SIZE_1)+8-1:0] out_o  [0:1]
 );
 
-    // -------------------------------------------------------------------------
-    // Local parameters
-    // -------------------------------------------------------------------------
     localparam int SIZE_PARTIAL_PRODUCTS = IN_SIZE_0 + IN_SIZE_1;
     localparam int NUM_PARTIAL_PRODUCTS  = ((IN_SIZE_1 + 2) / 3) * 8;
+
+    logic [                IN_SIZE_0-1:0] in_0_q [                     0:7];
+    logic [                IN_SIZE_1-1:0] in_1_q [                     0:7];
+    logic [    SIZE_PARTIAL_PRODUCTS-1:0] m      [0:NUM_PARTIAL_PRODUCTS-1];
+    logic [(SIZE_PARTIAL_PRODUCTS+8)-1:0] out_d  [                     0:1];
 
     // -------------------------------------------------------------------------
     // Input registers
     // -------------------------------------------------------------------------
-    logic [IN_SIZE_0-1:0] in_0_q [0:7];
-    logic [IN_SIZE_1-1:0] in_1_q [0:7];
-
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (!rst_ni) begin
             for (int i = 0; i < 8; i++) begin
@@ -38,12 +37,6 @@ module baseline #(
             in_1_q <= in_1_i;
         end
     end
-
-    // -------------------------------------------------------------------------
-    // Internal wires
-    // -------------------------------------------------------------------------
-    logic [    SIZE_PARTIAL_PRODUCTS-1:0] m     [0:NUM_PARTIAL_PRODUCTS-1];
-    logic [(SIZE_PARTIAL_PRODUCTS+8)-1:0] out_d [                     0:1];
 
     // -------------------------------------------------------------------------
     // Multiplier array

@@ -3,63 +3,55 @@
 // -----------------------------------------------------------------------------
 
 module compressor_8_2_n_bit #(
-    parameter int INPUT_WIDTH  = 12,
-    parameter int OUTPUT_WIDTH = 16,
-    parameter bit SHIFT_CARRY  = 1
+    parameter int IN_SIZE  = 12,
+    parameter int OUT_SIZE = 16
 )(
-    input  logic [ INPUT_WIDTH-1:0] inputs [8],
-    input  logic                    is_signed,
-    output logic [OUTPUT_WIDTH-1:0] sum,
-    output logic [OUTPUT_WIDTH-1:0] carry
+    input  logic [ IN_SIZE-1:0] in_i [8],
+    output logic [OUT_SIZE-1:0] sum_o,
+    output logic [OUT_SIZE-1:0] carry_o
 );
 
-    localparam int MID_WIDTH = INPUT_WIDTH + 2;
-    logic [MID_WIDTH-1:0] s_grp0, c_grp0, s_grp1, c_grp1;
+    localparam int MID_SIZE = IN_SIZE + 2;
+
+    logic [MID_SIZE-1:0] s0, c0, s1, c1;
+    logic [MID_SIZE-1:0] stage1_in [4];
 
     // -------------------------------------------------------------------------
-    // Stage 1: 2x parallel compressor array (0..3 and 4..7)
+    // Stage 0
     // -------------------------------------------------------------------------
     compressor_4_2_n_bit #(
-        .INPUT_WIDTH(INPUT_WIDTH),
-        .OUTPUT_WIDTH(MID_WIDTH),
-        .SHIFT_CARRY(SHIFT_CARRY)
-    ) i_stage1_low (
-        .inputs(inputs[0:3]),
-        .is_signed(is_signed),
-        .sum(s_grp0),
-        .carry(c_grp0)
+        .IN_SIZE (IN_SIZE),
+        .OUT_SIZE(MID_SIZE)
+    ) compressor_4_2_n_bit_stage_0_0_i (
+        .in_i   (in_i[0:3]),
+        .sum_o  (s0),
+        .carry_o(c0)
     );
 
     compressor_4_2_n_bit #(
-        .INPUT_WIDTH(INPUT_WIDTH),
-        .OUTPUT_WIDTH(MID_WIDTH),
-        .SHIFT_CARRY(SHIFT_CARRY)
-    ) i_stage1_high (
-        .inputs(inputs[4:7]),
-        .is_signed(is_signed),
-        .sum(s_grp1),
-        .carry(c_grp1)
+        .IN_SIZE (IN_SIZE),
+        .OUT_SIZE(MID_SIZE)
+    ) compressor_4_2_n_bit_stage_0_1_i (
+        .in_i   (in_i[4:7]),
+        .sum_o  (s1),
+        .carry_o(c1)
     );
 
     // -------------------------------------------------------------------------
-    // Stage 2: Merge results
+    // Stage 1
     // -------------------------------------------------------------------------
-    logic [MID_WIDTH-1:0] stage2_in [4];
-
-    assign stage2_in[0] = s_grp0;
-    assign stage2_in[1] = c_grp0;
-    assign stage2_in[2] = s_grp1;
-    assign stage2_in[3] = c_grp1;
+    assign stage1_in[0] = s0;
+    assign stage1_in[1] = c0;
+    assign stage1_in[2] = s1;
+    assign stage1_in[3] = c1;
 
     compressor_4_2_n_bit #(
-        .INPUT_WIDTH(MID_WIDTH),
-        .OUTPUT_WIDTH(OUTPUT_WIDTH),
-        .SHIFT_CARRY(SHIFT_CARRY)
-    ) i_stage2_final (
-        .inputs(stage2_in),
-        .is_signed(is_signed),
-        .sum(sum),
-        .carry(carry)
+        .IN_SIZE (MID_SIZE),
+        .OUT_SIZE(OUT_SIZE)
+    ) compressor_4_2_n_bit_stage_1_i (
+        .in_i   (stage1_in),
+        .sum_o  (sum_o),
+        .carry_o(carry_o)
     );
 
 endmodule

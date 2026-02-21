@@ -1,16 +1,16 @@
 // -----------------------------------------------------------------------------
-// Author: Jaime Joven Murillo
+// Author: Simone Machetti
 // -----------------------------------------------------------------------------
 
 module full_adder (
-    input  logic a,
-    input  logic b,
-    input  logic cin,
-    output logic sum,
-    output logic cout
+    input  logic in_0_i,
+    input  logic in_1_i,
+    input  logic cin_i,
+    output logic sum_o,
+    output logic cout_o
 );
 
-    assign sum  = a ^ b ^ cin;
-    assign cout = (a & b) | (cin & (a ^ b));
+    assign sum_o  = in_0_i ^ in_1_i ^ cin_i;
+    assign cout_o = (in_0_i & in_1_i) | (cin_i & (in_0_i ^ in_1_i));
 
 endmodule

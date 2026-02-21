@@ -2,6 +2,9 @@
 // Author: Simone Machetti
 // -----------------------------------------------------------------------------
 
+/* verilator lint_off UNUSEDSIGNAL */
+/* verilator lint_off DECLFILENAME */
+
 `timescale 1 ns/1 ps
 
 module testbench #(
@@ -9,7 +12,7 @@ module testbench #(
     parameter int IN_SIZE_1 = 8
 );
 
-    localparam int OUT_SIZE = ((IN_SIZE_1 + 1) * 2) + 3;
+    localparam int OUT_SIZE = ((IN_SIZE_1 + 1) * 2) + 6;
 
     real clk_period = 10;
 
@@ -22,7 +25,7 @@ module testbench #(
     logic [7:0][IN_SIZE_0-1:0] in_0;
     logic [7:0][IN_SIZE_1-1:0] in_1;
     logic [1:0][ OUT_SIZE-1:0] out;
-    logic      [ OUT_SIZE-1:0] acc;
+    logic      [   OUT_SIZE:0] acc;
 
     winograd winograd_i (
         .clk_i (clk),
@@ -35,7 +38,7 @@ module testbench #(
     logic [IN_SIZE_0-1:0] in_0 [0:7];
     logic [IN_SIZE_1-1:0] in_1 [0:7];
     logic [ OUT_SIZE-1:0] out  [0:1];
-    logic [ OUT_SIZE-1:0] acc;
+    logic [   OUT_SIZE:0] acc;
 
     winograd #(
         .IN_SIZE_0 (IN_SIZE_0),
@@ -102,10 +105,10 @@ module testbench #(
             acc = '0;
             for (int i = 0; i < 8; i = i + 2) begin
                 if (use_random) begin
-                    in_0[i]   = $signed($urandom());
-                    in_1[i]   = $signed($urandom());
-                    in_0[i+1] = $signed($urandom());
-                    in_1[i+1] = $signed($urandom());
+                    in_0[i]   = IN_SIZE_0'($signed($urandom()));
+                    in_1[i]   = IN_SIZE_1'($signed($urandom()));
+                    in_0[i+1] = IN_SIZE_0'($signed($urandom()));
+                    in_1[i+1] = IN_SIZE_1'($signed($urandom()));
                 end else begin
                     in_0[i]   = a0_fixed;
                     in_1[i]   = b0_fixed;
@@ -113,12 +116,12 @@ module testbench #(
                     in_1[i+1] = b1_fixed;
                 end
 
-                acc = $signed(acc) + (($signed(in_0[i+1]) + $signed(in_1[i])) * ($signed(in_0[i]) + $signed(in_1[i+1])));
+                acc = (OUT_SIZE+1)'($signed(acc)) + (((OUT_SIZE+1)'($signed(in_0[i+1])) + (OUT_SIZE+1)'($signed(in_1[i]))) * ((OUT_SIZE+1)'($signed(in_0[i])) + (OUT_SIZE+1)'($signed(in_1[i+1]))));
             end
 
             repeat(3) @(posedge clk);
 
-            if (($signed(out[0]) + $signed(out[1])) !== $signed(acc)) begin
+            if (((OUT_SIZE+1)'($signed(out[0])) + (OUT_SIZE+1)'($signed(out[1]))) !== (OUT_SIZE+1)'($signed(acc))) begin
                 $error("Error!\n");
                 $fatal;
             end

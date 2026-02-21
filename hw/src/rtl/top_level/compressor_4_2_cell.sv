@@ -1,30 +1,33 @@
 // -----------------------------------------------------------------------------
-// Author: Jaime Joven Murillo
+// Author: Simone Machetti
 // -----------------------------------------------------------------------------
 
 module compressor_4_2_cell (
-    input  logic x1, x2, x3, x4,
-    input  logic cin,
-    output logic cout,
-    output logic sum,
-    output logic carry
+    input  logic in_0_i,
+    input  logic in_1_i,
+    input  logic in_2_i,
+    input  logic in_3_i,
+    input  logic cin_i,
+    output logic cout_o,
+    output logic sum_o,
+    output logic carry_o
 );
-    logic s_int;
+    logic s;
 
-    full_adder i_fa1 (
-        .a(x1),
-        .b(x2),
-        .cin(x3),
-        .sum(s_int),
-        .cout(cout)
+    full_adder full_adder_0_i (
+        .in_0_i(in_0_i),
+        .in_1_i(in_1_i),
+        .cin_i (in_2_i),
+        .sum_o (s),
+        .cout_o(cout_o)
     );
 
-    full_adder i_fa2 (
-        .a(s_int),
-        .b(x4),
-        .cin(cin),
-        .sum(sum),
-        .cout(carry)
+    full_adder full_adder_1_i (
+        .in_0_i(s),
+        .in_1_i(in_3_i),
+        .cin_i (cin_i),
+        .sum_o (sum_o),
+        .cout_o(carry_o)
     );
 
 endmodule

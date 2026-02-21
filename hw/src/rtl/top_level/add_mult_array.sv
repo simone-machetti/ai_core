@@ -23,8 +23,8 @@ module add_mult_array #(
             logic signed [IN_MUL_SIZE-1:0] sum_1;
 
             always_comb begin
-                sum_0 = $signed(in_0_i[i+1]) + $signed(in_1_i[i]);
-                sum_1 = $signed(in_0_i[i])   + $signed(in_1_i[i+1]);
+                sum_0 = IN_MUL_SIZE'($signed(in_0_i[i+1])) + IN_MUL_SIZE'($signed(in_1_i[i]));
+                sum_1 = IN_MUL_SIZE'($signed(in_0_i[i]))   + IN_MUL_SIZE'($signed(in_1_i[i+1]));
             end
 
             multsigned #(

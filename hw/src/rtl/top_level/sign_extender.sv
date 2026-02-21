@@ -3,17 +3,13 @@
 // -----------------------------------------------------------------------------
 
 module sign_extender #(
-    parameter int IN_WIDTH  = 8,
-    parameter int OUT_WIDTH = 16
+    parameter int IN_SIZE  = 8,
+    parameter int OUT_SIZE = 16
 )(
-    input  logic                 is_signed,
-    input  logic [ IN_WIDTH-1:0] data_in,
-    output logic [OUT_WIDTH-1:0] data_out
+    input  logic [ IN_SIZE-1:0] in_i,
+    output logic [OUT_SIZE-1:0] out_o
 );
-    logic extended_bit;
 
-    // If signed, repeat the MSB; if unsigned, pad with 0
-    assign extended_bit = is_signed ? data_in[IN_WIDTH-1] : 1'b0;
-    assign data_out     = {{(OUT_WIDTH-IN_WIDTH){extended_bit}}, data_in};
+    assign out_o = {{(OUT_SIZE-IN_SIZE){in_i[IN_SIZE-1]}}, in_i};
 
 endmodule
