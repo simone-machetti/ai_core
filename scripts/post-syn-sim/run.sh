@@ -22,9 +22,9 @@ verilator \
     --x-assign fast \
     -f "${CODE_HOME}/ai_core/scripts/post-syn-sim/filelist.f" \
        "${CODE_HOME}/ai_core/tb/tb_${SEL_TOP_LEVEL}.sv" \
-    -Mdir "${CODE_HOME}/ai_core/scripts/post-syn-sim/build/obj_dir" \
-    -o "${CODE_HOME}/ai_core/scripts/post-syn-sim/build/simv"
+    -Mdir "${CODE_HOME}/ai_core/sim/${SEL_OUT_DIR}/build/obj_dir" \
+    -o "${CODE_HOME}/ai_core/sim/${SEL_OUT_DIR}/build/simv"
 
-exec "${CODE_HOME}/ai_core/scripts/post-syn-sim/build/simv" "$@"
+exec "${CODE_HOME}/ai_core/sim/${SEL_OUT_DIR}/build/simv" "$@"
 
 # Add option --trace-fst to verilator command for FST generation.

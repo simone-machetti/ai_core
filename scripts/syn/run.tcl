@@ -65,7 +65,7 @@ yosys "rename -hide"
 # -----------------------------------------------------------------------------
 # Generate cells reports
 # -----------------------------------------------------------------------------
-yosys "tee -o $env(CODE_HOME)/ai_core/scripts/syn/report/cell.rpt stat \
+yosys "tee -o $env(CODE_HOME)/ai_core/imp/$env(SEL_OUT_DIR)/report/cell.rpt stat \
     -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SEQ_RVT_TT_nldm_220123.lib \
     -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib \
     -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_INVBUF_RVT_TT_nldm_220122.lib \
@@ -75,4 +75,4 @@ yosys "tee -o $env(CODE_HOME)/ai_core/scripts/syn/report/cell.rpt stat \
 # -----------------------------------------------------------------------------
 # Write synthesized netlist
 # -----------------------------------------------------------------------------
-yosys "write_verilog -noattr -noexpr -nodec $env(CODE_HOME)/ai_core/scripts/syn/output/netlist.v"
+yosys "write_verilog -noattr -noexpr -nodec $env(CODE_HOME)/ai_core/imp/$env(SEL_OUT_DIR)/output/netlist.v"
