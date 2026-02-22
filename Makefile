@@ -14,75 +14,75 @@ export SEL_TOP_LEVEL :=$(TOP_LEVEL)
 
 ifeq ($(SIM_GUI), 0)
 
-sim_verilator: clean-sim_verilator
-	cd $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/build && \
-	./scripts/run.sh
+sim: clean-sim
+	cd $(CODE_HOME)/ai_core/scripts/sim && \
+	mkdir -p $(CODE_HOME)/ai_core/scripts/sim/build && \
+	./run.sh
 
-post-syn-sim_verilator: clean-post-syn-sim_verilator
-	cd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/build && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output && \
-	./scripts/run.sh && \
-	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/activity.vcd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output
+post-syn-sim: clean-post-syn-sim
+	cd $(CODE_HOME)/ai_core/scripts/post-syn-sim && \
+	mkdir -p $(CODE_HOME)/ai_core/scripts/post-syn-sim/build && \
+	mkdir -p $(CODE_HOME)/ai_core/scripts/post-syn-sim/output && \
+	./run.sh && \
+	mv $(CODE_HOME)/ai_core/scripts/post-syn-sim/activity.vcd $(CODE_HOME)/ai_core/scripts/post-syn-sim/output
 
 else
 
-sim_verilator: clean-sim_verilator
-	cd $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/build && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/output && \
-	./scripts/run.sh && \
-	mv $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/activity.vcd $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/output && \
-	gtkwave $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/output/activity.vcd
+sim: clean-sim
+	cd $(CODE_HOME)/ai_core/scripts/sim && \
+	mkdir -p $(CODE_HOME)/ai_core/scripts/sim/build && \
+	mkdir -p $(CODE_HOME)/ai_core/scripts/sim/output && \
+	./run.sh && \
+	mv $(CODE_HOME)/ai_core/scripts/sim/activity.vcd $(CODE_HOME)/ai_core/scripts/sim/output && \
+	gtkwave $(CODE_HOME)/ai_core/scripts/sim/output/activity.vcd
 
-post-syn-sim_verilator: clean-post-syn-sim_verilator
-	cd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/build && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output && \
-	./scripts/run.sh && \
-	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/activity.vcd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output && \
-	gtkwave $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output/activity.vcd
+post-syn-sim: clean-post-syn-sim
+	cd $(CODE_HOME)/ai_core/scripts/post-syn-sim && \
+	mkdir -p $(CODE_HOME)/ai_core/scripts/post-syn-sim/build && \
+	mkdir -p $(CODE_HOME)/ai_core/scripts/post-syn-sim/output && \
+	./run.sh && \
+	mv $(CODE_HOME)/ai_core/scripts/post-syn-sim/activity.vcd $(CODE_HOME)/ai_core/scripts/post-syn-sim/output && \
+	gtkwave $(CODE_HOME)/ai_core/scripts/post-syn-sim/output/activity.vcd
 
 endif
 
-syn_yosys: clean-syn_yosys
-	cd $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/report && \
-	yosys -l $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output/yosys.log -c $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/scripts/run.tcl
+syn: clean-syn
+	cd $(CODE_HOME)/ai_core/scripts/syn && \
+	mkdir -p $(CODE_HOME)/ai_core/scripts/syn/output && \
+	mkdir -p $(CODE_HOME)/ai_core/scripts/syn/report && \
+	yosys -l $(CODE_HOME)/ai_core/scripts/syn/output/yosys.log -c $(CODE_HOME)/ai_core/scripts/syn/run.tcl
 
-post-syn-sta_opensta: clean-post-syn-sta_opensta
-	cd $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta/report && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta/output && \
-	sta -no_splash -exit $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta/scripts/run.tcl | tee $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta/output/opensta.log
+post-syn-sta: clean-post-syn-sta
+	cd $(CODE_HOME)/ai_core/scripts/post-syn-sta && \
+	mkdir -p $(CODE_HOME)/ai_core/scripts/post-syn-sta/report && \
+	mkdir -p $(CODE_HOME)/ai_core/scripts/post-syn-sta/output && \
+	sta -no_splash -exit $(CODE_HOME)/ai_core/scripts/post-syn-sta/run.tcl | tee $(CODE_HOME)/ai_core/scripts/post-syn-sta/output/opensta.log
 
-post-syn-dpa_opensta: clean-post-syn-dpa_opensta
-	cd $(CODE_HOME)/ai_core/hw/imp/4_post-syn-dpa_opensta && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/4_post-syn-dpa_opensta/report && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/4_post-syn-dpa_opensta/output && \
-	sta -no_splash -exit $(CODE_HOME)/ai_core/hw/imp/4_post-syn-dpa_opensta/scripts/run.tcl | tee $(CODE_HOME)/ai_core/hw/imp/4_post-syn-dpa_opensta/opensta.log && \
-	mv $(CODE_HOME)/ai_core/hw/imp/4_post-syn-dpa_opensta/opensta.log $(CODE_HOME)/ai_core/hw/imp/4_post-syn-dpa_opensta/output
+post-syn-dpa: clean-post-syn-dpa
+	cd $(CODE_HOME)/ai_core/scripts/post-syn-dpa && \
+	mkdir -p $(CODE_HOME)/ai_core/scripts/post-syn-dpa/report && \
+	mkdir -p $(CODE_HOME)/ai_core/scripts/post-syn-dpa/output && \
+	sta -no_splash -exit $(CODE_HOME)/ai_core/scripts/post-syn-dpa/run.tcl | tee $(CODE_HOME)/ai_core/scripts/post-syn-dpa/opensta.log && \
+	mv $(CODE_HOME)/ai_core/scripts/post-syn-dpa/opensta.log $(CODE_HOME)/ai_core/scripts/post-syn-dpa/output
 
-clean-all: clean-sim_modelsim clean-sim_verilator clean-syn_yosys clean-post-syn-sta_opensta clean-post-syn-sim_modelsim clean-post-syn-sim_verilator clean-post-syn-dpa_opensta
+clean-all: clean-sim clean-syn clean-post-syn-sta clean-post-syn-sim clean-post-syn-dpa
 
-clean-sim_verilator:
-	rm -rf $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/build
-	rm -rf $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/output
+clean-sim:
+	rm -rf $(CODE_HOME)/ai_core/scripts/sim/build
+	rm -rf $(CODE_HOME)/ai_core/scripts/sim/output
 
-clean-syn_yosys:
-	rm -rf $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/report
-	rm -rf $(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output
+clean-syn:
+	rm -rf $(CODE_HOME)/ai_core/scripts/syn/report
+	rm -rf $(CODE_HOME)/ai_core/scripts/syn/output
 
-clean-post-syn-sta_opensta:
-	rm -rf $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta/report
-	rm -rf $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta/output
+clean-post-syn-sta:
+	rm -rf $(CODE_HOME)/ai_core/scripts/post-syn-sta/report
+	rm -rf $(CODE_HOME)/ai_core/scripts/post-syn-sta/output
 
-clean-post-syn-sim_verilator:
-	rm -rf $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/build
-	rm -rf $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/output
+clean-post-syn-sim:
+	rm -rf $(CODE_HOME)/ai_core/scripts/post-syn-sim/build
+	rm -rf $(CODE_HOME)/ai_core/scripts/post-syn-sim/output
 
-clean-post-syn-dpa_opensta:
-	rm -rf $(CODE_HOME)/ai_core/hw/imp/4_post-syn-dpa_opensta/report
-	rm -rf $(CODE_HOME)/ai_core/hw/imp/4_post-syn-dpa_opensta/output
+clean-post-syn-dpa:
+	rm -rf $(CODE_HOME)/ai_core/scripts/post-syn-dpa/report
+	rm -rf $(CODE_HOME)/ai_core/scripts/post-syn-dpa/output

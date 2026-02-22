@@ -2,24 +2,17 @@
 # Author: Simone Machetti
 # -----------------------------------------------------------------------------
 
-hw/imp/0_sim_modelsim/work
-hw/imp/0_sim_modelsim/output
-hw/imp/0_sim_modelsim/transcript
+scripts/sim/build
+scripts/sim/output
 
-hw/imp/0_sim_verilator/build
-hw/imp/0_sim_verilator/output
+scripts/syn/report
+scripts/syn/output
 
-hw/imp/1_syn_yosys/report
-hw/imp/1_syn_yosys/output
+scripts/post-syn-sta/report
+scripts/post-syn-sta/output
 
-hw/imp/2_post-syn-sta_opensta/report
-hw/imp/2_post-syn-sta_opensta/output
+scripts/post-syn-sim/build
+scripts/post-syn-sim/output
 
-hw/imp/3_post-syn-sim_modelsim/work
-hw/imp/3_post-syn-sim_modelsim/output
-
-hw/imp/3_post-syn-sim_verilator/build
-hw/imp/3_post-syn-sim_verilator/output
-
-hw/imp/4_post-syn-dpa_opensta/report
-hw/imp/4_post-syn-dpa_opensta/output
+scripts/post-syn-dpa/report
+scripts/post-syn-dpa/output

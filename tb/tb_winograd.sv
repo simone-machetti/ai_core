@@ -7,7 +7,7 @@
 
 `timescale 1 ns/1 ps
 
-module testbench #(
+module tb_winograd #(
     parameter int IN_SIZE_0 = 8,
     parameter int IN_SIZE_1 = 8
 );
@@ -66,7 +66,7 @@ module testbench #(
     task automatic start_vcd;
     begin
 `ifdef VCD
-        $dumpvars(0, testbench.winograd_i);
+        $dumpvars(0, tb_winograd.winograd_i);
 `endif
     end
     endtask

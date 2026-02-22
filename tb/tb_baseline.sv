@@ -7,7 +7,7 @@
 
 `timescale 1 ns/1 ps
 
-module testbench #(
+module tb_baseline #(
     parameter int IN_SIZE_0 = 4,
     parameter int IN_SIZE_1 = 8
 );
@@ -66,7 +66,7 @@ module testbench #(
     task automatic start_vcd;
     begin
 `ifdef VCD
-        $dumpvars(0, testbench.baseline_i);
+        $dumpvars(0, tb_baseline.baseline_i);
 `endif
     end
     endtask

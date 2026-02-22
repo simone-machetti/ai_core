@@ -5,7 +5,7 @@
 # -----------------------------------------------------------------------------
 # Load RTL & technology
 # -----------------------------------------------------------------------------
-source $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/scripts/compile.tcl
+source $env(CODE_HOME)/ai_core/scripts/syn/compile.tcl
 
 # -----------------------------------------------------------------------------
 # Override top parameters
@@ -36,8 +36,8 @@ yosys "opt"
 # -----------------------------------------------------------------------------
 # Visualize netlist
 # -----------------------------------------------------------------------------
-# yosys "write_json $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output/graph.json"
-# exec netlistsvg $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output/graph.json -o $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output/graph.svg
+# yosys "write_json $env(CODE_HOME)/ai_core/scripts/syn/output/graph.json"
+# exec netlistsvg $env(CODE_HOME)/ai_core/scripts/syn/output/graph.json -o $env(CODE_HOME)/ai_core/scripts/syn/output/graph.svg
 
 # -----------------------------------------------------------------------------
 # Technology mapping
@@ -50,7 +50,7 @@ yosys "abc \
     -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_INVBUF_RVT_TT_nldm_220122.lib \
     -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_AO_RVT_TT_nldm_211120.lib \
     -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_OA_RVT_TT_nldm_211120.lib \
-    -script  $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/scripts/abc.tcl"
+    -script  $env(CODE_HOME)/ai_core/scripts/syn/abc.tcl"
 
 yosys "opt"
 yosys "clean"
@@ -65,7 +65,7 @@ yosys "rename -hide"
 # -----------------------------------------------------------------------------
 # Generate cells reports
 # -----------------------------------------------------------------------------
-yosys "tee -o $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/report/cell.rpt stat \
+yosys "tee -o $env(CODE_HOME)/ai_core/scripts/syn/report/cell.rpt stat \
     -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SEQ_RVT_TT_nldm_220123.lib \
     -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib \
     -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_INVBUF_RVT_TT_nldm_220122.lib \
@@ -75,4 +75,4 @@ yosys "tee -o $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/report/cell.rpt stat \
 # -----------------------------------------------------------------------------
 # Write synthesized netlist
 # -----------------------------------------------------------------------------
-yosys "write_verilog -noattr -noexpr -nodec $env(CODE_HOME)/ai_core/hw/imp/1_syn_yosys/output/netlist.v"
+yosys "write_verilog -noattr -noexpr -nodec $env(CODE_HOME)/ai_core/scripts/syn/output/netlist.v"
