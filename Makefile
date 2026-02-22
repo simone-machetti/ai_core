@@ -14,23 +14,10 @@ export SEL_TOP_LEVEL :=$(TOP_LEVEL)
 
 ifeq ($(SIM_GUI), 0)
 
-sim_modelsim: clean-sim_modelsim
-	cd $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/output && \
-	vsim -c -do $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/scripts/run.tcl && \
-	mv $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/transcript $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/output
-
 sim_verilator: clean-sim_verilator
 	cd $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/build && \
 	./scripts/run.sh
-
-post-syn-sim_modelsim: clean-post-syn-sim_modelsim
-	cd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output && \
-	vsim -c -gIN_SIZE_0=$(IN_SIZE_0) -gIN_SIZE_1=$(IN_SIZE_0) -do $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/scripts/run.tcl && \
-	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/activity.vcd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output && \
-	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/transcript $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output
 
 post-syn-sim_verilator: clean-post-syn-sim_verilator
 	cd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator && \
@@ -41,13 +28,6 @@ post-syn-sim_verilator: clean-post-syn-sim_verilator
 
 else
 
-sim_modelsim: clean-sim_modelsim
-	cd $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/output && \
-	vsim -debugDB -gui -do $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/scripts/run.tcl && \
-	mv $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/transcript $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/output && \
-	mv $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/vsim.dbg $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/output
-
 sim_verilator: clean-sim_verilator
 	cd $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator && \
 	mkdir -p $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/build && \
@@ -55,14 +35,6 @@ sim_verilator: clean-sim_verilator
 	./scripts/run.sh && \
 	mv $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/activity.vcd $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/output && \
 	gtkwave $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/output/activity.vcd
-
-post-syn-sim_modelsim: clean-post-syn-sim_modelsim
-	cd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim && \
-	mkdir -p $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output && \
-	vsim -debugDB -gui -gIN_SIZE_0=$(IN_SIZE_0) -gIN_SIZE_1=$(IN_SIZE_0) -do $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/scripts/run.tcl && \
-	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/activity.vcd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output && \
-	mv $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/transcript $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output && \
-	mv $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/vsim.dbg $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/output
 
 post-syn-sim_verilator: clean-post-syn-sim_verilator
 	cd $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator && \
@@ -95,10 +67,6 @@ post-syn-dpa_opensta: clean-post-syn-dpa_opensta
 
 clean-all: clean-sim_modelsim clean-sim_verilator clean-syn_yosys clean-post-syn-sta_opensta clean-post-syn-sim_modelsim clean-post-syn-sim_verilator clean-post-syn-dpa_opensta
 
-clean-sim_modelsim:
-	rm -rf $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/work
-	rm -rf $(CODE_HOME)/ai_core/hw/imp/0_sim_modelsim/output
-
 clean-sim_verilator:
 	rm -rf $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/build
 	rm -rf $(CODE_HOME)/ai_core/hw/imp/0_sim_verilator/output
@@ -110,10 +78,6 @@ clean-syn_yosys:
 clean-post-syn-sta_opensta:
 	rm -rf $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta/report
 	rm -rf $(CODE_HOME)/ai_core/hw/imp/2_post-syn-sta_opensta/output
-
-clean-post-syn-sim_modelsim:
-	rm -rf $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/work
-	rm -rf $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_modelsim/output
 
 clean-post-syn-sim_verilator:
 	rm -rf $(CODE_HOME)/ai_core/hw/imp/3_post-syn-sim_verilator/build
