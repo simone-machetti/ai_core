@@ -16,6 +16,12 @@ export SEL_OUT_DIR     :=$(OUT_DIR)
 export SEL_NETLIST_DIR :=$(NETLIST_DIR)
 export SEL_VCD_DIR     :=$(VCD_DIR)
 
+.PHONY: init
+
+init:
+	mkdir -p $(CODE_HOME)/ai_core/sim
+	mkdir -p $(CODE_HOME)/ai_core/imp
+
 sim: clean-sim
 	cd $(CODE_HOME)/ai_core/scripts/sim && \
 	mkdir -p $(CODE_HOME)/ai_core/sim/$(OUT_DIR) && \
@@ -54,8 +60,8 @@ post-syn-dpa: clean-imp
 	sta -no_splash -exit $(CODE_HOME)/ai_core/scripts/post-syn-dpa/run.tcl | tee $(CODE_HOME)/ai_core/imp/$(OUT_DIR)/output/opensta.log
 
 clean-all:
-	rm -rf $(CODE_HOME)/ai_core/sim/*
-	rm -rf $(CODE_HOME)/ai_core/imp/*
+	rm -rf $(CODE_HOME)/ai_core/sim
+	rm -rf $(CODE_HOME)/ai_core/imp
 
 clean-sim:
 	rm -rf $(CODE_HOME)/ai_core/sim/$(OUT_DIR)
