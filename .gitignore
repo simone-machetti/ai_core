@@ -2,17 +2,5 @@
 # Author: Simone Machetti
 # -----------------------------------------------------------------------------
 
-scripts/sim/build
-scripts/sim/output
-
-scripts/syn/report
-scripts/syn/output
-
-scripts/post-syn-sta/report
-scripts/post-syn-sta/output
-
-scripts/post-syn-sim/build
-scripts/post-syn-sim/output
-
-scripts/post-syn-dpa/report
-scripts/post-syn-dpa/output
+sim
+imp
