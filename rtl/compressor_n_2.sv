@@ -4,6 +4,7 @@
 
 /* verilator lint_off GENUNNAMED */
 /* verilator lint_off UNUSEDSIGNAL */
+/* verilator lint_off UNOPTFLAT */
 
 module compressor_n_2 #(
     parameter int IN_NUM  = 24,

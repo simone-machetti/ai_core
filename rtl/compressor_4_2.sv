@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off UNUSEDSIGNAL */
+/* verilator lint_off UNOPTFLAT */
 
 module compressor_4_2 #(
     parameter int IN_SIZE  = 14,

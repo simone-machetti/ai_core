@@ -2,6 +2,8 @@
 // Author: Simone Machetti
 // -----------------------------------------------------------------------------
 
+/* verilator lint_off UNOPTFLAT */
+
 module full_adder (
     input  logic in_0_i,
     input  logic in_1_i,
