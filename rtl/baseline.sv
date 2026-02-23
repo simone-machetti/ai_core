@@ -54,12 +54,13 @@ module baseline #(
     // -------------------------------------------------------------------------
     // Compressor
     // -------------------------------------------------------------------------
-    compressor_24_2 #(
-        .IN_SIZE (SIZE_PARTIAL_PRODUCTS),
-        .OUT_SIZE(SIZE_PARTIAL_PRODUCTS+8)
-    ) compressor_24_2_i (
-        .in_i (m),
-        .out_o(out_d)
+    compressor_n_2 #(
+        .IN_NUM (NUM_PARTIAL_PRODUCTS),
+        .IN_SIZE(SIZE_PARTIAL_PRODUCTS)
+    ) compressor_n_2_i (
+        .in_i   (m),
+        .sum_o  (out_d[0]),
+        .carry_o(out_d[1])
     );
 
     // -------------------------------------------------------------------------

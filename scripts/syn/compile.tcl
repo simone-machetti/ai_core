@@ -34,10 +34,11 @@ yosys "read_slang \
     $env(CODE_HOME)/ai_core/rtl/full_adder.sv \
     $env(CODE_HOME)/ai_core/rtl/sign_extender.sv \
     $env(CODE_HOME)/ai_core/rtl/compressor_4_2_cell.sv \
-    $env(CODE_HOME)/ai_core/rtl/compressor_4_2_n_bit.sv \
-    $env(CODE_HOME)/ai_core/rtl/compressor_8_2_n_bit.sv \
+    $env(CODE_HOME)/ai_core/rtl/compressor_4_2.sv \
+    $env(CODE_HOME)/ai_core/rtl/compressor_8_2.sv \
     $env(CODE_HOME)/ai_core/rtl/compressor_24_2.sv \
     $env(CODE_HOME)/ai_core/rtl/compressor_12_2.sv \
+    $env(CODE_HOME)/ai_core/rtl/compressor_n_2.sv \
     $env(CODE_HOME)/ai_core/rtl/multsigned.sv \
     $env(CODE_HOME)/ai_core/rtl/multsigned_array.sv \
     $env(CODE_HOME)/ai_core/rtl/add_mult.sv \

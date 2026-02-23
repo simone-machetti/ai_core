@@ -18,19 +18,19 @@ module compressor_12_2 #(
     // -------------------------------------------------------------------------
     // Stage 0
     // -------------------------------------------------------------------------
-    compressor_8_2_n_bit #(
+    compressor_8_2 #(
         .IN_SIZE (IN_SIZE),
         .OUT_SIZE(IN_SIZE+4)
-    ) compressor_8_2_n_bit_stage_0_i (
+    ) compressor_8_2_stage_0_i (
         .in_i   (in_i[0:7]),
         .sum_o  (s1[0]),
         .carry_o(s1[1])
     );
 
-    compressor_4_2_n_bit #(
+    compressor_4_2 #(
         .IN_SIZE (IN_SIZE),
         .OUT_SIZE(IN_SIZE+2)
-    ) compressor_4_2_n_bit_stage_0_i (
+    ) compressor_4_2_stage_0_i (
         .in_i   (in_i[8:11]),
         .sum_o  (s0[0]),
         .carry_o(s0[1])
@@ -55,10 +55,10 @@ module compressor_12_2 #(
     // -------------------------------------------------------------------------
     // Stage 1
     // -------------------------------------------------------------------------
-    compressor_4_2_n_bit #(
+    compressor_4_2 #(
         .IN_SIZE (IN_SIZE+4),
         .OUT_SIZE(IN_SIZE+6)
-    ) compressor_4_2_n_bit_stage_1_i (
+    ) compressor_4_2_stage_1_i (
         .in_i   (s1),
         .sum_o  (out_o[0]),
         .carry_o(out_o[1])

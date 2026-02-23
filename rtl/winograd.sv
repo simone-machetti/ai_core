@@ -53,12 +53,13 @@ module winograd #(
     // -------------------------------------------------------------------------
     // Compressor
     // -------------------------------------------------------------------------
-    compressor_12_2 #(
-        .IN_SIZE (SIZE_PARTIAL_PRODUCTS),
-        .OUT_SIZE(SIZE_OUT)
-    ) compressor_12_2_i (
-        .in_i (m),
-        .out_o(out_d)
+    compressor_n_2 #(
+        .IN_NUM (12),
+        .IN_SIZE(SIZE_PARTIAL_PRODUCTS)
+    ) compressor_n_2_i (
+        .in_i   (m),
+        .sum_o  (out_d[0]),
+        .carry_o(out_d[1])
     );
 
     // -------------------------------------------------------------------------

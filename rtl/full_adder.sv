@@ -11,6 +11,6 @@ module full_adder (
 );
 
     assign sum_o  = in_0_i ^ in_1_i ^ cin_i;
-    assign cout_o = (in_0_i & in_1_i) | (cin_i & (in_0_i ^ in_1_i));
+    assign cout_o = (in_0_i & in_1_i) | (cin_i & in_0_i) | (cin_i & in_1_i);
 
 endmodule

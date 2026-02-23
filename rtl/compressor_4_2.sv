@@ -4,7 +4,7 @@
 
 /* verilator lint_off UNUSEDSIGNAL */
 
-module compressor_4_2_n_bit #(
+module compressor_4_2 #(
     parameter int IN_SIZE  = 14,
     parameter int OUT_SIZE = 16
 )(

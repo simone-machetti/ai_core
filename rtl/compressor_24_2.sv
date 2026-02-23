@@ -21,28 +21,28 @@ module compressor_24_2 #(
     // -------------------------------------------------------------------------
     // Stage 0
     // -------------------------------------------------------------------------
-    compressor_8_2_n_bit #(
+    compressor_8_2 #(
         .IN_SIZE (IN_SIZE),
         .OUT_SIZE(STAGE_0_SIZE)
-    ) compressor_8_2_n_bit_stage_0_0_i (
+    ) compressor_8_2_stage_0_0_i (
         .in_i   (in_i[0:7]),
         .sum_o  (s0[0]),
         .carry_o(s0[1])
     );
 
-    compressor_8_2_n_bit #(
+    compressor_8_2 #(
         .IN_SIZE (IN_SIZE),
         .OUT_SIZE(STAGE_0_SIZE)
-    ) compressor_8_2_n_bit_stage_0_1_i (
+    ) compressor_8_2_stage_0_1_i (
         .in_i   (in_i[8:15]),
         .sum_o  (s0[2]),
         .carry_o(s0[3])
     );
 
-    compressor_8_2_n_bit #(
+    compressor_8_2 #(
         .IN_SIZE (IN_SIZE),
         .OUT_SIZE(STAGE_0_SIZE)
-    ) compressor_8_2_n_bit_stage_0_2_i (
+    ) compressor_8_2_stage_0_2_i (
         .in_i   (in_i[16:23]),
         .sum_o  (s0[4]),
         .carry_o(s0[5])
@@ -51,10 +51,10 @@ module compressor_24_2 #(
     // -------------------------------------------------------------------------
     // Stage 1
     // -------------------------------------------------------------------------
-    compressor_4_2_n_bit #(
+    compressor_4_2 #(
         .IN_SIZE (STAGE_0_SIZE),
         .OUT_SIZE(STAGE_1_SIZE)
-    ) compressor_4_2_n_bit_stage_1_i (
+    ) compressor_4_2_stage_1_i (
         .in_i   (s0[0:3]),
         .sum_o  (s1[0]),
         .carry_o(s1[1])
@@ -79,10 +79,10 @@ module compressor_24_2 #(
     // -------------------------------------------------------------------------
     // Stage 2
     // -------------------------------------------------------------------------
-    compressor_4_2_n_bit #(
+    compressor_4_2 #(
         .IN_SIZE (STAGE_1_SIZE),
         .OUT_SIZE(OUT_SIZE)
-    ) compressor_4_2_n_bit_stage_2_0_i (
+    ) compressor_4_2_stage_2_0_i (
         .in_i   (s1),
         .sum_o  (out_o[0]),
         .carry_o(out_o[1])
