@@ -4,7 +4,7 @@
 
 `timescale 1 ns/1 ps
 
-module Mux9x1 #(
+module mux_9_1 #(
     parameter SIZE = 18
 )(
     input  logic [SIZE-1:0] in_0_i, in_1_i, in_2_i, in_3_i,

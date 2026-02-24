@@ -13,9 +13,10 @@ module tb_baseline #(
     parameter int ARRAY_SIZE = 8
 );
 
-    localparam int SIZE_PARTIAL_PRODUCTS = IN_SIZE_0 + IN_SIZE_1;
-    localparam int NUM_PARTIAL_PRODUCTS  = ((IN_SIZE_1 + 2) / 3) * ARRAY_SIZE;
-    localparam int OUT_SIZE              = SIZE_PARTIAL_PRODUCTS + (($clog2(NUM_PARTIAL_PRODUCTS) - 1) * 2);
+    localparam int PP_PER_MUL   = ((IN_SIZE_1 + 2) / 3);
+    localparam int PP_PER_ARRAY = (PP_PER_MUL * ARRAY_SIZE);
+    localparam int PP_SIZE      = (IN_SIZE_0 + IN_SIZE_1);
+    localparam int OUT_SIZE     = (PP_SIZE + (($clog2(PP_PER_ARRAY) - 1) * 2));
 
     real clk_period = 10;
 

@@ -8,11 +8,16 @@
 `timescale 1 ns/1 ps
 
 module tb_winograd #(
-    parameter int IN_SIZE_0 = 8,
-    parameter int IN_SIZE_1 = 8
+    parameter int IN_SIZE_0  = 4,
+    parameter int IN_SIZE_1  = 8,
+    parameter int ARRAY_SIZE = 8
 );
 
-    localparam int OUT_SIZE = ((IN_SIZE_1 + 1) * 2) + 6;
+    localparam int IN_MUL_SIZE  = (IN_SIZE_0 > IN_SIZE_1) ? (IN_SIZE_0 + 1) : (IN_SIZE_1 + 1);
+    localparam int PP_PER_MUL   = ((IN_MUL_SIZE + 2) / 3);
+    localparam int PP_PER_ARRAY = (PP_PER_MUL * ARRAY_SIZE);
+    localparam int PP_SIZE      = (IN_MUL_SIZE * 2);
+    localparam int OUT_SIZE     = (PP_SIZE + (($clog2(PP_PER_ARRAY) - 1) * 2));
 
     real clk_period = 10;
 
@@ -22,10 +27,10 @@ module tb_winograd #(
     logic [IN_SIZE_1-1:0] max_pos_1, min_neg_1;
 
 `ifdef POST_SYN_SIM
-    logic [7:0][IN_SIZE_0-1:0] in_0;
-    logic [7:0][IN_SIZE_1-1:0] in_1;
-    logic [1:0][ OUT_SIZE-1:0] out;
-    logic      [   OUT_SIZE:0] acc;
+    logic [ARRAY_SIZE-1:0][IN_SIZE_0-1:0] in_0;
+    logic [ARRAY_SIZE-1:0][IN_SIZE_1-1:0] in_1;
+    logic [           1:0][ OUT_SIZE-1:0] out;
+    logic                 [   OUT_SIZE:0] acc;
 
     winograd winograd_i (
         .clk_i (clk),
@@ -35,14 +40,15 @@ module tb_winograd #(
         .out_o (out)
     );
 `else
-    logic [IN_SIZE_0-1:0] in_0 [0:7];
-    logic [IN_SIZE_1-1:0] in_1 [0:7];
-    logic [ OUT_SIZE-1:0] out  [0:1];
+    logic [IN_SIZE_0-1:0] in_0 [0:ARRAY_SIZE-1];
+    logic [IN_SIZE_1-1:0] in_1 [0:ARRAY_SIZE-1];
+    logic [ OUT_SIZE-1:0] out  [           0:1];
     logic [   OUT_SIZE:0] acc;
 
     winograd #(
         .IN_SIZE_0 (IN_SIZE_0),
-        .IN_SIZE_1 (IN_SIZE_1)
+        .IN_SIZE_1 (IN_SIZE_1),
+        .ARRAY_SIZE(ARRAY_SIZE)
     ) winograd_i (
         .clk_i (clk),
         .rst_ni(rst_n),
@@ -103,7 +109,7 @@ module tb_winograd #(
     );
         begin
             acc = '0;
-            for (int i = 0; i < 8; i = i + 2) begin
+            for (int i = 0; i < ARRAY_SIZE; i = i + 2) begin
                 if (use_random) begin
                     in_0[i]   = IN_SIZE_0'($signed($urandom()));
                     in_1[i]   = IN_SIZE_1'($signed($urandom()));

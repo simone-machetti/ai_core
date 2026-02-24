@@ -4,7 +4,7 @@
 
 `timescale 1 ns/1 ps
 
-module AdderN #(
+module adder_n #(
     parameter int SIZE = 18
 )(
     input  logic [SIZE-1:0] in_0_i,

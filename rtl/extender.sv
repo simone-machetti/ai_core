@@ -4,7 +4,7 @@
 
 `timescale 1 ns/1 ps
 
-module Extender #(
+module extender #(
     parameter int IN_SIZE  = 4,
     parameter int OUT_SIZE = 8
 )(

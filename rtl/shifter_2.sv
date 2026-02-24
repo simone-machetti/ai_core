@@ -6,7 +6,7 @@
 
 `timescale 1 ns/1 ps
 
-module Shifter2 #(
+module shifter_2 #(
     parameter int SIZE = 18
 )(
     input  logic [SIZE-1:0] in_0_i, in_1_i, in_2_i, in_3_i,

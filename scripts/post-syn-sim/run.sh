@@ -16,6 +16,7 @@ verilator \
     -DVCD \
     -GIN_SIZE_0=${SEL_IN_SIZE_0} \
     -GIN_SIZE_1=${SEL_IN_SIZE_1} \
+    -GARRAY_SIZE=${SEL_ARRAY_SIZE} \
     --top-module tb_${SEL_TOP_LEVEL} \
     -DPOST_SYNTH=1 \
     --x-initial fast \

@@ -2,12 +2,12 @@
 # Author: Simone Machetti
 # -----------------------------------------------------------------------------
 
-$(CODE_HOME)/ai_core/rtl/AdderN.sv
-$(CODE_HOME)/ai_core/rtl/Encoder.sv
-$(CODE_HOME)/ai_core/rtl/Extender.sv
-$(CODE_HOME)/ai_core/rtl/Mux9x1.sv
-$(CODE_HOME)/ai_core/rtl/Shifter1.sv
-$(CODE_HOME)/ai_core/rtl/Shifter2.sv
+$(CODE_HOME)/ai_core/rtl/adder_n.sv
+$(CODE_HOME)/ai_core/rtl/encoder.sv
+$(CODE_HOME)/ai_core/rtl/extender.sv
+$(CODE_HOME)/ai_core/rtl/mux_9_1.sv
+$(CODE_HOME)/ai_core/rtl/shifter_1.sv
+$(CODE_HOME)/ai_core/rtl/shifter_2.sv
 
 $(CODE_HOME)/ai_core/rtl/full_adder.sv
 $(CODE_HOME)/ai_core/rtl/sign_extender.sv

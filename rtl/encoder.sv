@@ -4,7 +4,7 @@
 
 `timescale 1 ns/1 ps
 
-module Encoder (
+module encoder (
     input  logic [3:0] in_i,
     output logic [3:0] out_o
 );

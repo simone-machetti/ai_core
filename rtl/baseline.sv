@@ -7,23 +7,25 @@
 module baseline #(
     parameter int IN_SIZE_0  = 4,
     parameter int IN_SIZE_1  = 8,
-    parameter int ARRAY_SIZE = 8
+    parameter int ARRAY_SIZE = 8,
+
+    // Internal usage only
+    parameter int PP_PER_MUL   = ((IN_SIZE_1 + 2) / 3),
+    parameter int PP_PER_ARRAY = (PP_PER_MUL * ARRAY_SIZE),
+    parameter int PP_SIZE      = (IN_SIZE_0 + IN_SIZE_1),
+    parameter int OUT_SIZE     = (PP_SIZE + (($clog2(PP_PER_ARRAY) - 1) * 2))
 )(
-    input  logic                                                                          clk_i,
-    input  logic                                                                          rst_ni,
-    input  logic [                                                         IN_SIZE_0-1:0] in_0_i [0:ARRAY_SIZE-1],
-    input  logic [                                                         IN_SIZE_1-1:0] in_1_i [0:ARRAY_SIZE-1],
-    output logic [(IN_SIZE_0+IN_SIZE_1+(($clog2(((IN_SIZE_1+2)/3)*ARRAY_SIZE)-1)*2))-1:0] out_o  [           0:1]
+    input  logic                 clk_i,
+    input  logic                 rst_ni,
+    input  logic [IN_SIZE_0-1:0] in_0_i [0:ARRAY_SIZE-1],
+    input  logic [IN_SIZE_1-1:0] in_1_i [0:ARRAY_SIZE-1],
+    output logic [ OUT_SIZE-1:0] out_o  [           0:1]
 );
 
-    localparam int SIZE_PARTIAL_PRODUCTS = IN_SIZE_0 + IN_SIZE_1;
-    localparam int NUM_PARTIAL_PRODUCTS  = ((IN_SIZE_1 + 2) / 3) * ARRAY_SIZE;
-    localparam int OUT_SIZE              = SIZE_PARTIAL_PRODUCTS + (($clog2(NUM_PARTIAL_PRODUCTS) - 1) * 2);
-
-    logic [            IN_SIZE_0-1:0] in_0_q [          0:ARRAY_SIZE-1];
-    logic [            IN_SIZE_1-1:0] in_1_q [          0:ARRAY_SIZE-1];
-    logic [SIZE_PARTIAL_PRODUCTS-1:0] m      [0:NUM_PARTIAL_PRODUCTS-1];
-    logic [             OUT_SIZE-1:0] out_d  [                     0:1];
+    logic [IN_SIZE_0-1:0] in_0_q [  0:ARRAY_SIZE-1];
+    logic [IN_SIZE_1-1:0] in_1_q [  0:ARRAY_SIZE-1];
+    logic [  PP_SIZE-1:0] m      [0:PP_PER_ARRAY-1];
+    logic [ OUT_SIZE-1:0] out_d  [             0:1];
 
     // -------------------------------------------------------------------------
     // Input registers
@@ -57,8 +59,8 @@ module baseline #(
     // Compressor
     // -------------------------------------------------------------------------
     compressor_n_2 #(
-        .IN_NUM (NUM_PARTIAL_PRODUCTS),
-        .IN_SIZE(SIZE_PARTIAL_PRODUCTS)
+        .IN_NUM (PP_PER_ARRAY),
+        .IN_SIZE(PP_SIZE)
     ) compressor_n_2_i (
         .in_i   (m),
         .sum_o  (out_d[0]),
