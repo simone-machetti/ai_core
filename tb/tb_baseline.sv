@@ -8,11 +8,14 @@
 `timescale 1 ns/1 ps
 
 module tb_baseline #(
-    parameter int IN_SIZE_0 = 4,
-    parameter int IN_SIZE_1 = 8
+    parameter int IN_SIZE_0  = 4,
+    parameter int IN_SIZE_1  = 8,
+    parameter int ARRAY_SIZE = 8
 );
 
-    localparam int OUT_SIZE = IN_SIZE_0 + IN_SIZE_1 + 8;
+    localparam int SIZE_PARTIAL_PRODUCTS = IN_SIZE_0 + IN_SIZE_1;
+    localparam int NUM_PARTIAL_PRODUCTS  = ((IN_SIZE_1 + 2) / 3) * ARRAY_SIZE;
+    localparam int OUT_SIZE              = SIZE_PARTIAL_PRODUCTS + (($clog2(NUM_PARTIAL_PRODUCTS) - 1) * 2);
 
     real clk_period = 10;
 
@@ -22,10 +25,10 @@ module tb_baseline #(
     logic [IN_SIZE_1-1:0] max_pos_1, min_neg_1;
 
 `ifdef POST_SYN_SIM
-    logic [7:0][IN_SIZE_0-1:0] in_0;
-    logic [7:0][IN_SIZE_1-1:0] in_1;
-    logic [1:0][ OUT_SIZE-1:0] out;
-    logic      [   OUT_SIZE:0] acc;
+    logic [ARRAY_SIZE-1:0][IN_SIZE_0-1:0] in_0;
+    logic [ARRAY_SIZE-1:0][IN_SIZE_1-1:0] in_1;
+    logic [           1:0][ OUT_SIZE-1:0] out;
+    logic                 [   OUT_SIZE:0] acc;
 
     baseline baseline_i (
         .clk_i (clk),
@@ -35,14 +38,15 @@ module tb_baseline #(
         .out_o (out)
     );
 `else
-    logic [IN_SIZE_0-1:0] in_0 [0:7];
-    logic [IN_SIZE_1-1:0] in_1 [0:7];
-    logic [ OUT_SIZE-1:0] out  [0:1];
+    logic [IN_SIZE_0-1:0] in_0 [0:ARRAY_SIZE-1];
+    logic [IN_SIZE_1-1:0] in_1 [0:ARRAY_SIZE-1];
+    logic [ OUT_SIZE-1:0] out  [           0:1];
     logic [   OUT_SIZE:0] acc;
 
     baseline #(
         .IN_SIZE_0 (IN_SIZE_0),
-        .IN_SIZE_1 (IN_SIZE_1)
+        .IN_SIZE_1 (IN_SIZE_1),
+        .ARRAY_SIZE(ARRAY_SIZE)
     ) baseline_i (
         .clk_i (clk),
         .rst_ni(rst_n),
@@ -101,7 +105,7 @@ module tb_baseline #(
     );
         begin
             acc = '0;
-            for (int i = 0; i < 8; i++) begin
+            for (int i = 0; i < ARRAY_SIZE; i++) begin
                 if (use_random) begin
                     in_0[i] = IN_SIZE_0'($signed($urandom()));
                     in_1[i] = IN_SIZE_1'($signed($urandom()));

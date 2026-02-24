@@ -15,6 +15,7 @@ verilator \
     -DVCD \
     -GIN_SIZE_0=${SEL_IN_SIZE_0} \
     -GIN_SIZE_1=${SEL_IN_SIZE_1} \
+    -GARRAY_SIZE=${SEL_ARRAY_SIZE} \
     --top-module tb_${SEL_TOP_LEVEL} \
     -f "${CODE_HOME}/ai_core/scripts/sim/filelist.f" \
        "${CODE_HOME}/ai_core/tb/tb_${SEL_TOP_LEVEL}.sv" \
