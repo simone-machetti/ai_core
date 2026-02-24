@@ -24,7 +24,7 @@ link_design $env(SEL_TOP_LEVEL)
 # -----------------------------------------------------------------------------
 # Virtual clock & I/O constraints (required to avoid "No clocks defined")
 # -----------------------------------------------------------------------------
-set CLK_PERIOD_PS 1100
+set CLK_PERIOD_PS [expr {$env(SEL_CLK_PERIOD_NS) * 1000}]
 create_clock -name clk_i -period $CLK_PERIOD_PS [get_ports clk_i]
 
 # -----------------------------------------------------------------------------

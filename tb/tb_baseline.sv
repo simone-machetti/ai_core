@@ -18,7 +18,7 @@ module tb_baseline #(
     localparam int PP_SIZE      = (IN_SIZE_0 + IN_SIZE_1);
     localparam int OUT_SIZE     = (PP_SIZE + (($clog2(PP_PER_ARRAY) - 1) * 2));
 
-    real clk_period = 10;
+    real clk_period = `CLK_PERIOD_NS;
 
     logic clk, rst_n;
 

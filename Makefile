@@ -2,21 +2,23 @@
 # Author: Simone Machetti
 # -----------------------------------------------------------------------------
 
-IN_SIZE_0   ?= 4
-IN_SIZE_1   ?= 8
-ARRAY_SIZE  ?= 8
-TOP_LEVEL   ?= baseline
-OUT_DIR     ?= no_name
-NETLIST_DIR ?= no_name
-VCD_DIR     ?= no_name
+IN_SIZE_0     ?= 4
+IN_SIZE_1     ?= 8
+ARRAY_SIZE    ?= 8
+TOP_LEVEL     ?= baseline
+OUT_DIR       ?= no_name
+NETLIST_DIR   ?= no_name
+VCD_DIR       ?= no_name
+CLK_PERIOD_NS ?= 10
 
-export SEL_IN_SIZE_0   := $(IN_SIZE_0)
-export SEL_IN_SIZE_1   := $(IN_SIZE_1)
-export SEL_ARRAY_SIZE  := $(ARRAY_SIZE)
-export SEL_TOP_LEVEL   := $(TOP_LEVEL)
-export SEL_OUT_DIR     := $(OUT_DIR)
-export SEL_NETLIST_DIR := $(NETLIST_DIR)
-export SEL_VCD_DIR     := $(VCD_DIR)
+export SEL_IN_SIZE_0     := $(IN_SIZE_0)
+export SEL_IN_SIZE_1     := $(IN_SIZE_1)
+export SEL_ARRAY_SIZE    := $(ARRAY_SIZE)
+export SEL_TOP_LEVEL     := $(TOP_LEVEL)
+export SEL_OUT_DIR       := $(OUT_DIR)
+export SEL_NETLIST_DIR   := $(NETLIST_DIR)
+export SEL_VCD_DIR       := $(VCD_DIR)
+export SEL_CLK_PERIOD_NS := $(CLK_PERIOD_NS)
 
 .PHONY: init
 

@@ -14,6 +14,7 @@ verilator \
     -Wno-fatal \
     -DPOST_SYN_SIM \
     -DVCD \
+    -DCLK_PERIOD_NS=${SEL_CLK_PERIOD_NS} \
     -GIN_SIZE_0=${SEL_IN_SIZE_0} \
     -GIN_SIZE_1=${SEL_IN_SIZE_1} \
     -GARRAY_SIZE=${SEL_ARRAY_SIZE} \
