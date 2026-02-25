@@ -45,3 +45,5 @@ yosys "read_slang \
     $env(CODE_HOME)/ai_core/rtl/add_mult_array.sv \
     $env(CODE_HOME)/ai_core/rtl/baseline.sv -G IN_SIZE_0=$env(SEL_IN_SIZE_0) -G IN_SIZE_1=$env(SEL_IN_SIZE_1) -G ARRAY_SIZE=$env(SEL_ARRAY_SIZE) \
     $env(CODE_HOME)/ai_core/rtl/winograd.sv -G IN_SIZE_0=$env(SEL_IN_SIZE_0) -G IN_SIZE_1=$env(SEL_IN_SIZE_1) -G ARRAY_SIZE=$env(SEL_ARRAY_SIZE)"
+
+# Add --keep-hierarchy option to preserve internal instances
