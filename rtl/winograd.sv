@@ -12,7 +12,7 @@ module winograd #(
     // Internal usage only
     parameter int IN_MUL_SIZE  = (IN_SIZE_0 > IN_SIZE_1) ? (IN_SIZE_0 + 1) : (IN_SIZE_1 + 1),
     parameter int PP_PER_MUL   = ((IN_MUL_SIZE + 2) / 3),
-    parameter int PP_PER_ARRAY = (PP_PER_MUL * ARRAY_SIZE),
+    parameter int PP_PER_ARRAY = (PP_PER_MUL * ARRAY_SIZE / 2),
     parameter int PP_SIZE      = (IN_MUL_SIZE * 2),
     parameter int OUT_SIZE     = (PP_SIZE + (($clog2(PP_PER_ARRAY) - 1) * 2))
 )(
