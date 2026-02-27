@@ -2,6 +2,8 @@
 // Author: Jaime Joven Murillo
 // -----------------------------------------------------------------------------
 
+`timescale 1 ns/1 ps
+
 module compressor_8_2 #(
     parameter int IN_SIZE  = 12,
     parameter int OUT_SIZE = 16

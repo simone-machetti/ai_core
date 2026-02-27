@@ -4,6 +4,8 @@
 
 /* verilator lint_off UNOPTFLAT */
 
+`timescale 1 ns/1 ps
+
 module full_adder (
     input  logic in_0_i,
     input  logic in_1_i,

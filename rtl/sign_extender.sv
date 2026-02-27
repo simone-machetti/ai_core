@@ -2,6 +2,8 @@
 // Author: Jaime Joven Murillo
 // -----------------------------------------------------------------------------
 
+`timescale 1 ns/1 ps
+
 module sign_extender #(
     parameter int IN_SIZE  = 8,
     parameter int OUT_SIZE = 16

@@ -6,6 +6,8 @@
 /* verilator lint_off UNUSEDSIGNAL */
 /* verilator lint_off UNOPTFLAT */
 
+`timescale 1 ns/1 ps
+
 module compressor_n_2 #(
     parameter int IN_NUM  = 24,
     parameter int IN_SIZE = 12

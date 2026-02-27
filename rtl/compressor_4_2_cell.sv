@@ -2,6 +2,8 @@
 // Author: Simone Machetti
 // -----------------------------------------------------------------------------
 
+`timescale 1 ns/1 ps
+
 module compressor_4_2_cell (
     input  logic in_0_i,
     input  logic in_1_i,
