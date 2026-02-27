@@ -65,7 +65,7 @@ module multsigned #(
     // -------------------------------------------------------------------------
     // Extender + first multiple generator
     // -------------------------------------------------------------------------
-    extender #(
+    sign_extender #(
         .IN_SIZE (IN_SIZE_0),
         .OUT_SIZE(PP_SIZE)
     ) extender_i (
