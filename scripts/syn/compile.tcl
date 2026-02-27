@@ -27,12 +27,11 @@ yosys "read_liberty -lib $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/a
 yosys "read_slang \
     $env(CODE_HOME)/ai_core/rtl/adder_n.sv \
     $env(CODE_HOME)/ai_core/rtl/encoder.sv \
-    $env(CODE_HOME)/ai_core/rtl/extender.sv \
+    $env(CODE_HOME)/ai_core/rtl/sign_extender.sv \
     $env(CODE_HOME)/ai_core/rtl/mux_9_1.sv \
     $env(CODE_HOME)/ai_core/rtl/shifter_1.sv \
     $env(CODE_HOME)/ai_core/rtl/shifter_2.sv \
     $env(CODE_HOME)/ai_core/rtl/full_adder.sv \
-    $env(CODE_HOME)/ai_core/rtl/sign_extender.sv \
     $env(CODE_HOME)/ai_core/rtl/compressor_4_2_cell.sv \
     $env(CODE_HOME)/ai_core/rtl/compressor_4_2.sv \
     $env(CODE_HOME)/ai_core/rtl/compressor_8_2.sv \
