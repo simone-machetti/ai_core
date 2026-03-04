@@ -7,7 +7,7 @@
 module shifter_n #(
     parameter int IN_NUM  = 2,
     parameter int IN_SIZE = 8,
-    parameter int IS_LEFT = 1,
+    parameter bit IS_LEFT = 1,
     parameter int SHIFT   = 4
 )(
     input  logic [IN_SIZE-1:0] in_i  [0:IN_NUM-1],

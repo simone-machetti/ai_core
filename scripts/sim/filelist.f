@@ -5,6 +5,7 @@
 $(CODE_HOME)/ai_core/rtl/adder_n.sv
 $(CODE_HOME)/ai_core/rtl/encoder.sv
 $(CODE_HOME)/ai_core/rtl/sign_extender.sv
+$(CODE_HOME)/ai_core/rtl/extender_n.sv
 $(CODE_HOME)/ai_core/rtl/mux_9_1.sv
 $(CODE_HOME)/ai_core/rtl/shifter_1.sv
 $(CODE_HOME)/ai_core/rtl/shifter_2.sv
@@ -21,5 +22,4 @@ $(CODE_HOME)/ai_core/rtl/multsigned_array.sv
 $(CODE_HOME)/ai_core/rtl/add_mult.sv
 $(CODE_HOME)/ai_core/rtl/add_mult_array.sv
 
-$(CODE_HOME)/ai_core/rtl/baseline.sv
-$(CODE_HOME)/ai_core/rtl/winograd.sv
+$(CODE_HOME)/ai_core/rtl/baseline_pe.sv

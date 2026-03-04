@@ -2,12 +2,14 @@
 // Author: Simone Machetti
 // -----------------------------------------------------------------------------
 
+/* verilator lint_off GENUNNAMED */
+
 `timescale 1 ns/1 ps
 
 module extender_n #(
     parameter int IN_NUM    = 2,
     parameter int IN_SIZE   = 8,
-    parameter int IS_SIGNED = 1,
+    parameter bit IS_SIGNED = 1,
     parameter int EXTEND    = 4
 )(
     input  logic [       IN_SIZE-1:0] in_i  [0:IN_NUM-1],
