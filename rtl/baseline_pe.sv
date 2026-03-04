@@ -92,33 +92,25 @@ module baseline_pe #(
         logic [PP_LEVEL_2_WIDTH-1:0] pp_level_2 [0:PP_LEVEL_2_SIZE-1];
 
         for (i = 0; i < EXT_LEVEL_1_NUM; i++) begin
-            // shifter_n #(
-            //     .IN_NUM(2),
-            //     .IN_SIZE(PP_LEVEL_1_WIDTH),
-            //     .IS_LEFT(1),
-            //     .SHIFT(4)
-            // ) shifter_n_i (
-            //     .in_i(pp_level_1[i*4 -: 2]),
-            //     .out_o(pp_level_2[i*4 -: 2])
-            // );
-
             extender_n #(
-                .IN_NUM(2),
-                .IN_SIZE(PP_LEVEL_1_WIDTH),
+                .IN_NUM   (2),
+                .IN_SIZE  (PP_LEVEL_1_WIDTH),
                 .IS_SIGNED(1),
-                .EXTEND(4)
+                .EXTEND   (4),
+                .IS_SHIFT (0)
             ) shifter_n_level_1_i (
-                .in_i(pp_level_1[i*4+:2]),
+                .in_i (pp_level_1[i*4+:2]),
                 .out_o(pp_level_2[i*4+:2])
             );
 
             extender_n #(
-                .IN_NUM(2),
-                .IN_SIZE(PP_LEVEL_1_WIDTH),
+                .IN_NUM   (2),
+                .IN_SIZE  (PP_LEVEL_1_WIDTH),
                 .IS_SIGNED(1),
-                .EXTEND(4)
+                .EXTEND   (4),
+                .IS_SHIFT (0)
             ) extender_n_level_1_i (
-                .in_i(pp_level_1[i*4+2+:2]),
+                .in_i (pp_level_1[i*4+2+:2]),
                 .out_o(pp_level_2[i*4+2+:2])
             );
         end
@@ -153,33 +145,25 @@ module baseline_pe #(
         logic [PP_LEVEL_4_WIDTH-1:0] pp_level_4 [0:PP_LEVEL_4_SIZE-1];
 
         for (i = 0; i < EXT_LEVEL_3_NUM; i++) begin
-            // shifter_n #(
-            //     .IN_NUM(2),
-            //     .IN_SIZE(PP_LEVEL_3_WIDTH),
-            //     .IS_LEFT(1),
-            //     .SHIFT(8)
-            // ) shifter_n_i (
-            //     .in_i(pp_level_3[i*4 -: 2]),
-            //     .out_o(pp_level_4[i*4 -: 2])
-            // );
-
             extender_n #(
-                .IN_NUM(2),
-                .IN_SIZE(PP_LEVEL_3_WIDTH),
+                .IN_NUM   (2),
+                .IN_SIZE  (PP_LEVEL_3_WIDTH),
                 .IS_SIGNED(1),
-                .EXTEND(8)
+                .EXTEND   (8),
+                .IS_SHIFT (0)
             ) shifter_n_level_3_i (
-                .in_i(pp_level_3[i*4+:2]),
+                .in_i (pp_level_3[i*4+:2]),
                 .out_o(pp_level_4[i*4+:2])
             );
 
             extender_n #(
-                .IN_NUM(2),
-                .IN_SIZE(PP_LEVEL_3_WIDTH),
+                .IN_NUM   (2),
+                .IN_SIZE  (PP_LEVEL_3_WIDTH),
                 .IS_SIGNED(1),
-                .EXTEND(8)
+                .EXTEND   (8),
+                .IS_SHIFT (0)
             ) extender_n_level_3_i (
-                .in_i(pp_level_3[i*4+2+:2]),
+                .in_i (pp_level_3[i*4+2+:2]),
                 .out_o(pp_level_4[i*4+2+:2])
             );
         end
@@ -214,33 +198,25 @@ module baseline_pe #(
         logic [PP_LEVEL_6_WIDTH-1:0] pp_level_6 [0:PP_LEVEL_6_SIZE-1];
 
         for (i = 0; i < EXT_LEVEL_5_NUM; i++) begin
-            // shifter_n #(
-            //     .IN_NUM(2),
-            //     .IN_SIZE(PP_LEVEL_5_WIDTH),
-            //     .IS_LEFT(1),
-            //     .SHIFT(8)
-            // ) shifter_n_i (
-            //     .in_i(pp_level_5[i*4 -: 2]),
-            //     .out_o(pp_level_6[i*4 -: 2])
-            // );
-
             extender_n #(
-                .IN_NUM(2),
-                .IN_SIZE(PP_LEVEL_5_WIDTH),
+                .IN_NUM   (2),
+                .IN_SIZE  (PP_LEVEL_5_WIDTH),
                 .IS_SIGNED(1),
-                .EXTEND(8)
+                .EXTEND   (8),
+                .IS_SHIFT (0)
             ) shifter_n_level_5_i (
-                .in_i(pp_level_5[i*4+:2]),
+                .in_i (pp_level_5[i*4+:2]),
                 .out_o(pp_level_6[i*4+:2])
             );
 
             extender_n #(
-                .IN_NUM(2),
-                .IN_SIZE(PP_LEVEL_5_WIDTH),
+                .IN_NUM   (2),
+                .IN_SIZE  (PP_LEVEL_5_WIDTH),
                 .IS_SIGNED(1),
-                .EXTEND(8)
+                .EXTEND   (8),
+                .IS_SHIFT (0)
             ) extender_n_level_5_i (
-                .in_i(pp_level_5[i*4+2+:2]),
+                .in_i (pp_level_5[i*4+2+:2]),
                 .out_o(pp_level_6[i*4+2+:2])
             );
         end
