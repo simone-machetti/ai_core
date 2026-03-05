@@ -4,6 +4,9 @@
 
 strash
 dc2
-dretime
-strash
-map
+map -B 0.9
+topo
+stime -c
+buffer -c
+upsize -c
+dnsize -c
