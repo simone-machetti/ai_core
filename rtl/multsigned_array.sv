@@ -28,7 +28,7 @@ module multsigned_array #(
             ) multsigned_i (
                 .in_0_i(in_0_i[i]),
                 .in_1_i(in_1_i[i]),
-                .out_o (out_o[i*PP_PER_MUL:(i*PP_PER_MUL)+PP_PER_MUL-1])
+                .out_o (out_o[i*PP_PER_MUL+:PP_PER_MUL])
             );
         end
     endgenerate

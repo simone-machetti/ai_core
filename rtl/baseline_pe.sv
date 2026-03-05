@@ -52,16 +52,15 @@ module baseline_pe #(
 
         logic [PP_WIDTH-1:0] pp_level_0 [0:PP_PER_ARRAY-1];
 
-        for (i = 0; i < ARRAY_SIZE; i++) begin
-            multsigned #(
-                .IN_SIZE_0(IN_SIZE_0),
-                .IN_SIZE_1(IN_SIZE_1)
-            ) multsigned_i (
-                .in_0_i(in_0_q[i]),
-                .in_1_i(in_1_q[i]),
-                .out_o (pp_level_0[i*PP_PER_MUL+:PP_PER_MUL])
-            );
-        end
+        multsigned_array #(
+            .IN_SIZE_0 (IN_SIZE_0),
+            .IN_SIZE_1 (IN_SIZE_1),
+            .ARRAY_SIZE(ARRAY_SIZE)
+        ) multsigned_array_i (
+            .in_0_i(in_0_q),
+            .in_1_i(in_1_q),
+            .out_o (pp_level_0)
+        );
 
         // -------------------------------------------------------------------------
         // Level 0: Compression
