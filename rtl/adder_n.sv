@@ -9,9 +9,9 @@ module adder_n #(
 )(
     input  logic [SIZE-1:0] in_0_i,
     input  logic [SIZE-1:0] in_1_i,
-    output logic [SIZE-1:0] out_o
+    output logic [  SIZE:0] out_o
 );
 
-    assign out_o = in_0_i + in_1_i;
+    assign out_o = (SIZE)'($signed(in_0_i)) + (SIZE)'($signed(in_1_i));
 
 endmodule

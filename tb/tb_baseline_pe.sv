@@ -13,7 +13,7 @@ module tb_baseline_pe #(
     parameter int ARRAY_SIZE = 64
 );
 
-    localparam int OUT_SIZE = 46;
+    localparam int OUT_SIZE = 47;
 
     real clk_period = `CLK_PERIOD_NS;
 
@@ -38,8 +38,8 @@ module tb_baseline_pe #(
 `else
     logic [IN_SIZE_0-1:0] in_0 [0:ARRAY_SIZE-1];
     logic [IN_SIZE_1-1:0] in_1 [0:ARRAY_SIZE-1];
-    logic [ OUT_SIZE-1:0] out  [           0:1];
-    logic [   OUT_SIZE:0] acc;
+    logic [ OUT_SIZE-1:0] out;
+    logic [ OUT_SIZE-1:0] acc;
 
     baseline_pe #(
         .IN_SIZE_0 (IN_SIZE_0),
@@ -112,12 +112,12 @@ module tb_baseline_pe #(
                     in_1[i] = b_fixed;
                 end
 
-                acc = (OUT_SIZE+1)'($signed(acc)) + ((OUT_SIZE+1)'($signed(in_0[i])) * (OUT_SIZE+1)'($signed(in_1[i])));
+                acc = (OUT_SIZE)'($signed(acc)) + ((OUT_SIZE)'($signed(in_0[i])) * (OUT_SIZE)'($signed(in_1[i])));
             end
 
             repeat(3) @(posedge clk);
 
-            if (((OUT_SIZE+1)'($signed(out[0])) + (OUT_SIZE+1)'($signed(out[1]))) !== (OUT_SIZE+1)'($signed(acc))) begin
+            if ((OUT_SIZE)'($signed(out)) !== (OUT_SIZE)'($signed(acc))) begin
                 $error("Error!\n");
                 $fatal;
             end

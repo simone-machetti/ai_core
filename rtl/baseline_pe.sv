@@ -9,16 +9,17 @@ module baseline_pe #(
     parameter int IN_SIZE_0  = 4,
     parameter int IN_SIZE_1  = 8,
     parameter int ARRAY_SIZE = 64,
-    parameter int OUT_SIZE   = 46
+    parameter int OUT_SIZE   = 47
 )(
     input  logic                 clk_i,
     input  logic                 rst_ni,
     input  logic [IN_SIZE_0-1:0] in_0_i [0:ARRAY_SIZE-1],
     input  logic [IN_SIZE_1-1:0] in_1_i [0:ARRAY_SIZE-1],
-    output logic [ OUT_SIZE-1:0] out_o  [           0:1]
+    output logic [ OUT_SIZE-1:0] out_o
 );
 
-    logic [OUT_SIZE-1:0] out_d [0:1];
+    logic [OUT_SIZE-2:0] pp_level_7 [0:1];
+    logic [OUT_SIZE-1:0] out_d;
 
     // -------------------------------------------------------------------------
     // Input registers
@@ -230,21 +231,27 @@ module baseline_pe #(
                 .IN_SIZE(PP_LEVEL_6_WIDTH)
             ) compressor_n_2_level_6_i (
                 .in_i   (pp_level_6[i*4+:4]),
-                .sum_o  (out_d[i*2]),
-                .carry_o(out_d[i*2+1])
+                .sum_o  (pp_level_7[i*2]),
+                .carry_o(pp_level_7[i*2+1])
             );
         end
 
     endgenerate
+
+    adder_n #(
+        .SIZE(PP_LEVEL_6_WIDTH+2)
+    ) adder_n_i (
+        .in_0_i(pp_level_7[0]),
+        .in_1_i(pp_level_7[1]),
+        .out_o(out_d)
+    );
 
     // -------------------------------------------------------------------------
     // Output registers
     // -------------------------------------------------------------------------
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (!rst_ni) begin
-            for (int j = 0; j < 2; j++) begin
-                out_o[j] <= '0;
-            end
+            out_o <= '0;
         end else begin
             out_o <= out_d;
         end
