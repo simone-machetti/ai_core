@@ -10,13 +10,14 @@ verilator \
     --binary \
     --timing \
     --trace \
+    --trace-max-array 0 \
+    --trace-max-width 0 \
     -Wall \
     -Wno-fatal \
     -DVCD \
     -DCLK_PERIOD_NS=${SEL_CLK_PERIOD_NS} \
-    -GIN_SIZE_0=${SEL_IN_SIZE_0} \
-    -GIN_SIZE_1=${SEL_IN_SIZE_1} \
-    -GARRAY_SIZE=${SEL_ARRAY_SIZE} \
+    -GMODE=${SEL_MODE} \
+    -I"${CODE_HOME}/ai_core/rtl" \
     --top-module tb_${SEL_TOP_LEVEL} \
     -f "${CODE_HOME}/ai_core/scripts/sim/filelist.f" \
        "${CODE_HOME}/ai_core/tb/tb_${SEL_TOP_LEVEL}.sv" \

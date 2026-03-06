@@ -7,8 +7,9 @@
 `timescale 1 ns/1 ps
 
 module multsigned #(
-    parameter int IN_SIZE_0 = 4,
-    parameter int IN_SIZE_1 = 8,
+    parameter int IN_SIZE_0   = 4,
+    parameter int IN_SIZE_1   = 8,
+    parameter bit IS_SIGNED_1 = 1,
 
     // Internal usage only
     parameter int PP_NUM  = ((IN_SIZE_1 + 2) / 3),
@@ -36,7 +37,7 @@ module multsigned #(
         if (idx < 0) begin
             bbit = 1'b0;
         end else if (idx >= IN_SIZE_1) begin
-            bbit = in_1_i[IN_SIZE_1-1];
+            bbit = (IS_SIGNED_1) ? in_1_i[IN_SIZE_1-1] : 1'b0;
         end else begin
             bbit = in_1_i[idx];
         end

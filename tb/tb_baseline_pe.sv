@@ -8,25 +8,29 @@
 `timescale 1 ns/1 ps
 
 module tb_baseline_pe #(
-    parameter int IN_SIZE_0  = 4,
-    parameter int IN_SIZE_1  = 8,
-    parameter int ARRAY_SIZE = 64
+    parameter int MODE = 0,
+
+    // Internal usage only
+    parameter int IN_WIDTH_A = 4,
+    parameter int IN_WIDTH_B = 8,
+    parameter int IN_SIZE    = 64,
+    parameter int PP_PER_MUL = (MODE == 0) ? ((IN_WIDTH_B + 2) / 3)    : (((IN_WIDTH_B / 2) + 2) / 3),
+    parameter int PP_SIZE    = (MODE == 0) ? (PP_PER_MUL * IN_SIZE)    : (PP_PER_MUL * (IN_SIZE * 2)),
+    parameter int PP_WIDTH   = (MODE == 0) ? (IN_WIDTH_A + IN_WIDTH_B) : (IN_WIDTH_A + (IN_WIDTH_B / 2) + 4),
+    parameter int OUT_WIDTH  = (PP_WIDTH + ((($clog2(PP_SIZE) - 1) * 2) + 20 + 1))
 );
-
-    localparam int OUT_SIZE = 47;
-
     real clk_period = `CLK_PERIOD_NS;
 
     logic clk, rst_n;
 
-    logic [IN_SIZE_0-1:0] max_pos_0, min_neg_0;
-    logic [IN_SIZE_1-1:0] max_pos_1, min_neg_1;
+    logic [IN_WIDTH_A-1:0] max_pos_0, min_neg_0;
+    logic [IN_WIDTH_B-1:0] max_pos_1, min_neg_1;
 
 `ifdef POST_SYN_SIM
-    logic [ARRAY_SIZE-1:0][IN_SIZE_0-1:0] in_0;
-    logic [ARRAY_SIZE-1:0][IN_SIZE_1-1:0] in_1;
-    logic [           1:0][ OUT_SIZE-1:0] out;
-    logic                 [   OUT_SIZE:0] acc;
+    logic [IN_SIZE-1:0][IN_WIDTH_A-1:0] in_0;
+    logic [IN_SIZE-1:0][IN_WIDTH_B-1:0] in_1;
+    logic [         1:0][ OUT_WIDTH-1:0] out;
+    logic               [   OUT_WIDTH:0] acc;
 
     baseline_pe baseline_pe_i (
         .clk_i (clk),
@@ -36,20 +40,18 @@ module tb_baseline_pe #(
         .out_o (out)
     );
 `else
-    logic [IN_SIZE_0-1:0] in_0 [0:ARRAY_SIZE-1];
-    logic [IN_SIZE_1-1:0] in_1 [0:ARRAY_SIZE-1];
-    logic [ OUT_SIZE-1:0] out;
-    logic [ OUT_SIZE-1:0] acc;
+    logic [IN_WIDTH_A-1:0] in_0 [0:IN_SIZE-1];
+    logic [IN_WIDTH_B-1:0] in_1 [0:IN_SIZE-1];
+    logic [ OUT_WIDTH-1:0] out;
+    logic [ OUT_WIDTH-1:0] acc;
 
     baseline_pe #(
-        .IN_SIZE_0 (IN_SIZE_0),
-        .IN_SIZE_1 (IN_SIZE_1),
-        .ARRAY_SIZE(ARRAY_SIZE)
+        .MODE(MODE)
     ) baseline_pe_i (
         .clk_i (clk),
         .rst_ni(rst_n),
-        .in_0_i(in_0),
-        .in_1_i(in_1),
+        .a_i   (in_0),
+        .b_i   (in_1),
         .out_o (out)
     );
 `endif
@@ -98,26 +100,26 @@ module tb_baseline_pe #(
     // -------------------------------------------------------------------------
     task automatic run_and_check(
         input bit                          use_random,
-        input logic signed [IN_SIZE_0-1:0] a_fixed,
-        input logic signed [IN_SIZE_1-1:0] b_fixed
+        input logic signed [IN_WIDTH_A-1:0] a_fixed,
+        input logic signed [IN_WIDTH_B-1:0] b_fixed
     );
         begin
             acc = '0;
-            for (int i = 0; i < ARRAY_SIZE; i++) begin
+            for (int i = 0; i < IN_SIZE; i++) begin
                 if (use_random) begin
-                    in_0[i] = IN_SIZE_0'($signed($urandom()));
-                    in_1[i] = IN_SIZE_1'($signed($urandom()));
+                    in_0[i] = IN_WIDTH_A'($signed($urandom()));
+                    in_1[i] = IN_WIDTH_B'($signed($urandom()));
                 end else begin
                     in_0[i] = a_fixed;
                     in_1[i] = b_fixed;
                 end
 
-                acc = (OUT_SIZE)'($signed(acc)) + ((OUT_SIZE)'($signed(in_0[i])) * (OUT_SIZE)'($signed(in_1[i])));
+                acc = (OUT_WIDTH)'($signed(acc)) + ((OUT_WIDTH)'($signed(in_0[i])) * (OUT_WIDTH)'($signed(in_1[i])));
             end
 
             repeat(3) @(posedge clk);
 
-            if ((OUT_SIZE)'($signed(out)) !== (OUT_SIZE)'($signed(acc))) begin
+            if ((OUT_WIDTH)'($signed(out)) !== (OUT_WIDTH)'($signed(acc))) begin
                 $error("Error!\n");
                 $fatal;
             end
@@ -142,10 +144,10 @@ module tb_baseline_pe #(
     // -------------------------------------------------------------------------
     task automatic verify_with_corner;
         begin
-            max_pos_0 = (1 <<< (IN_SIZE_0 - 1)) - 1;
-            min_neg_0 =  1 <<< (IN_SIZE_0 - 1);
-            max_pos_1 = (1 <<< (IN_SIZE_1 - 1)) - 1;
-            min_neg_1 =  1 <<< (IN_SIZE_1 - 1);
+            max_pos_0 = (1 <<< (IN_WIDTH_A - 1)) - 1;
+            min_neg_0 =  1 <<< (IN_WIDTH_A - 1);
+            max_pos_1 = (1 <<< (IN_WIDTH_B - 1)) - 1;
+            min_neg_1 =  1 <<< (IN_WIDTH_B - 1);
 
             run_and_check(1'b0, max_pos_0, max_pos_1);
             run_and_check(1'b0, min_neg_0, min_neg_1);

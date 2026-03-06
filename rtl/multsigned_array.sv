@@ -5,9 +5,10 @@
 `timescale 1 ns/1 ps
 
 module multsigned_array #(
-    parameter int IN_SIZE_0  = 4,
-    parameter int IN_SIZE_1  = 8,
-    parameter int ARRAY_SIZE = 8,
+    parameter int IN_SIZE_0   = 4,
+    parameter int IN_SIZE_1   = 8,
+    parameter int ARRAY_SIZE  = 8,
+    parameter bit IS_SIGNED_1 = 1,
 
     // Internal usage only
     parameter int PP_PER_MUL   = ((IN_SIZE_1 + 2) / 3),
@@ -23,8 +24,9 @@ module multsigned_array #(
     generate
         for (i = 0; i < ARRAY_SIZE; i++) begin
             multsigned #(
-                .IN_SIZE_0(IN_SIZE_0),
-                .IN_SIZE_1(IN_SIZE_1)
+                .IN_SIZE_0  (IN_SIZE_0),
+                .IN_SIZE_1  (IN_SIZE_1),
+                .IS_SIGNED_1(IS_SIGNED_1)
             ) multsigned_i (
                 .in_0_i(in_0_i[i]),
                 .in_1_i(in_1_i[i]),

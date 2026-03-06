@@ -2,18 +2,14 @@
 # Author: Simone Machetti
 # -----------------------------------------------------------------------------
 
-IN_SIZE_0     ?= 4
-IN_SIZE_1     ?= 8
-ARRAY_SIZE    ?= 8
+MODE          ?= 0
 TOP_LEVEL     ?= baseline
 OUT_DIR       ?= no_name
 NETLIST_DIR   ?= no_name
 VCD_DIR       ?= no_name
 CLK_PERIOD_NS ?= 10
 
-export SEL_IN_SIZE_0     := $(IN_SIZE_0)
-export SEL_IN_SIZE_1     := $(IN_SIZE_1)
-export SEL_ARRAY_SIZE    := $(ARRAY_SIZE)
+export SEL_MODE          := $(MODE)
 export SEL_TOP_LEVEL     := $(TOP_LEVEL)
 export SEL_OUT_DIR       := $(OUT_DIR)
 export SEL_NETLIST_DIR   := $(NETLIST_DIR)
