@@ -7,7 +7,7 @@
 module pp_gen
     import pe_pkg::*;
 #(
-    parameter int MODE = 0,
+    parameter pe_mode_e MODE = PE_MODE_4_8,
 
     localparam int PP_SIZE  = calc_pp_size(MODE),
     localparam int PP_WIDTH = calc_pp_width(MODE)

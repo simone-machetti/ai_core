@@ -10,7 +10,7 @@
 module tb_pe_top
     import pe_pkg::*;
 #(
-    parameter int MODE = 0,
+    parameter pe_mode_e MODE = PE_MODE_4_8,
 
     localparam int OUT_WIDTH = calc_out_width(MODE)
 );
