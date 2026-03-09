@@ -5,15 +5,14 @@
 `timescale 1 ns/1 ps
 
 module pp_gen #(
-    parameter int MODE = 0,
+    parameter int MODE        = 0,
 
-    // Internal usage only
-    parameter int IN_WIDTH_A = 4,
-    parameter int IN_WIDTH_B = 8,
-    parameter int IN_SIZE    = 64,
-    parameter int PP_PER_MUL = (MODE == 0) ? ((IN_WIDTH_B + 2) / 3)    : (((IN_WIDTH_B / 2) + 2) / 3),
-    parameter int PP_SIZE    = (MODE == 0) ? (PP_PER_MUL * IN_SIZE)    : (PP_PER_MUL * (IN_SIZE * 2)),
-    parameter int PP_WIDTH   = (MODE == 0) ? (IN_WIDTH_A + IN_WIDTH_B) : (IN_WIDTH_A + (IN_WIDTH_B / 2) + 4)
+    localparam int IN_WIDTH_A = 4,
+    localparam int IN_WIDTH_B = 8,
+    localparam int IN_SIZE    = 64,
+    localparam int PP_PER_MUL = (MODE == 0) ? ((IN_WIDTH_B + 2) / 3)    : (((IN_WIDTH_B / 2) + 2) / 3),
+    localparam int PP_SIZE    = (MODE == 0) ? (PP_PER_MUL * IN_SIZE)    : (PP_PER_MUL * (IN_SIZE * 2)),
+    localparam int PP_WIDTH   = (MODE == 0) ? (IN_WIDTH_A + IN_WIDTH_B) : (IN_WIDTH_A + (IN_WIDTH_B / 2) + 4)
 )(
     input  logic [IN_WIDTH_A-1:0] a_i  [0:IN_SIZE-1],
     input  logic [IN_WIDTH_B-1:0] b_i  [0:IN_SIZE-1],
