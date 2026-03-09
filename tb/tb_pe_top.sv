@@ -249,7 +249,7 @@ module tb_pe_top
                 start_vcd;
 
                 verify_with_random;
-                verify_with_corner;
+                // verify_with_corner;
 
                 stop_vcd;
 

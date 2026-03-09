@@ -5,9 +5,10 @@
 `timescale 1 ns/1 ps
 
 module add_mult_array #(
-    parameter int IN_SIZE_0  = 4,
-    parameter int IN_SIZE_1  = 8,
-    parameter int ARRAY_SIZE = 8,
+    parameter int IN_SIZE_0   = 4,
+    parameter int IN_SIZE_1   = 8,
+    parameter int ARRAY_SIZE  = 8,
+    parameter bit IS_SIGNED_1 = 1,
 
     // Internal usage only
     parameter int IN_MUL_SIZE  = (IN_SIZE_0 > IN_SIZE_1) ? (IN_SIZE_0 + 1) : (IN_SIZE_1 + 1),
@@ -27,14 +28,26 @@ module add_mult_array #(
             logic signed [IN_MUL_SIZE-1:0] sum_0;
             logic signed [IN_MUL_SIZE-1:0] sum_1;
 
-            always_comb begin
-                sum_0 = IN_MUL_SIZE'($signed(in_0_i[i+1])) + IN_MUL_SIZE'($signed(in_1_i[i]));
-                sum_1 = IN_MUL_SIZE'($signed(in_0_i[i]))   + IN_MUL_SIZE'($signed(in_1_i[i+1]));
+            if (IS_SIGNED_1 == 0) begin : gen_unsigned
+
+                always_comb begin
+                    sum_0 = IN_MUL_SIZE'($signed(in_0_i[i+1])) + IN_MUL_SIZE'($unsigned(in_1_i[i]));
+                    sum_1 = IN_MUL_SIZE'($signed(in_0_i[i]))   + IN_MUL_SIZE'($unsigned(in_1_i[i+1]));
+                end
+
+            end else begin : gen_signed
+
+                always_comb begin
+                    sum_0 = IN_MUL_SIZE'($signed(in_0_i[i+1])) + IN_MUL_SIZE'($signed(in_1_i[i]));
+                    sum_1 = IN_MUL_SIZE'($signed(in_0_i[i]))   + IN_MUL_SIZE'($signed(in_1_i[i+1]));
+                end
+
             end
 
             multsigned #(
-                .IN_SIZE_0(IN_MUL_SIZE),
-                .IN_SIZE_1(IN_MUL_SIZE)
+                .IN_SIZE_0 (IN_MUL_SIZE),
+                .IN_SIZE_1 (IN_MUL_SIZE),
+                .IS_SIGNED_1(IS_SIGNED_1)
             ) multsigned_i (
                 .in_0_i(sum_0),
                 .in_1_i(sum_1),
