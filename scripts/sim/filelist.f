@@ -2,6 +2,8 @@
 # Author: Simone Machetti
 # -----------------------------------------------------------------------------
 
+$(CODE_HOME)/ai_core/rtl/pe_pkg.sv
+
 $(CODE_HOME)/ai_core/rtl/adder_n.sv
 $(CODE_HOME)/ai_core/rtl/encoder.sv
 $(CODE_HOME)/ai_core/rtl/sign_extender.sv

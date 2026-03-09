@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 
 MODE          ?= 0
-TOP_LEVEL     ?= baseline
+TOP_LEVEL     ?= pe_top
 OUT_DIR       ?= no_name
 NETLIST_DIR   ?= no_name
 VCD_DIR       ?= no_name

@@ -4,16 +4,14 @@
 
 `timescale 1 ns/1 ps
 
-module cpr_tree #(
-    parameter bit MODE       = 0,
-    parameter int IN_WIDTH_A = 4,
-    parameter int IN_WIDTH_B = 8,
-    parameter int IN_SIZE    = 64,
+module cpr_tree
+    import pe_pkg::*;
+#(
+    parameter int MODE = 0,
 
-    localparam int PP_PER_MUL = (MODE == 0) ? ((IN_WIDTH_B + 2) / 3)    : (((IN_WIDTH_B / 2) + 2) / 3),
-    localparam int PP_SIZE    = (MODE == 0) ? (PP_PER_MUL * IN_SIZE)    : (PP_PER_MUL * (IN_SIZE * 2)),
-    localparam int PP_WIDTH   = (MODE == 0) ? (IN_WIDTH_A + IN_WIDTH_B) : (IN_WIDTH_A + (IN_WIDTH_B / 2) + 4),
-    localparam int OUT_WIDTH  = (PP_WIDTH + ((($clog2(PP_SIZE) - 1) * 2) + 20 + 1))
+    localparam int PP_SIZE   = calc_pp_size(MODE),
+    localparam int PP_WIDTH  = calc_pp_width(MODE),
+    localparam int OUT_WIDTH = calc_out_width(MODE)
 )(
     input  logic [ PP_WIDTH-1:0] pp_i [0:PP_SIZE-1],
     output logic [OUT_WIDTH-1:0] out_o
