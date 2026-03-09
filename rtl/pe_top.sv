@@ -4,7 +4,7 @@
 
 `timescale 1 ns/1 ps
 
-module baseline_pe #(
+module pe_top #(
     parameter int MODE = 0,
 
     // Internal usage only

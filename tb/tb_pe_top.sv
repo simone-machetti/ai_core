@@ -7,7 +7,7 @@
 
 `timescale 1 ns/1 ps
 
-module tb_baseline_pe #(
+module tb_pe_top #(
     parameter int MODE = 0,
 
     // Internal usage only
@@ -32,7 +32,7 @@ module tb_baseline_pe #(
     logic [         1:0][ OUT_WIDTH-1:0] out;
     logic               [   OUT_WIDTH:0] acc;
 
-    baseline_pe baseline_pe_i (
+    pe_top pe_top_i (
         .clk_i (clk),
         .rst_ni(rst_n),
         .in_0_i(in_0),
@@ -45,9 +45,9 @@ module tb_baseline_pe #(
     logic [ OUT_WIDTH-1:0] out;
     logic [ OUT_WIDTH-1:0] acc;
 
-    baseline_pe #(
+    pe_top #(
         .MODE(MODE)
-    ) baseline_pe_i (
+    ) pe_top_i (
         .clk_i (clk),
         .rst_ni(rst_n),
         .a_i   (in_0),
@@ -70,7 +70,7 @@ module tb_baseline_pe #(
     task automatic start_vcd;
     begin
 `ifdef VCD
-        $dumpvars(0, tb_baseline_pe.baseline_pe_i);
+        $dumpvars(0, tb_pe_top.pe_top_i);
 `endif
     end
     endtask

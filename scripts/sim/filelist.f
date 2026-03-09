@@ -26,4 +26,4 @@ $(CODE_HOME)/ai_core/rtl/ff.sv
 $(CODE_HOME)/ai_core/rtl/ff_n.sv
 $(CODE_HOME)/ai_core/rtl/pp_gen.sv
 $(CODE_HOME)/ai_core/rtl/cpr_tree.sv
-$(CODE_HOME)/ai_core/rtl/baseline_pe.sv
+$(CODE_HOME)/ai_core/rtl/pe_top.sv
