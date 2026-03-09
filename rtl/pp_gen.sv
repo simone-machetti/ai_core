@@ -20,7 +20,7 @@ module pp_gen
     genvar i;
     generate
 
-        if (MODE == 0) begin : gen_4x8
+        if (MODE == BASELINE_4_8) begin : gen_baseline_4x8
 
             multsigned_array #(
                 .IN_SIZE_0 (IN_WIDTH_A),
@@ -32,7 +32,7 @@ module pp_gen
                 .out_o (pp_o)
             );
 
-        end else begin : gen_4x4
+        end else if (MODE == BASELINE_4_4) begin : gen_baseline_4x4
 
             logic [IN_WIDTH_A-1:0] b_low  [0:IN_SIZE-1];
             logic [IN_WIDTH_A-1:0] b_high [0:IN_SIZE-1];
@@ -87,6 +87,34 @@ module pp_gen
             ) extender_n_high_i (
                 .in_i (pp_high),
                 .out_o(pp_o[(PP_SIZE/2):PP_SIZE-1])
+            );
+
+        end else if (MODE == WINOGRAD_4_8) begin : gen_winograd_4x8
+
+            add_mult_array #(
+                .IN_SIZE_0 (IN_WIDTH_A),
+                .IN_SIZE_1 (IN_WIDTH_B),
+                .ARRAY_SIZE(IN_SIZE)
+            ) add_mult_array_i (
+                .in_0_i(a_i),
+                .in_1_i(b_i),
+                .out_o (pp_o)
+            );
+
+        end else if (MODE == WINOGRAD_4_4) begin : gen_winograd_4x4
+
+
+
+        end else begin : gen_default_baseline_4x8
+
+            multsigned_array #(
+                .IN_SIZE_0 (IN_WIDTH_A),
+                .IN_SIZE_1 (IN_WIDTH_B),
+                .ARRAY_SIZE(IN_SIZE)
+            ) multsigned_array_i (
+                .in_0_i(a_i),
+                .in_1_i(b_i),
+                .out_o (pp_o)
             );
 
         end

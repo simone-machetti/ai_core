@@ -91,68 +91,6 @@ module tb_pe_top
     endtask
 
     // -------------------------------------------------------------------------
-    // Run and check
-    // -------------------------------------------------------------------------
-    task automatic run_and_check(
-        input bit                          use_random,
-        input logic signed [IN_WIDTH_A-1:0] a_fixed,
-        input logic signed [IN_WIDTH_B-1:0] b_fixed
-    );
-        begin
-            acc = '0;
-            for (int i = 0; i < IN_SIZE; i++) begin
-                if (use_random) begin
-                    in_0[i] = IN_WIDTH_A'($signed($urandom()));
-                    in_1[i] = IN_WIDTH_B'($signed($urandom()));
-                end else begin
-                    in_0[i] = a_fixed;
-                    in_1[i] = b_fixed;
-                end
-
-                acc = (OUT_WIDTH)'($signed(acc)) + ((OUT_WIDTH)'($signed(in_0[i])) * (OUT_WIDTH)'($signed(in_1[i])));
-            end
-
-            repeat(3) @(posedge clk);
-
-            if ((OUT_WIDTH)'($signed(out)) !== (OUT_WIDTH)'($signed(acc))) begin
-                $error("Error!\n");
-                $fatal;
-            end
-
-            @(posedge clk);
-        end
-    endtask
-
-    // -------------------------------------------------------------------------
-    // Verify DUT with random numbers
-    // -------------------------------------------------------------------------
-    task automatic verify_with_random;
-        begin
-            for (int i = 0; i < 100; i++) begin
-                run_and_check(1'b1, '0, '0);
-            end
-        end
-    endtask
-
-    // -------------------------------------------------------------------------
-    // Verify DUT with corner cases
-    // -------------------------------------------------------------------------
-    task automatic verify_with_corner;
-        begin
-            max_pos_0 = (1 <<< (IN_WIDTH_A - 1)) - 1;
-            min_neg_0 =  1 <<< (IN_WIDTH_A - 1);
-            max_pos_1 = (1 <<< (IN_WIDTH_B - 1)) - 1;
-            min_neg_1 =  1 <<< (IN_WIDTH_B - 1);
-
-            run_and_check(1'b0, max_pos_0, max_pos_1);
-            run_and_check(1'b0, min_neg_0, min_neg_1);
-            run_and_check(1'b0, max_pos_0, min_neg_1);
-            run_and_check(1'b0, min_neg_0, max_pos_1);
-            run_and_check(1'b0,        '0,        '0);
-        end
-    endtask
-
-    // -------------------------------------------------------------------------
     // Generate the clock
     // -------------------------------------------------------------------------
     initial clk = 1'b0;
@@ -165,22 +103,161 @@ module tb_pe_top
     end
 
     // -------------------------------------------------------------------------
-    // Verify the DUT
+    // Mode-dependent verification
     // -------------------------------------------------------------------------
-    initial begin
-        $display("\nStarting verification...\n");
+    generate
+        if (MODE == WINOGRAD_4_8 || MODE == WINOGRAD_4_4) begin : gen_winograd
 
-        init_vcd;
-        reset_dut;
-        start_vcd;
+            task automatic run_and_check(
+                input bit                            use_random,
+                input logic signed [IN_WIDTH_A-1:0] a0_fixed,
+                input logic signed [IN_WIDTH_B-1:0] b0_fixed,
+                input logic signed [IN_WIDTH_A-1:0] a1_fixed,
+                input logic signed [IN_WIDTH_B-1:0] b1_fixed
+            );
+                begin
+                    acc = '0;
+                    for (int i = 0; i < IN_SIZE; i = i + 2) begin
+                        if (use_random) begin
+                            in_0[i]   = IN_WIDTH_A'($signed($urandom()));
+                            in_1[i]   = IN_WIDTH_B'($signed($urandom()));
+                            in_0[i+1] = IN_WIDTH_A'($signed($urandom()));
+                            in_1[i+1] = IN_WIDTH_B'($signed($urandom()));
+                        end else begin
+                            in_0[i]   = a0_fixed;
+                            in_1[i]   = b0_fixed;
+                            in_0[i+1] = a1_fixed;
+                            in_1[i+1] = b1_fixed;
+                        end
 
-        verify_with_random;
-        verify_with_corner;
+                        acc = OUT_WIDTH'($signed(acc)) +
+                              ((OUT_WIDTH'($signed(in_0[i+1])) + OUT_WIDTH'($signed(in_1[i]))) *
+                               (OUT_WIDTH'($signed(in_0[i]))   + OUT_WIDTH'($signed(in_1[i+1]))));
+                    end
 
-        stop_vcd;
+                    repeat(3) @(posedge clk);
 
-        $display("All tests PASSED!\n");
-        $finish;
-    end
+                    if (OUT_WIDTH'($signed(out)) !== OUT_WIDTH'($signed(acc))) begin
+                        $error("Error!\n");
+                        $fatal;
+                    end
+
+                    @(posedge clk);
+                end
+            endtask
+
+            task automatic verify_with_random;
+                begin
+                    for (int i = 0; i < 100; i++) begin
+                        run_and_check(1'b1, '0, '0, '0, '0);
+                    end
+                end
+            endtask
+
+            task automatic verify_with_corner;
+                begin
+                    max_pos_0 = (1 <<< (IN_WIDTH_A - 1)) - 1;
+                    min_neg_0 =  1 <<< (IN_WIDTH_A - 1);
+                    max_pos_1 = (1 <<< (IN_WIDTH_B - 1)) - 1;
+                    min_neg_1 =  1 <<< (IN_WIDTH_B - 1);
+
+                    run_and_check(1'b0, max_pos_0, max_pos_1, max_pos_0, max_pos_1);
+                    run_and_check(1'b0, min_neg_0, min_neg_1, min_neg_0, min_neg_1);
+                    run_and_check(1'b0, max_pos_0, min_neg_1, max_pos_0, min_neg_1);
+                    run_and_check(1'b0, min_neg_0, max_pos_1, min_neg_0, max_pos_1);
+                    run_and_check(1'b0,        '0,        '0,        '0,        '0);
+                end
+            endtask
+
+            initial begin
+                $display("\nStarting verification...\n");
+
+                init_vcd;
+                reset_dut;
+                start_vcd;
+
+                verify_with_random;
+                verify_with_corner;
+
+                stop_vcd;
+
+                $display("All tests PASSED!\n");
+                $finish;
+            end
+
+        end else begin : gen_baseline
+
+            task automatic run_and_check(
+                input bit                            use_random,
+                input logic signed [IN_WIDTH_A-1:0] a_fixed,
+                input logic signed [IN_WIDTH_B-1:0] b_fixed
+            );
+                begin
+                    acc = '0;
+                    for (int i = 0; i < IN_SIZE; i++) begin
+                        if (use_random) begin
+                            in_0[i] = IN_WIDTH_A'($signed($urandom()));
+                            in_1[i] = IN_WIDTH_B'($signed($urandom()));
+                        end else begin
+                            in_0[i] = a_fixed;
+                            in_1[i] = b_fixed;
+                        end
+
+                        acc = OUT_WIDTH'($signed(acc)) +
+                              (OUT_WIDTH'($signed(in_0[i])) * OUT_WIDTH'($signed(in_1[i])));
+                    end
+
+                    repeat(3) @(posedge clk);
+
+                    if (OUT_WIDTH'($signed(out)) !== OUT_WIDTH'($signed(acc))) begin
+                        $error("Error!\n");
+                        $fatal;
+                    end
+
+                    @(posedge clk);
+                end
+            endtask
+
+            task automatic verify_with_random;
+                begin
+                    for (int i = 0; i < 100; i++) begin
+                        run_and_check(1'b1, '0, '0);
+                    end
+                end
+            endtask
+
+            task automatic verify_with_corner;
+                begin
+                    max_pos_0 = (1 <<< (IN_WIDTH_A - 1)) - 1;
+                    min_neg_0 =  1 <<< (IN_WIDTH_A - 1);
+                    max_pos_1 = (1 <<< (IN_WIDTH_B - 1)) - 1;
+                    min_neg_1 =  1 <<< (IN_WIDTH_B - 1);
+
+                    run_and_check(1'b0, max_pos_0, max_pos_1);
+                    run_and_check(1'b0, min_neg_0, min_neg_1);
+                    run_and_check(1'b0, max_pos_0, min_neg_1);
+                    run_and_check(1'b0, min_neg_0, max_pos_1);
+                    run_and_check(1'b0,        '0,        '0);
+                end
+            endtask
+
+            initial begin
+                $display("\nStarting verification...\n");
+
+                init_vcd;
+                reset_dut;
+                start_vcd;
+
+                verify_with_random;
+                verify_with_corner;
+
+                stop_vcd;
+
+                $display("All tests PASSED!\n");
+                $finish;
+            end
+
+        end
+    endgenerate
 
 endmodule

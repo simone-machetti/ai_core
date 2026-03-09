@@ -14,13 +14,16 @@ package pe_pkg;
 
     typedef enum int {
         BASELINE_4_8 = 0,
-        BASELINE_4_4 = 1
+        BASELINE_4_4 = 1,
+        WINOGRAD_4_8 = 2,
+        WINOGRAD_4_4 = 3
     } pe_mode_e;
 
     function automatic int calc_pp_per_mul(pe_mode_e mode);
         case (mode)
             BASELINE_4_8: return (IN_WIDTH_B + 2) / 3;
             BASELINE_4_4: return ((IN_WIDTH_B / 2) + 2) / 3;
+            WINOGRAD_4_8: return ((IN_WIDTH_B + 1) + 2) / 3;
             default:      return (IN_WIDTH_B + 2) / 3;
         endcase
     endfunction
@@ -31,6 +34,7 @@ package pe_pkg;
         case (mode)
             BASELINE_4_8: return pp_per_mul * IN_SIZE;
             BASELINE_4_4: return pp_per_mul * (IN_SIZE * 2);
+            WINOGRAD_4_8: return pp_per_mul * IN_SIZE / 2;
             default:      return pp_per_mul * IN_SIZE;
         endcase
     endfunction
@@ -39,6 +43,7 @@ package pe_pkg;
         case (mode)
             BASELINE_4_8: return IN_WIDTH_A + IN_WIDTH_B;
             BASELINE_4_4: return IN_WIDTH_A + (IN_WIDTH_B / 2) + 4;
+            WINOGRAD_4_8: return (IN_WIDTH_B + 1) * 2;
             default:      return IN_WIDTH_A + IN_WIDTH_B;
         endcase
     endfunction
