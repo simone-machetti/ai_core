@@ -55,7 +55,7 @@ package pe_pkg;
         int pp_width = calc_pp_width(mode);
         int pp_size  = calc_pp_size(mode);
 
-        return pp_width + ((($clog2(pp_size) - 1) * 2) + 20 + 1);
+        return pp_width + 1 + ((($clog2(pp_size) - 1) * 2) + 20 + 1);
     endfunction
 
 endpackage

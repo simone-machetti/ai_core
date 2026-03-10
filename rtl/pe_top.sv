@@ -15,6 +15,7 @@ module pe_top
 )(
     input  logic                  clk_i,
     input  logic                  rst_ni,
+    input  logic [ OUT_WIDTH-2:0] acc_i,
     input  logic [IN_WIDTH_A-1:0] a_i [0:IN_SIZE-1],
     input  logic [IN_WIDTH_B-1:0] b_i [0:IN_SIZE-1],
     output logic [ OUT_WIDTH-1:0] out_o
@@ -65,6 +66,7 @@ module pe_top
     cpr_tree #(
         .MODE(MODE)
     ) cpr_tree_i (
+        .acc_i(acc_i),
         .pp_i (pp),
         .out_o(out)
     );
