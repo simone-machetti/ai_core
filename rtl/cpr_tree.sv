@@ -9,11 +9,10 @@ module cpr_tree
 #(
     parameter pe_mode_e MODE = BASELINE_4_8,
 
-    localparam int PP_SIZE   = calc_pp_size(MODE),
-    localparam int PP_WIDTH  = calc_pp_width(MODE),
-    localparam int OUT_WIDTH = calc_out_width(MODE)
+    localparam int PP_SIZE  = calc_pp_size(MODE),
+    localparam int PP_WIDTH = calc_pp_width(MODE)
 )(
-    input  logic [OUT_WIDTH-2:0] acc_i,
+    input  logic [ACC_WIDTH-1:0] acc_i,
     input  logic [ PP_WIDTH-1:0] pp_i [0:PP_SIZE-1],
     output logic [OUT_WIDTH-1:0] out_o
 );
@@ -205,11 +204,11 @@ module cpr_tree
     endgenerate
 
     // -------------------------------------------------------------------------
-    // Final adder
+    // Level 7: Final adder
     // -------------------------------------------------------------------------
     localparam int PP_LEVEL_8_WIDTH = (PP_LEVEL_7_WIDTH + 1);
 
-    logic [OUT_WIDTH-2:0] pp_level_8;
+    logic [PP_LEVEL_8_WIDTH-1:0] pp_level_8;
 
     adder_n #(
         .SIZE(PP_LEVEL_7_WIDTH)
@@ -220,16 +219,27 @@ module cpr_tree
     );
 
     // -------------------------------------------------------------------------
-    // Level 6: Compression
+    // Level 8: Sign-extension
+    // -------------------------------------------------------------------------
+    logic [ACC_WIDTH-1:0] pp_level_9;
+
+    sign_extender #(
+        .IN_SIZE (PP_LEVEL_8_WIDTH),
+        .OUT_SIZE(ACC_WIDTH)
+    ) sign_extender_i (
+        .in_i (pp_level_8),
+        .out_o(pp_level_9)
+    );
+
+    // -------------------------------------------------------------------------
+    // Level 9: Final accumulation
     // -------------------------------------------------------------------------
     adder_n #(
-        .SIZE(PP_LEVEL_8_WIDTH)
+        .SIZE(ACC_WIDTH)
     ) adder_n_acc_i (
-        .in_0_i(pp_level_8),
+        .in_0_i(pp_level_9),
         .in_1_i(acc_i),
         .out_o (out_o)
     );
-
-    initial $display("OUT_WIDTH = %d", OUT_WIDTH);
 
 endmodule

@@ -9,13 +9,12 @@ module pe_top
 #(
     parameter pe_mode_e MODE = BASELINE_4_8,
 
-    localparam int PP_SIZE   = calc_pp_size(MODE),
-    localparam int PP_WIDTH  = calc_pp_width(MODE),
-    localparam int OUT_WIDTH = calc_out_width(MODE)
+    localparam int PP_SIZE  = calc_pp_size(MODE),
+    localparam int PP_WIDTH = calc_pp_width(MODE)
 )(
     input  logic                  clk_i,
     input  logic                  rst_ni,
-    input  logic [ OUT_WIDTH-2:0] acc_i,
+    input  logic [ ACC_WIDTH-1:0] acc_i,
     input  logic [IN_WIDTH_A-1:0] a_i [0:IN_SIZE-1],
     input  logic [IN_WIDTH_B-1:0] b_i [0:IN_SIZE-1],
     output logic [ OUT_WIDTH-1:0] out_o

@@ -11,6 +11,8 @@ package pe_pkg;
     localparam int IN_WIDTH_A = 4;
     localparam int IN_WIDTH_B = 8;
     localparam int IN_SIZE    = 64;
+    localparam int ACC_WIDTH  = 48;
+    localparam int OUT_WIDTH  = 49;
 
     typedef enum int {
         BASELINE_4_8 = 0,
@@ -49,13 +51,6 @@ package pe_pkg;
             WINOGRAD_4_4: return (((IN_WIDTH_B / 2) + 1) * 2) + 4;
             default:      return IN_WIDTH_A + IN_WIDTH_B;
         endcase
-    endfunction
-
-    function automatic int calc_out_width(pe_mode_e mode);
-        int pp_width = calc_pp_width(mode);
-        int pp_size  = calc_pp_size(mode);
-
-        return pp_width + 1 + ((($clog2(pp_size) - 1) * 2) + 20 + 1);
     endfunction
 
 endpackage

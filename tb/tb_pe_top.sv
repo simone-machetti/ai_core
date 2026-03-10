@@ -10,9 +10,7 @@
 module tb_pe_top
     import pe_pkg::*;
 #(
-    parameter pe_mode_e MODE = BASELINE_4_8,
-
-    localparam int OUT_WIDTH = calc_out_width(MODE)
+    parameter pe_mode_e MODE = BASELINE_4_8
 );
     real clk_period = `CLK_PERIOD_NS;
 
@@ -39,14 +37,14 @@ module tb_pe_top
     logic [IN_WIDTH_B-1:0] in_1 [0:IN_SIZE-1];
     logic [ OUT_WIDTH-1:0] out;
     logic [ OUT_WIDTH-1:0] acc;
-    logic [ OUT_WIDTH-2:0] int_acc;
+    logic [ ACC_WIDTH-1:0] pe_acc;
 
     pe_top #(
         .MODE(MODE)
     ) pe_top_i (
         .clk_i (clk),
         .rst_ni(rst_n),
-        .acc_i (int_acc),
+        .acc_i (pe_acc),
         .a_i   (in_0),
         .b_i   (in_1),
         .out_o (out)
@@ -119,8 +117,8 @@ module tb_pe_top
                 input logic signed [IN_WIDTH_B-1:0] b1_fixed
             );
                 begin
-                    acc     = '0;
-                    int_acc = (OUT_WIDTH-1)'($signed($urandom()));
+                    acc    = '0;
+                    pe_acc = ACC_WIDTH'($signed($urandom()));
 
                     for (int i = 0; i < IN_SIZE; i = i + 2) begin
                         if (use_random) begin
@@ -142,7 +140,7 @@ module tb_pe_top
 
                     repeat(3) @(posedge clk);
 
-                    if (OUT_WIDTH'($signed(out)) !== (OUT_WIDTH'($signed(acc)) + OUT_WIDTH'($signed(int_acc)))) begin
+                    if (OUT_WIDTH'($signed(out)) !== (OUT_WIDTH'($signed(acc)) + OUT_WIDTH'($signed(pe_acc)))) begin
                         $error("Error!\n");
                         $fatal;
                     end
@@ -207,8 +205,8 @@ module tb_pe_top
                 logic        [3:0] b0_lo, b1_lo;
                 logic signed [3:0] b0_hi, b1_hi;
                 begin
-                    acc     = '0;
-                    int_acc = (OUT_WIDTH-1)'($signed($urandom()));
+                    acc    = '0;
+                    pe_acc = ACC_WIDTH'($signed($urandom()));
 
                     for (int i = 0; i < IN_SIZE; i = i + 2) begin
                         if (use_random) begin
@@ -246,7 +244,7 @@ module tb_pe_top
 
                     repeat (3) @(posedge clk);
 
-                    if (OUT_WIDTH'($signed(out)) !== (OUT_WIDTH'($signed(acc)) + OUT_WIDTH'($signed(int_acc)))) begin
+                    if (OUT_WIDTH'($signed(out)) !== (OUT_WIDTH'($signed(acc)) + OUT_WIDTH'($signed(pe_acc)))) begin
                         $error("Error!");
                         $fatal;
                     end
@@ -297,13 +295,13 @@ module tb_pe_top
         end else begin : gen_baseline
 
             task automatic run_and_check(
-                input bit                            use_random,
+                input bit                           use_random,
                 input logic signed [IN_WIDTH_A-1:0] a_fixed,
                 input logic signed [IN_WIDTH_B-1:0] b_fixed
             );
                 begin
-                    acc     = '0;
-                    int_acc = (OUT_WIDTH-1)'($signed($urandom()));
+                    acc    = '0;
+                    pe_acc = ACC_WIDTH'($signed($urandom()));
 
                     for (int i = 0; i < IN_SIZE; i++) begin
                         if (use_random) begin
@@ -320,7 +318,7 @@ module tb_pe_top
 
                     repeat(3) @(posedge clk);
 
-                    if (OUT_WIDTH'($signed(out)) !== (OUT_WIDTH'($signed(acc)) + OUT_WIDTH'($signed(int_acc)))) begin
+                    if (OUT_WIDTH'($signed(out)) !== (OUT_WIDTH'($signed(acc)) + OUT_WIDTH'($signed(pe_acc)))) begin
                         $error("Error!\n");
                         $fatal;
                     end
