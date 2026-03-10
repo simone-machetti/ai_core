@@ -25,6 +25,7 @@ yosys "read_liberty -lib $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/a
 # Read SystemVerilog sources
 # -----------------------------------------------------------------------------
 yosys "read_slang \
+    $env(CODE_HOME)/ai_core/rtl/pe_pkg.sv \
     $env(CODE_HOME)/ai_core/rtl/adder_n.sv \
     $env(CODE_HOME)/ai_core/rtl/encoder.sv \
     $env(CODE_HOME)/ai_core/rtl/sign_extender.sv \
@@ -43,8 +44,10 @@ yosys "read_slang \
     $env(CODE_HOME)/ai_core/rtl/multsigned_array.sv \
     $env(CODE_HOME)/ai_core/rtl/add_mult.sv \
     $env(CODE_HOME)/ai_core/rtl/add_mult_array.sv \
-    $env(CODE_HOME)/ai_core/rtl/baseline.sv -G IN_SIZE_0=$env(SEL_IN_SIZE_0) -G IN_SIZE_1=$env(SEL_IN_SIZE_1) -G ARRAY_SIZE=$env(SEL_ARRAY_SIZE) \
-    $env(CODE_HOME)/ai_core/rtl/winograd.sv -G IN_SIZE_0=$env(SEL_IN_SIZE_0) -G IN_SIZE_1=$env(SEL_IN_SIZE_1) -G ARRAY_SIZE=$env(SEL_ARRAY_SIZE) \
-    $env(CODE_HOME)/ai_core/rtl/baseline_pe.sv"
+    $env(CODE_HOME)/ai_core/rtl/ff.sv \
+    $env(CODE_HOME)/ai_core/rtl/ff_n.sv \
+    $env(CODE_HOME)/ai_core/rtl/pp_gen.sv \
+    $env(CODE_HOME)/ai_core/rtl/cpr_tree.sv \
+    $env(CODE_HOME)/ai_core/rtl/pe_top.sv -G MODE=$env(SEL_MODE)"
 
 # Add --keep-hierarchy option to preserve internal instances
