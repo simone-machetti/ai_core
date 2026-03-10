@@ -11,7 +11,7 @@ module add_mult_array #(
     parameter bit IS_SIGNED_1 = 1,
 
     // Internal usage only
-    parameter int IN_MUL_SIZE  = (IN_SIZE_0 > IN_SIZE_1) ? (IN_SIZE_0 + 1) : (IN_SIZE_1 + 1),
+    parameter int IN_MUL_SIZE  = IS_SIGNED_1 == 0 ? (IN_SIZE_0 > IN_SIZE_1) ? (IN_SIZE_0 + 2) : (IN_SIZE_1 + 2) : (IN_SIZE_0 > IN_SIZE_1) ? (IN_SIZE_0 + 1) : (IN_SIZE_1 + 1),
     parameter int PP_PER_MUL   = ((IN_MUL_SIZE + 2) / 3),
     parameter int PP_PER_ARRAY = (PP_PER_MUL * ARRAY_SIZE / 2),
     parameter int PP_SIZE      = (IN_MUL_SIZE * 2)
@@ -47,7 +47,7 @@ module add_mult_array #(
             multsigned #(
                 .IN_SIZE_0 (IN_MUL_SIZE),
                 .IN_SIZE_1 (IN_MUL_SIZE),
-                .IS_SIGNED_1(IS_SIGNED_1)
+                .IS_SIGNED_1(1)
             ) multsigned_i (
                 .in_0_i(sum_0),
                 .in_1_i(sum_1),

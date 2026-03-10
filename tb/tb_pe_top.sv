@@ -106,10 +106,11 @@ module tb_pe_top
     // Mode-dependent verification
     // -------------------------------------------------------------------------
     generate
-        if (MODE == WINOGRAD_4_8 || MODE == WINOGRAD_4_4) begin : gen_winograd
+
+        if (MODE == WINOGRAD_4_8) begin : gen_winograd_4_8
 
             task automatic run_and_check(
-                input bit                            use_random,
+                input bit                           use_random,
                 input logic signed [IN_WIDTH_A-1:0] a0_fixed,
                 input logic signed [IN_WIDTH_B-1:0] b0_fixed,
                 input logic signed [IN_WIDTH_A-1:0] a1_fixed,
@@ -139,6 +140,109 @@ module tb_pe_top
 
                     if (OUT_WIDTH'($signed(out)) !== OUT_WIDTH'($signed(acc))) begin
                         $error("Error!\n");
+                        $fatal;
+                    end
+
+                    @(posedge clk);
+                end
+            endtask
+
+            task automatic verify_with_random;
+                begin
+                    for (int i = 0; i < 100; i++) begin
+                        run_and_check(1'b1, '0, '0, '0, '0);
+                    end
+                end
+            endtask
+
+            task automatic verify_with_corner;
+                begin
+                    max_pos_0 = (1 <<< (IN_WIDTH_A - 1)) - 1;
+                    min_neg_0 =  1 <<< (IN_WIDTH_A - 1);
+                    max_pos_1 = (1 <<< (IN_WIDTH_B - 1)) - 1;
+                    min_neg_1 =  1 <<< (IN_WIDTH_B - 1);
+
+                    run_and_check(1'b0, max_pos_0, max_pos_1, max_pos_0, max_pos_1);
+                    run_and_check(1'b0, min_neg_0, min_neg_1, min_neg_0, min_neg_1);
+                    run_and_check(1'b0, max_pos_0, min_neg_1, max_pos_0, min_neg_1);
+                    run_and_check(1'b0, min_neg_0, max_pos_1, min_neg_0, max_pos_1);
+                    run_and_check(1'b0,        '0,        '0,        '0,        '0);
+                end
+            endtask
+
+            initial begin
+                $display("\nStarting verification...\n");
+
+                init_vcd;
+                reset_dut;
+                start_vcd;
+
+                verify_with_random;
+                verify_with_corner;
+
+                stop_vcd;
+
+                $display("All tests PASSED!\n");
+                $finish;
+            end
+
+        end else if (MODE == WINOGRAD_4_4) begin : gen_winograd_4_4
+
+            task automatic run_and_check(
+                input bit                           use_random,
+                input logic signed [IN_WIDTH_A-1:0] a0_fixed,
+                input logic signed [IN_WIDTH_B-1:0] b0_fixed,
+                input logic signed [IN_WIDTH_A-1:0] a1_fixed,
+                input logic signed [IN_WIDTH_B-1:0] b1_fixed
+            );
+                logic signed [OUT_WIDTH-1:0] a0_ext, a1_ext;
+                logic signed [OUT_WIDTH-1:0] b0_lo_ext, b1_lo_ext;
+                logic signed [OUT_WIDTH-1:0] b0_hi_ext, b1_hi_ext;
+                logic signed [OUT_WIDTH-1:0] p_lo, p_hi;
+
+                logic        [3:0] b0_lo, b1_lo;
+                logic signed [3:0] b0_hi, b1_hi;
+                begin
+                    acc = '0;
+
+                    for (int i = 0; i < IN_SIZE; i = i + 2) begin
+                        if (use_random) begin
+                            in_0[i]   = IN_WIDTH_A'($signed($urandom()));
+                            in_1[i]   = IN_WIDTH_B'($signed($urandom()));
+                            in_0[i+1] = IN_WIDTH_A'($signed($urandom()));
+                            in_1[i+1] = IN_WIDTH_B'($signed($urandom()));
+                        end else begin
+                            in_0[i]   = a0_fixed;
+                            in_1[i]   = b0_fixed;
+                            in_0[i+1] = a1_fixed;
+                            in_1[i+1] = b1_fixed;
+                        end
+
+                        a0_ext = OUT_WIDTH'($signed(in_0[i]));
+                        a1_ext = OUT_WIDTH'($signed(in_0[i+1]));
+
+                        b0_lo = in_1[i][3:0];
+                        b1_lo = in_1[i+1][3:0];
+                        b0_hi = in_1[i][7:4];
+                        b1_hi = in_1[i+1][7:4];
+
+                        b0_lo_ext = OUT_WIDTH'($unsigned(b0_lo));
+                        b1_lo_ext = OUT_WIDTH'($unsigned(b1_lo));
+
+                        b0_hi_ext = OUT_WIDTH'($signed(b0_hi));
+                        b1_hi_ext = OUT_WIDTH'($signed(b1_hi));
+
+                        p_lo = (a1_ext + b0_lo_ext) * (a0_ext + b1_lo_ext);
+                        p_hi = (a1_ext + b0_hi_ext) * (a0_ext + b1_hi_ext);
+
+                        acc = OUT_WIDTH'($signed(acc))
+                            + OUT_WIDTH'($signed(p_lo + (p_hi <<< 4)));
+                    end
+
+                    repeat (3) @(posedge clk);
+
+                    if (OUT_WIDTH'($signed(out)) !== OUT_WIDTH'($signed(acc))) begin
+                        $error("Error!");
                         $fatal;
                     end
 
@@ -249,7 +353,7 @@ module tb_pe_top
                 start_vcd;
 
                 verify_with_random;
-                // verify_with_corner;
+                verify_with_corner;
 
                 stop_vcd;
 
@@ -258,6 +362,7 @@ module tb_pe_top
             end
 
         end
+
     endgenerate
 
 endmodule

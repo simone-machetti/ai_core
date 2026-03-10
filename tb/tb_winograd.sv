@@ -100,6 +100,42 @@ module tb_winograd #(
     // -------------------------------------------------------------------------
     // Run and check
     // -------------------------------------------------------------------------
+    // task automatic run_and_check(
+    //     input bit                          use_random,
+    //     input logic signed [IN_SIZE_0-1:0] a0_fixed,
+    //     input logic signed [IN_SIZE_1-1:0] b0_fixed,
+    //     input logic signed [IN_SIZE_0-1:0] a1_fixed,
+    //     input logic signed [IN_SIZE_1-1:0] b1_fixed
+    // );
+    //     begin
+    //         acc = '0;
+    //         for (int i = 0; i < ARRAY_SIZE; i = i + 2) begin
+    //             if (use_random) begin
+    //                 in_0[i]   = IN_SIZE_0'($signed($urandom()));
+    //                 in_1[i]   = IN_SIZE_1'($signed($urandom()));
+    //                 in_0[i+1] = IN_SIZE_0'($signed($urandom()));
+    //                 in_1[i+1] = IN_SIZE_1'($signed($urandom()));
+    //             end else begin
+    //                 in_0[i]   = a0_fixed;
+    //                 in_1[i]   = b0_fixed;
+    //                 in_0[i+1] = a1_fixed;
+    //                 in_1[i+1] = b1_fixed;
+    //             end
+
+    //             acc = (OUT_SIZE+1)'($signed(acc)) + (((OUT_SIZE+1)'($signed(in_0[i+1])) + (OUT_SIZE+1)'($signed(in_1[i]))) * ((OUT_SIZE+1)'($signed(in_0[i])) + (OUT_SIZE+1)'($signed(in_1[i+1]))));
+    //         end
+
+    //         repeat(3) @(posedge clk);
+
+    //         if (((OUT_SIZE+1)'($signed(out[0])) + (OUT_SIZE+1)'($signed(out[1]))) !== (OUT_SIZE+1)'($signed(acc))) begin
+    //             $error("Error!\n");
+    //             $fatal;
+    //         end
+
+    //         @(posedge clk);
+    //     end
+    // endtask
+
     task automatic run_and_check(
         input bit                          use_random,
         input logic signed [IN_SIZE_0-1:0] a0_fixed,
@@ -107,8 +143,22 @@ module tb_winograd #(
         input logic signed [IN_SIZE_0-1:0] a1_fixed,
         input logic signed [IN_SIZE_1-1:0] b1_fixed
     );
+        logic signed [OUT_SIZE:0] acc_golden;
+
+        // B split in low/high 4-bit chunks
+        logic        [3:0] b0_lo_u, b1_lo_u;   // low nibble as unsigned
+        logic signed [3:0] b0_hi_s, b1_hi_s;   // high nibble as signed
+
+        // widened temporaries
+        logic signed [OUT_SIZE:0] a0_ext, a1_ext;
+        logic signed [OUT_SIZE:0] b0_lo_ext, b1_lo_ext;
+        logic signed [OUT_SIZE:0] b0_hi_ext, b1_hi_ext;
+
+        logic signed [OUT_SIZE:0] p_lo, p_hi;
+
         begin
-            acc = '0;
+            acc_golden = '0;
+
             for (int i = 0; i < ARRAY_SIZE; i = i + 2) begin
                 if (use_random) begin
                     in_0[i]   = IN_SIZE_0'($signed($urandom()));
@@ -122,13 +172,40 @@ module tb_winograd #(
                     in_1[i+1] = b1_fixed;
                 end
 
-                acc = (OUT_SIZE+1)'($signed(acc)) + (((OUT_SIZE+1)'($signed(in_0[i+1])) + (OUT_SIZE+1)'($signed(in_1[i]))) * ((OUT_SIZE+1)'($signed(in_0[i])) + (OUT_SIZE+1)'($signed(in_1[i+1]))));
+                // Extend A inputs
+                a0_ext = (OUT_SIZE+1)'($signed(in_0[i]));
+                a1_ext = (OUT_SIZE+1)'($signed(in_0[i+1]));
+
+                // Split B into low/high nibbles
+                // For signed 8-bit B:
+                //   B = zero_extend(B[3:0]) + (sign_extend(B[7:4]) <<< 4)
+                b0_lo_u = in_1[i][3:0];
+                b1_lo_u = in_1[i+1][3:0];
+                b0_hi_s = in_1[i][7:4];
+                b1_hi_s = in_1[i+1][7:4];
+
+                b0_lo_ext = (OUT_SIZE+1)'($signed({1'b0, b0_lo_u}));
+                b1_lo_ext = (OUT_SIZE+1)'($signed({1'b0, b1_lo_u}));
+                b0_hi_ext = (OUT_SIZE+1)'($signed(b0_hi_s));
+                b1_hi_ext = (OUT_SIZE+1)'($signed(b1_hi_s));
+
+                // Same operation on low and high nibble
+                p_lo = (a1_ext + b0_lo_ext) * (a0_ext + b1_lo_ext);
+                p_hi = (a1_ext + b0_hi_ext) * (a0_ext + b1_hi_ext);
+
+                // Golden reference for the split-and-shift implementation
+                acc_golden = (OUT_SIZE+1)'($signed(acc_golden))
+                           + (OUT_SIZE+1)'($signed(p_lo + (p_hi <<< 4)));
             end
 
-            repeat(3) @(posedge clk);
+            repeat (3) @(posedge clk);
 
-            if (((OUT_SIZE+1)'($signed(out[0])) + (OUT_SIZE+1)'($signed(out[1]))) !== (OUT_SIZE+1)'($signed(acc))) begin
-                $error("Error!\n");
+            if (((OUT_SIZE+1)'($signed(out[0])) + (OUT_SIZE+1)'($signed(out[1])))
+                 !== (OUT_SIZE+1)'($signed(acc_golden))) begin
+                $error("Error!");
+                $display("DUT     = %0d", $signed((OUT_SIZE+1)'($signed(out[0])) +
+                                                 (OUT_SIZE+1)'($signed(out[1]))));
+                $display("GOLDEN  = %0d", $signed(acc_golden));
                 $fatal;
             end
 

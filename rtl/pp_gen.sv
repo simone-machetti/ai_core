@@ -106,8 +106,8 @@ module pp_gen
             logic [IN_WIDTH_A-1:0] b_low  [0:IN_SIZE-1];
             logic [IN_WIDTH_A-1:0] b_high [0:IN_SIZE-1];
 
-            logic [(PP_WIDTH-8)-1:0] pp_low  [0:(PP_SIZE/2)-1];
-            logic [(PP_WIDTH-8)-1:0] pp_high [0:(PP_SIZE/2)-1];
+            logic [(PP_WIDTH-2)-1:0] pp_low  [0:(PP_SIZE/2)-1];
+            logic [(PP_WIDTH-4)-1:0] pp_high [0:(PP_SIZE/2)-1];
 
             for (i = 0; i < IN_SIZE; i++) begin
                 assign b_low[i]  = b_i[i][IN_WIDTH_A-1:0];
@@ -138,9 +138,9 @@ module pp_gen
 
             extender_n #(
                 .IN_NUM   (PP_SIZE/2),
-                .IN_SIZE  (PP_WIDTH-8),
+                .IN_SIZE  (PP_WIDTH-2),
                 .IS_SIGNED(1),
-                .EXTEND   (8),
+                .EXTEND   (2),
                 .IS_SHIFT (0)
             ) extender_n_low_i (
                 .in_i (pp_low),
@@ -149,9 +149,9 @@ module pp_gen
 
             extender_n #(
                 .IN_NUM   (PP_SIZE/2),
-                .IN_SIZE  (PP_WIDTH-8),
+                .IN_SIZE  (PP_WIDTH-4),
                 .IS_SIGNED(1),
-                .EXTEND   (8),
+                .EXTEND   (4),
                 .IS_SHIFT (1)
             ) extender_n_high_i (
                 .in_i (pp_high),

@@ -46,7 +46,7 @@ package pe_pkg;
             BASELINE_4_8: return IN_WIDTH_A + IN_WIDTH_B;
             BASELINE_4_4: return IN_WIDTH_A + (IN_WIDTH_B / 2) + 4;
             WINOGRAD_4_8: return (IN_WIDTH_B + 1) * 2;
-            WINOGRAD_4_4: return 18;
+            WINOGRAD_4_4: return (((IN_WIDTH_B / 2) + 1) * 2) + 4;
             default:      return IN_WIDTH_A + IN_WIDTH_B;
         endcase
     endfunction
