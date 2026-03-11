@@ -11,7 +11,7 @@ module multsigned_array #(
     parameter bit IS_SIGNED_1 = 1,
 
     // Internal usage only
-    parameter int PP_PER_MUL   = ((IN_SIZE_1 + 2) / 3),
+    parameter int PP_PER_MUL   = ((IN_SIZE_0 + 2) / 3),
     parameter int PP_PER_ARRAY = (PP_PER_MUL * ARRAY_SIZE),
     parameter int PP_SIZE      = (IN_SIZE_0 + IN_SIZE_1)
 )(

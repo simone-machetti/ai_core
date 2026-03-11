@@ -23,11 +23,11 @@ package pe_pkg;
 
     function automatic int calc_pp_per_mul(pe_mode_e mode);
         case (mode)
-            BASELINE_4_8: return (IN_WIDTH_B + 2) / 3;
-            BASELINE_4_4: return ((IN_WIDTH_B / 2) + 2) / 3;
-            WINOGRAD_4_8: return ((IN_WIDTH_B + 1) + 2) / 3;
-            WINOGRAD_4_4: return (((IN_WIDTH_B / 2) + 1) + 2) / 3;
-            default:      return (IN_WIDTH_B + 2) / 3;
+            BASELINE_4_8: return (IN_WIDTH_A + 2) / 3;
+            BASELINE_4_4: return (IN_WIDTH_A + 2) / 3;
+            WINOGRAD_4_8: return ((IN_WIDTH_A + 1) + 2) / 3;
+            WINOGRAD_4_4: return ((IN_WIDTH_A + 1) + 2) / 3;
+            default:      return (IN_WIDTH_A + 2) / 3;
         endcase
     endfunction
 

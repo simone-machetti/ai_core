@@ -12,7 +12,7 @@ module multsigned #(
     parameter bit IS_SIGNED_1 = 1,
 
     // Internal usage only
-    parameter int PP_NUM  = ((IN_SIZE_1 + 2) / 3),
+    parameter int PP_NUM  = ((IN_SIZE_0 + 2) / 3),
     parameter int PP_SIZE = (IN_SIZE_0 + IN_SIZE_1)
 )(
     input  logic [IN_SIZE_0-1:0] in_0_i,
@@ -36,10 +36,10 @@ module multsigned #(
     function automatic logic bbit(input int idx);
         if (idx < 0) begin
             bbit = 1'b0;
-        end else if (idx >= IN_SIZE_1) begin
-            bbit = (IS_SIGNED_1) ? in_1_i[IN_SIZE_1-1] : 1'b0;
+        end else if (idx >= IN_SIZE_0) begin
+            bbit = in_0_i[IN_SIZE_0-1];
         end else begin
-            bbit = in_1_i[idx];
+            bbit = in_0_i[idx];
         end
     endfunction
 
@@ -67,10 +67,10 @@ module multsigned #(
     // Extender + first multiple generator
     // -------------------------------------------------------------------------
     sign_extender #(
-        .IN_SIZE (IN_SIZE_0),
+        .IN_SIZE (IN_SIZE_1),
         .OUT_SIZE(PP_SIZE)
     ) extender_i (
-        .in_i (in_0_i),
+        .in_i (in_1_i),
         .out_o(e)
     );
 
