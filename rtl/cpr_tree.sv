@@ -2,6 +2,8 @@
 // Author: Simone Machetti
 // -----------------------------------------------------------------------------
 
+/* verilator lint_off GENUNNAMED */
+
 `timescale 1 ns/1 ps
 
 module cpr_tree
@@ -186,52 +188,112 @@ module cpr_tree
         // -------------------------------------------------------------------------
         // Level 6: Extension
         // -------------------------------------------------------------------------
-        localparam int PP_LEVEL_7_SIZE  = 5;
-        localparam int PP_LEVEL_7_WIDTH = ACC_WIDTH;
 
-        logic [PP_LEVEL_7_WIDTH-1:0] pp_level_7 [0:PP_LEVEL_7_SIZE-1];
+        if (MODE == BASELINE_4_8) begin
 
-        extender_n #(
-            .IN_NUM   (4),
-            .IN_SIZE  (PP_LEVEL_6_WIDTH),
-            .IS_SIGNED(1),
-            .EXTEND   (ACC_WIDTH-PP_LEVEL_6_WIDTH),
-            .IS_SHIFT (0)
-        ) extender_n_level_6_i (
-            .in_i (pp_level_6),
-            .out_o(pp_level_7[0:3])
-        );
+            localparam int PP_LEVEL_7_SIZE  = 5;
+            localparam int PP_LEVEL_7_WIDTH = ACC_WIDTH;
 
-        assign pp_level_7[4] = acc_i;
+            logic [PP_LEVEL_7_WIDTH-1:0] pp_level_7 [0:PP_LEVEL_7_SIZE-1];
 
-        // -------------------------------------------------------------------------
-        // Level 7: Compressor
-        // -------------------------------------------------------------------------
-        localparam int PP_LEVEL_8_SIZE  = 2;
-        localparam int PP_LEVEL_8_WIDTH = ACC_WIDTH + 4;
+            extender_n #(
+                .IN_NUM   (4),
+                .IN_SIZE  (PP_LEVEL_6_WIDTH),
+                .IS_SIGNED(1),
+                .EXTEND   (ACC_WIDTH-PP_LEVEL_6_WIDTH),
+                .IS_SHIFT (0)
+            ) extender_n_level_6_i (
+                .in_i (pp_level_6),
+                .out_o(pp_level_7[0:3])
+            );
 
-        logic [PP_LEVEL_8_WIDTH-1:0] pp_level_8 [0:PP_LEVEL_8_SIZE-1];
+            assign pp_level_7[4] = acc_i;
 
-        compressor_n_2 #(
-            .IN_NUM (5),
-            .IN_SIZE(ACC_WIDTH)
-        ) compressor_n_2_level_7_i (
-            .in_i   (pp_level_7),
-            .sum_o  (pp_level_8[0]),
-            .carry_o(pp_level_8[1])
-        );
+            // -------------------------------------------------------------------------
+            // Level 7: Compressor
+            // -------------------------------------------------------------------------
+            localparam int PP_LEVEL_8_SIZE  = 2;
+            localparam int PP_LEVEL_8_WIDTH = ACC_WIDTH + 4;
+
+            logic [PP_LEVEL_8_WIDTH-1:0] pp_level_8 [0:PP_LEVEL_8_SIZE-1];
+
+            compressor_n_2 #(
+                .IN_NUM (5),
+                .IN_SIZE(ACC_WIDTH)
+            ) compressor_n_2_level_7_i (
+                .in_i   (pp_level_7),
+                .sum_o  (pp_level_8[0]),
+                .carry_o(pp_level_8[1])
+            );
+
+            // -------------------------------------------------------------------------
+            // Level 8: Final adder
+            // -------------------------------------------------------------------------
+            adder_n #(
+                .SIZE(PP_LEVEL_8_WIDTH)
+            ) adder_n_i (
+                .in_0_i(pp_level_8[0]),
+                .in_1_i(pp_level_8[1]),
+                .out_o (out_o)
+            );
+
+        end else if (MODE == WINOGRAD_4_4) begin
+
+            localparam int PP_LEVEL_7_SIZE  = 8;
+            localparam int PP_LEVEL_7_WIDTH = ACC_WIDTH;
+
+            logic [PP_LEVEL_7_WIDTH-1:0] pp_level_7 [0:PP_LEVEL_7_SIZE-1];
+
+            extender_n #(
+                .IN_NUM   (4),
+                .IN_SIZE  (PP_LEVEL_6_WIDTH),
+                .IS_SIGNED(1),
+                .EXTEND   (ACC_WIDTH-PP_LEVEL_6_WIDTH),
+                .IS_SHIFT (0)
+            ) extender_n_level_6_i (
+                .in_i (pp_level_6),
+                .out_o(pp_level_7[0:3])
+            );
+
+            assign pp_level_7[4] = acc_i;
+            assign pp_level_7[5] = alpha_i;
+            assign pp_level_7[6] = beta_i;
+            assign pp_level_7[7] = '0;
+
+            // -------------------------------------------------------------------------
+            // Level 7: Compressor
+            // -------------------------------------------------------------------------
+            localparam int PP_LEVEL_8_SIZE  = 2;
+            localparam int PP_LEVEL_8_WIDTH = ACC_WIDTH + 4;
+
+            logic [PP_LEVEL_8_WIDTH-1:0] pp_level_8 [0:PP_LEVEL_8_SIZE-1];
+
+            compressor_n_2 #(
+                .IN_NUM (8),
+                .IN_SIZE(ACC_WIDTH)
+            ) compressor_n_2_level_7_i (
+                .in_i   (pp_level_7),
+                .sum_o  (pp_level_8[0]),
+                .carry_o(pp_level_8[1])
+            );
+
+            // -------------------------------------------------------------------------
+            // Level 8: Final adder
+            // -------------------------------------------------------------------------
+            adder_n #(
+                .SIZE(PP_LEVEL_8_WIDTH)
+            ) adder_n_i (
+                .in_0_i(pp_level_8[0]),
+                .in_1_i(pp_level_8[1]),
+                .out_o (out_o)
+            );
+
+        end else begin
+
+            // todo
+
+        end;
 
     endgenerate
-
-    // -------------------------------------------------------------------------
-    // Level 8: Final adder
-    // -------------------------------------------------------------------------
-    adder_n #(
-        .SIZE(PP_LEVEL_8_WIDTH)
-    ) adder_n_i (
-        .in_0_i(pp_level_8[0]),
-        .in_1_i(pp_level_8[1]),
-        .out_o (out_o)
-    );
 
 endmodule
