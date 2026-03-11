@@ -38,16 +38,20 @@ module tb_pe_top
     logic [ OUT_WIDTH-1:0] out;
     logic [ OUT_WIDTH-1:0] acc;
     logic [ ACC_WIDTH-1:0] pe_acc;
+    logic [ ACC_WIDTH-1:0] pe_alpha;
+    logic [ ACC_WIDTH-1:0] pe_beta;
 
     pe_top #(
         .MODE(MODE)
     ) pe_top_i (
-        .clk_i (clk),
-        .rst_ni(rst_n),
-        .acc_i (pe_acc),
-        .a_i   (in_0),
-        .b_i   (in_1),
-        .out_o (out)
+        .clk_i  (clk),
+        .rst_ni (rst_n),
+        .acc_i  (pe_acc),
+        .alpha_i(pe_alpha),
+        .beta_i (pe_beta),
+        .a_i    (in_0),
+        .b_i    (in_1),
+        .out_o  (out)
     );
 `endif
 
@@ -117,8 +121,10 @@ module tb_pe_top
                 input logic signed [IN_WIDTH_B-1:0] b1_fixed
             );
                 begin
-                    acc    = '0;
-                    pe_acc = ACC_WIDTH'($signed($urandom()));
+                    acc      = '0;
+                    pe_acc   = ACC_WIDTH'($signed($urandom()));
+                    pe_alpha = ACC_WIDTH'($signed($urandom()));
+                    pe_beta  = ACC_WIDTH'($signed($urandom()));
 
                     for (int i = 0; i < IN_SIZE; i = i + 2) begin
                         if (use_random) begin
@@ -140,7 +146,7 @@ module tb_pe_top
 
                     repeat(3) @(posedge clk);
 
-                    if (OUT_WIDTH'($signed(out)) !== (OUT_WIDTH'($signed(acc)) + OUT_WIDTH'($signed(pe_acc)))) begin
+                    if (OUT_WIDTH'($signed(out)) !== (OUT_WIDTH'($signed(acc)) + OUT_WIDTH'($signed(pe_acc)) + OUT_WIDTH'($signed(pe_alpha)) + OUT_WIDTH'($signed(pe_beta)))) begin
                         $error("Error!\n");
                         $fatal;
                     end
@@ -205,8 +211,10 @@ module tb_pe_top
                 logic        [3:0] b0_lo, b1_lo;
                 logic signed [3:0] b0_hi, b1_hi;
                 begin
-                    acc    = '0;
-                    pe_acc = ACC_WIDTH'($signed($urandom()));
+                    acc      = '0;
+                    pe_acc   = ACC_WIDTH'($signed($urandom()));
+                    pe_alpha = ACC_WIDTH'($signed($urandom()));
+                    pe_beta  = ACC_WIDTH'($signed($urandom()));
 
                     for (int i = 0; i < IN_SIZE; i = i + 2) begin
                         if (use_random) begin
@@ -244,8 +252,8 @@ module tb_pe_top
 
                     repeat (3) @(posedge clk);
 
-                    if (OUT_WIDTH'($signed(out)) !== (OUT_WIDTH'($signed(acc)) + OUT_WIDTH'($signed(pe_acc)))) begin
-                        $error("Error!");
+                    if (OUT_WIDTH'($signed(out)) !== (OUT_WIDTH'($signed(acc)) + OUT_WIDTH'($signed(pe_acc)) + OUT_WIDTH'($signed(pe_alpha)) + OUT_WIDTH'($signed(pe_beta)))) begin
+                        $error("Error!\n");
                         $fatal;
                     end
 

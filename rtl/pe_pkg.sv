@@ -12,7 +12,7 @@ package pe_pkg;
     localparam int IN_WIDTH_B = 8;
     localparam int IN_SIZE    = 64;
     localparam int ACC_WIDTH  = 48;
-    localparam int OUT_WIDTH  = 49;
+    localparam int OUT_WIDTH  = 53;
 
     typedef enum int {
         BASELINE_4_8 = 0,

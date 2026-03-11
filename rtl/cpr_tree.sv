@@ -13,6 +13,8 @@ module cpr_tree
     localparam int PP_WIDTH = calc_pp_width(MODE)
 )(
     input  logic [ACC_WIDTH-1:0] acc_i,
+    input  logic [ACC_WIDTH-1:0] alpha_i,
+    input  logic [ACC_WIDTH-1:0] beta_i,
     input  logic [ PP_WIDTH-1:0] pp_i [0:PP_SIZE-1],
     output logic [OUT_WIDTH-1:0] out_o
 );
@@ -154,7 +156,6 @@ module cpr_tree
         // -------------------------------------------------------------------------
         localparam int PP_LEVEL_6_SIZE  = PP_LEVEL_5_SIZE;
         localparam int PP_LEVEL_6_WIDTH = (PP_LEVEL_5_WIDTH + 8);
-        localparam int CPR_LEVEL_6_NUM  = (PP_LEVEL_5_SIZE / 4);
 
         logic [PP_LEVEL_6_WIDTH-1:0] pp_level_6 [0:PP_LEVEL_6_SIZE-1];
 
@@ -183,62 +184,53 @@ module cpr_tree
         end
 
         // -------------------------------------------------------------------------
-        // Level 6: Compression
+        // Level 6: Extension
         // -------------------------------------------------------------------------
-        localparam int PP_LEVEL_7_SIZE  = CPR_LEVEL_6_NUM * 2;
-        localparam int PP_LEVEL_7_WIDTH = (PP_LEVEL_6_WIDTH + 2);
+        localparam int PP_LEVEL_7_SIZE  = 5;
+        localparam int PP_LEVEL_7_WIDTH = ACC_WIDTH;
 
         logic [PP_LEVEL_7_WIDTH-1:0] pp_level_7 [0:PP_LEVEL_7_SIZE-1];
 
-        for (i = 0; i < CPR_LEVEL_6_NUM; i++) begin
-            compressor_n_2 #(
-                .IN_NUM (4),
-                .IN_SIZE(PP_LEVEL_6_WIDTH)
-            ) compressor_n_2_level_6_i (
-                .in_i   (pp_level_6[i*4+:4]),
-                .sum_o  (pp_level_7[i*2]),
-                .carry_o(pp_level_7[i*2+1])
-            );
-        end
+        extender_n #(
+            .IN_NUM   (4),
+            .IN_SIZE  (PP_LEVEL_6_WIDTH),
+            .IS_SIGNED(1),
+            .EXTEND   (ACC_WIDTH-PP_LEVEL_6_WIDTH),
+            .IS_SHIFT (0)
+        ) extender_n_level_6_i (
+            .in_i (pp_level_6),
+            .out_o(pp_level_7[0:3])
+        );
+
+        assign pp_level_7[4] = acc_i;
+
+        // -------------------------------------------------------------------------
+        // Level 7: Compressor
+        // -------------------------------------------------------------------------
+        localparam int PP_LEVEL_8_SIZE  = 2;
+        localparam int PP_LEVEL_8_WIDTH = ACC_WIDTH + 4;
+
+        logic [PP_LEVEL_8_WIDTH-1:0] pp_level_8 [0:PP_LEVEL_8_SIZE-1];
+
+        compressor_n_2 #(
+            .IN_NUM (5),
+            .IN_SIZE(ACC_WIDTH)
+        ) compressor_n_2_level_7_i (
+            .in_i   (pp_level_7),
+            .sum_o  (pp_level_8[0]),
+            .carry_o(pp_level_8[1])
+        );
 
     endgenerate
 
     // -------------------------------------------------------------------------
-    // Level 7: Final adder
+    // Level 8: Final adder
     // -------------------------------------------------------------------------
-    localparam int PP_LEVEL_8_WIDTH = (PP_LEVEL_7_WIDTH + 1);
-
-    logic [PP_LEVEL_8_WIDTH-1:0] pp_level_8;
-
     adder_n #(
-        .SIZE(PP_LEVEL_7_WIDTH)
+        .SIZE(PP_LEVEL_8_WIDTH)
     ) adder_n_i (
-        .in_0_i(pp_level_7[0]),
-        .in_1_i(pp_level_7[1]),
-        .out_o (pp_level_8)
-    );
-
-    // -------------------------------------------------------------------------
-    // Level 8: Sign-extension
-    // -------------------------------------------------------------------------
-    logic [ACC_WIDTH-1:0] pp_level_9;
-
-    sign_extender #(
-        .IN_SIZE (PP_LEVEL_8_WIDTH),
-        .OUT_SIZE(ACC_WIDTH)
-    ) sign_extender_i (
-        .in_i (pp_level_8),
-        .out_o(pp_level_9)
-    );
-
-    // -------------------------------------------------------------------------
-    // Level 9: Final accumulation
-    // -------------------------------------------------------------------------
-    adder_n #(
-        .SIZE(ACC_WIDTH)
-    ) adder_n_acc_i (
-        .in_0_i(pp_level_9),
-        .in_1_i(acc_i),
+        .in_0_i(pp_level_8[0]),
+        .in_1_i(pp_level_8[1]),
         .out_o (out_o)
     );
 
