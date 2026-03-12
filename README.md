@@ -1,6 +1,6 @@
 # AI Core
 
-This work explores the AI Core architecture.
+This work explores the architecture of an AI Core.
 
 ## Repository structure
 
