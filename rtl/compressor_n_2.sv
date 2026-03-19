@@ -9,123 +9,118 @@
 `timescale 1 ns/1 ps
 
 module compressor_n_2 #(
-    parameter int IN_NUM  = 24,
-    parameter int IN_SIZE = 12
+    parameter int IN_SIZE  = 8,
+    parameter int IN_WIDTH = 8,
+
+    localparam int OUT_WIDTH = IN_WIDTH + $clog2(IN_SIZE) + 1
 )(
-    input  logic [                       IN_SIZE-1:0] in_i [0:IN_NUM-1],
-    output logic [IN_SIZE+(($clog2(IN_NUM)-1)*2)-1:0] sum_o,
-    output logic [IN_SIZE+(($clog2(IN_NUM)-1)*2)-1:0] carry_o
+    input  logic [ IN_WIDTH-1:0] in_i [0:IN_SIZE-1],
+    output logic [OUT_WIDTH-1:0] sum_o,
+    output logic [OUT_WIDTH-1:0] carry_o
 );
 
-    function automatic int cnt_num_lanes_at_next_stage(input int num);
-        cnt_num_lanes_at_next_stage = 2 * (num / 4) + (num % 4);
-    endfunction
-
-    function automatic int cnt_num_in_lanes_at_stage(input int stage);
-        int n, k;
+    function automatic int cnt_in_stage_size(input int stage);
+        int in_size, cpr_num, rem, i;
         begin
-            n = IN_NUM;
-            for (k = 0; k < stage; k++) begin
-                n = cnt_num_lanes_at_next_stage(n);
+            if (stage == 0) begin
+                cnt_in_stage_size = IN_SIZE;
+            end else begin
+                in_size = IN_SIZE;
+                cpr_num = (in_size + 3) / 4;
+                rem     = 0;
+                for (i = 1; i <= stage; i++) begin
+                    in_size = (cpr_num * 2) + rem;
+                    cpr_num = in_size / 4;
+                    rem     = in_size % 4;
+                end
+                cnt_in_stage_size = in_size;
             end
-            cnt_num_in_lanes_at_stage = n;
         end
     endfunction
 
-    function automatic int cnt_stage_num(input int num);
-        int n, l;
-        begin
-            n = num;
-            l = 0;
-            while (n > 4) begin
-                n = cnt_num_lanes_at_next_stage(n);
-                l++;
-            end
-            if (n > 2) l++;
-            cnt_stage_num = l;
-        end
-    endfunction
-
-    localparam int STAGE_NUM = cnt_stage_num(IN_NUM);
-    localparam int OUT_SIZE  = IN_SIZE + (STAGE_NUM * 2);
-
-    logic [OUT_SIZE-1:0] tmp [0:STAGE_NUM-1][0:IN_NUM-1];
-
-    genvar i, j, r;
+    genvar stage, cpr;
     generate
-        for (i = 0; i < STAGE_NUM; i++) begin : gen_rows
-            localparam bit IS_LAST = (i == (STAGE_NUM-1));
-            localparam int N_IN    = cnt_num_in_lanes_at_stage(i);
-            localparam int NUM_4_2 = IS_LAST ? 1 : (N_IN / 4);
-            localparam int REM     = IS_LAST ? 0 : (N_IN % 4);
-            localparam int W_IN    = IN_SIZE + (i * 2);
-            localparam int W_OUT   = W_IN + 2;
 
-            for (j = 0; j < NUM_4_2; j++) begin : gen_cols
-                localparam int base_in  = j * 4;
-                localparam int base_out = j * 2;
+        if (IN_SIZE < 4) begin
 
-                logic [ W_IN-1:0] in [0:3];
-                logic [W_OUT-1:0] sum;
-                logic [W_OUT-1:0] carry;
+            assign sum_o   = '0;
+            assign carry_o = '0;
 
-                if (i == 0) begin
-                    if (IS_LAST) begin
-                        assign in[0] = (N_IN > 0) ? {{(W_IN-IN_SIZE){in_i[0][IN_SIZE-1]}}, in_i[0]} : '0;
-                        assign in[1] = (N_IN > 1) ? {{(W_IN-IN_SIZE){in_i[1][IN_SIZE-1]}}, in_i[1]} : '0;
-                        assign in[2] = (N_IN > 2) ? {{(W_IN-IN_SIZE){in_i[2][IN_SIZE-1]}}, in_i[2]} : '0;
-                        assign in[3] = (N_IN > 3) ? {{(W_IN-IN_SIZE){in_i[3][IN_SIZE-1]}}, in_i[3]} : '0;
+            initial $fatal(1, "compressor_n_2: IN_SIZE must be >= 4, got %0d", IN_SIZE);
+
+        end else begin
+
+            localparam int STAGE_NUM = $clog2(IN_SIZE) - 1;
+
+            logic [OUT_WIDTH-1:0] tmp [0:STAGE_NUM-1][0:IN_SIZE-1];
+
+            for (stage = 0; stage < STAGE_NUM; stage++) begin : gen_stages
+
+                localparam int IN_STAGE_NUM   = cnt_in_stage_size(stage);
+                localparam int CPR_NUM        = stage == 0 ? (IN_STAGE_NUM + 3) / 4 : IN_STAGE_NUM / 4;
+                localparam int REM            = stage == 0 ? (CPR_NUM * 4) - IN_STAGE_NUM : IN_STAGE_NUM % 4;
+                localparam int WIDTH_IN       = stage == 0 ? IN_WIDTH : IN_WIDTH + stage + 2;
+                localparam bit IS_FIRST_STAGE = stage == 0 ? 1 : 0;
+                localparam int EXT_BITS       = stage == 0 ? 3 : 1;
+                localparam int WIDTH_OUT      = WIDTH_IN + EXT_BITS;
+
+                for (cpr = 0; cpr < CPR_NUM; cpr++) begin : gen_cprs
+
+                    localparam int BASE_IN     = cpr * 4;
+                    localparam int BASE_OUT    = cpr * 2;
+                    localparam bit IS_LAST_CPR = cpr == CPR_NUM - 1 ? 1 : 0;
+
+                    logic [ WIDTH_IN-1:0] in [0:3];
+                    logic [WIDTH_OUT-1:0] sum;
+                    logic [WIDTH_OUT-1:0] carry;
+
+                    if (IS_FIRST_STAGE) begin
+                        if (IS_LAST_CPR) begin
+                            assign in[0] = (REM > 3) ? '0 : in_i[BASE_IN+0];
+                            assign in[1] = (REM > 2) ? '0 : in_i[BASE_IN+1];
+                            assign in[2] = (REM > 1) ? '0 : in_i[BASE_IN+2];
+                            assign in[3] = (REM > 0) ? '0 : in_i[BASE_IN+3];
+                        end else begin
+                            assign in[0] = in_i[BASE_IN+0];
+                            assign in[1] = in_i[BASE_IN+1];
+                            assign in[2] = in_i[BASE_IN+2];
+                            assign in[3] = in_i[BASE_IN+3];
+                        end
                     end else begin
-                        assign in[0] = {{(W_IN-IN_SIZE){in_i[base_in+0][IN_SIZE-1]}}, in_i[base_in+0]};
-                        assign in[1] = {{(W_IN-IN_SIZE){in_i[base_in+1][IN_SIZE-1]}}, in_i[base_in+1]};
-                        assign in[2] = {{(W_IN-IN_SIZE){in_i[base_in+2][IN_SIZE-1]}}, in_i[base_in+2]};
-                        assign in[3] = {{(W_IN-IN_SIZE){in_i[base_in+3][IN_SIZE-1]}}, in_i[base_in+3]};
+                        assign in[0] = tmp[stage-1][BASE_IN+0][WIDTH_IN-1:0];
+                        assign in[1] = tmp[stage-1][BASE_IN+1][WIDTH_IN-1:0];
+                        assign in[2] = tmp[stage-1][BASE_IN+2][WIDTH_IN-1:0];
+                        assign in[3] = tmp[stage-1][BASE_IN+3][WIDTH_IN-1:0];
                     end
-                end else begin
-                    if (IS_LAST) begin
-                        assign in[0] = (N_IN > 0) ? tmp[i-1][0][W_IN-1:0] : '0;
-                        assign in[1] = (N_IN > 1) ? tmp[i-1][1][W_IN-1:0] : '0;
-                        assign in[2] = (N_IN > 2) ? tmp[i-1][2][W_IN-1:0] : '0;
-                        assign in[3] = (N_IN > 3) ? tmp[i-1][3][W_IN-1:0] : '0;
-                    end else begin
-                        assign in[0] = tmp[i-1][base_in+0][W_IN-1:0];
-                        assign in[1] = tmp[i-1][base_in+1][W_IN-1:0];
-                        assign in[2] = tmp[i-1][base_in+2][W_IN-1:0];
-                        assign in[3] = tmp[i-1][base_in+3][W_IN-1:0];
-                    end
+
+                    compressor_4_2 #(
+                        .IN_WIDTH(WIDTH_IN),
+                        .EXT_BITS(EXT_BITS)
+                    ) compressor_4_2_stage_i_j_i (
+                        .in_i   (in),
+                        .sum_o  (sum),
+                        .carry_o(carry)
+                    );
+
+                    assign tmp[stage][BASE_OUT+0][WIDTH_OUT-1:0] = sum;
+                    assign tmp[stage][BASE_OUT+1][WIDTH_OUT-1:0] = carry;
                 end
 
-                compressor_4_2 #(
-                    .IN_SIZE (W_IN),
-                    .OUT_SIZE(W_OUT)
-                ) compressor_4_2_stage_i_j_i (
-                    .in_i   (in),
-                    .sum_o  (sum),
-                    .carry_o(carry)
-                );
 
-                assign tmp[i][base_out+0] = {{(OUT_SIZE-W_OUT){sum[W_OUT-1]}},   sum};
-                assign tmp[i][base_out+1] = {{(OUT_SIZE-W_OUT){carry[W_OUT-1]}}, carry};
-            end
+                localparam int BASE_IN  = (CPR_NUM - 1) * 4;
+                localparam int BASE_OUT = (CPR_NUM - 1) * 2;
 
-            for (r = 0; r < REM; r++) begin : gen_pass
-                localparam int src = (NUM_4_2 * 4) + r;
-                localparam int dst = (NUM_4_2 * 2) + r;
-
-                logic [W_OUT-1:0] pass;
-
-                if (i == 0) begin
-                    assign pass = {{(W_OUT-IN_SIZE){in_i[src][IN_SIZE-1]}}, in_i[src]};
-                end else begin
-                    assign pass = {{(W_OUT-W_IN){tmp[i-1][src][W_IN-1]}}, tmp[i-1][src][W_IN-1:0]};
+                if (!IS_FIRST_STAGE && (REM > 0)) begin
+                    assign tmp[stage][BASE_OUT+2][WIDTH_OUT-1:0] = {{(WIDTH_OUT-WIDTH_IN){tmp[stage-1][BASE_IN+4][WIDTH_IN-1]}}, tmp[stage-1][BASE_IN+4][WIDTH_IN-1:0]};
+                    assign tmp[stage][BASE_OUT+3][WIDTH_OUT-1:0] = {{(WIDTH_OUT-WIDTH_IN){tmp[stage-1][BASE_IN+5][WIDTH_IN-1]}}, tmp[stage-1][BASE_IN+5][WIDTH_IN-1:0]};
                 end
-
-                assign tmp[i][dst] = {{(OUT_SIZE-W_OUT){pass[W_OUT-1]}}, pass};
             end
+
+            assign sum_o   = tmp[STAGE_NUM-1][0];
+            assign carry_o = tmp[STAGE_NUM-1][1];
+
         end
-    endgenerate
 
-    assign sum_o   = tmp[STAGE_NUM-1][0];
-    assign carry_o = tmp[STAGE_NUM-1][1];
+    endgenerate
 
 endmodule

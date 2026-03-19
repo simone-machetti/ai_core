@@ -4,31 +4,31 @@
 
 /* verilator lint_off UNUSEDSIGNAL */
 /* verilator lint_off UNOPTFLAT */
+/* verilator lint_off GENUNNAMED */
 
 `timescale 1 ns/1 ps
 
 module compressor_4_2 #(
-    parameter int IN_SIZE    = 14,
-    parameter int EXTRA_BITS = 2, // Use only 1 or 2
+    parameter int IN_WIDTH = 12,
+    parameter int EXT_BITS = 2,
 
-    localparam int OUT_SIZE = IN_SIZE + EXTRA_BITS
+    localparam int OUT_WIDTH = IN_WIDTH + EXT_BITS
 )(
-    input  logic [ IN_SIZE-1:0] in_i [4],
-    output logic [OUT_SIZE-1:0] sum_o,
-    output logic [OUT_SIZE-1:0] carry_o
+    input  logic [ IN_WIDTH-1:0] in_i [4],
+    output logic [OUT_WIDTH-1:0] sum_o,
+    output logic [OUT_WIDTH-1:0] carry_o
 );
+    localparam int EXT_WIDTH = OUT_WIDTH + 1;
 
-    localparam EXT_SIZE = OUT_SIZE - 1;
-
-    logic [EXT_SIZE-1:0] ext_in [4];
-    logic [EXT_SIZE-1:0] s, c;
-    logic [OUT_SIZE-1:0] cout;
+    logic [EXT_WIDTH-1:0] ext_in [4];
+    logic [EXT_WIDTH-1:0] s, c;
+    logic [  EXT_WIDTH:0] cout;
 
     generate
         for (genvar i = 0; i < 4; i++) begin : gen_extenders
             sign_extender #(
-                .IN_SIZE (IN_SIZE),
-                .OUT_SIZE(EXT_SIZE)
+                .IN_WIDTH (IN_WIDTH),
+                .OUT_WIDTH(EXT_WIDTH)
             ) sign_extender_i (
                 .in_i (in_i[i]),
                 .out_o(ext_in[i])
@@ -39,7 +39,7 @@ module compressor_4_2 #(
     assign cout[0] = 1'b0;
 
     generate
-        for (genvar i = 0; i < EXT_SIZE; i++) begin : gen_compressor_4_2_cell_i
+        for (genvar i = 0; i < EXT_WIDTH; i++) begin : gen_compressor_4_2_cell_i
             compressor_4_2_cell compressor_4_2_cell_i (
                 .in_0_i (ext_in[0][i]),
                 .in_1_i (ext_in[1][i]),
@@ -53,7 +53,7 @@ module compressor_4_2 #(
         end
     endgenerate
 
-    assign carry_o = {c, 1'b0};
-    assign sum_o   = {s[EXT_SIZE-1], s};
+    assign sum_o   = s[OUT_WIDTH-1:0];
+    assign carry_o = {c[OUT_WIDTH-2:0], 1'b0};
 
 endmodule
