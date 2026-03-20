@@ -9,21 +9,22 @@
 `timescale 1 ns/1 ps
 
 module cpr_n_2 #(
-    parameter int IN_SIZE  = 8,
-    parameter int IN_WIDTH = 8,
+    parameter int IN_SIZE      = 8,
+    parameter int IN_WIDTH     = 8,
+    parameter int MAX_EXT_BITS = -1,
 
-    localparam int OUT_WIDTH = IN_WIDTH + $clog2(IN_SIZE) + 1
+    localparam int OUT_WIDTH = MAX_EXT_BITS == -1 ? IN_WIDTH + $clog2(IN_SIZE) + 1 : IN_WIDTH + MAX_EXT_BITS
 )(
     input  logic [ IN_WIDTH-1:0] in_i [0:IN_SIZE-1],
     output logic [OUT_WIDTH-1:0] sum_o,
     output logic [OUT_WIDTH-1:0] carry_o
 );
 
-    function automatic int cnt_in_stage_size(input int stage);
+    function automatic int get_in_stage_size(input int stage);
         int in_size, cpr_num, rem, i;
         begin
             if (stage == 0) begin
-                cnt_in_stage_size = IN_SIZE;
+                get_in_stage_size = IN_SIZE;
             end else begin
                 in_size = IN_SIZE;
                 cpr_num = (in_size + 3) / 4;
@@ -33,7 +34,34 @@ module cpr_n_2 #(
                     cpr_num = in_size / 4;
                     rem     = in_size % 4;
                 end
-                cnt_in_stage_size = in_size;
+                get_in_stage_size = in_size;
+            end
+        end
+    endfunction
+
+    function automatic int get_ext_bits(input int stage);
+        int ext_bits;
+        begin
+            if (stage == 0) begin
+                ext_bits = 0;
+            end else begin
+                ext_bits = stage + 2;
+            end
+
+            if (MAX_EXT_BITS != -1 && ext_bits > MAX_EXT_BITS) begin
+                get_ext_bits = MAX_EXT_BITS;
+            end else begin
+                get_ext_bits = ext_bits;
+            end
+        end
+    endfunction
+
+    function automatic int get_width_in(input int stage);
+        begin
+            if (stage == 0) begin
+                get_width_in = IN_WIDTH;
+            end else begin
+                get_width_in = IN_WIDTH + get_ext_bits(stage);
             end
         end
     endfunction
@@ -56,13 +84,13 @@ module cpr_n_2 #(
 
             for (stage = 0; stage < STAGE_NUM; stage++) begin : gen_stages
 
-                localparam int IN_STAGE_NUM   = cnt_in_stage_size(stage);
+                localparam int IN_STAGE_NUM   = get_in_stage_size(stage);
                 localparam int CPR_NUM        = stage == 0 ? (IN_STAGE_NUM + 3) / 4 : IN_STAGE_NUM / 4;
                 localparam int REM            = stage == 0 ? (CPR_NUM * 4) - IN_STAGE_NUM : IN_STAGE_NUM % 4;
-                localparam int WIDTH_IN       = stage == 0 ? IN_WIDTH : IN_WIDTH + stage + 2;
                 localparam bit IS_FIRST_STAGE = stage == 0 ? 1 : 0;
-                localparam int EXT_BITS       = stage == 0 ? 3 : 1;
-                localparam int WIDTH_OUT      = WIDTH_IN + EXT_BITS;
+                localparam int WIDTH_IN       = get_width_in(stage);
+                localparam int WIDTH_OUT      = get_width_in(stage + 1);
+                localparam int EXT_BITS       = WIDTH_OUT - WIDTH_IN;
 
                 for (cpr = 0; cpr < CPR_NUM; cpr++) begin : gen_cprs
 
