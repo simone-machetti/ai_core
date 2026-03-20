@@ -8,7 +8,7 @@
 
 `timescale 1 ns/1 ps
 
-module compressor_n_2 #(
+module cpr_n_2 #(
     parameter int IN_SIZE  = 8,
     parameter int IN_WIDTH = 8,
 
@@ -93,10 +93,10 @@ module compressor_n_2 #(
                         assign in[3] = tmp[stage-1][BASE_IN+3][WIDTH_IN-1:0];
                     end
 
-                    compressor_4_2 #(
+                    cpr_4_2 #(
                         .IN_WIDTH(WIDTH_IN),
                         .EXT_BITS(EXT_BITS)
-                    ) compressor_4_2_stage_i_j_i (
+                    ) cpr_4_2_i (
                         .in_i   (in),
                         .sum_o  (sum),
                         .carry_o(carry)

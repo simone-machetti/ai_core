@@ -8,7 +8,7 @@
 
 `timescale 1 ns/1 ps
 
-module compressor_4_2 #(
+module cpr_4_2 #(
     parameter int IN_WIDTH = 12,
     parameter int EXT_BITS = 2,
 
@@ -26,10 +26,10 @@ module compressor_4_2 #(
 
     generate
         for (genvar i = 0; i < 4; i++) begin : gen_extenders
-            sign_extender #(
+            sign_ext #(
                 .IN_WIDTH (IN_WIDTH),
                 .OUT_WIDTH(EXT_WIDTH)
-            ) sign_extender_i (
+            ) sign_ext_i (
                 .in_i (in_i[i]),
                 .out_o(ext_in[i])
             );
@@ -40,7 +40,7 @@ module compressor_4_2 #(
 
     generate
         for (genvar i = 0; i < EXT_WIDTH; i++) begin : gen_compressor_4_2_cell_i
-            compressor_4_2_cell compressor_4_2_cell_i (
+            cpr_4_2_bit cpr_4_2_bit_i (
                 .in_0_i (ext_in[0][i]),
                 .in_1_i (ext_in[1][i]),
                 .in_2_i (ext_in[2][i]),

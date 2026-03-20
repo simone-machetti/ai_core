@@ -4,7 +4,7 @@
 
 `timescale 1 ns/1 ps
 
-module compressor_4_2_cell (
+module cpr_4_2_bit (
     input  logic in_0_i,
     input  logic in_1_i,
     input  logic in_2_i,
@@ -16,7 +16,7 @@ module compressor_4_2_cell (
 );
     logic s;
 
-    full_adder full_adder_0_i (
+    fa fa_0_i (
         .in_0_i(in_0_i),
         .in_1_i(in_1_i),
         .cin_i (in_2_i),
@@ -24,7 +24,7 @@ module compressor_4_2_cell (
         .cout_o(cout_o)
     );
 
-    full_adder full_adder_1_i (
+    fa fa_1_i (
         .in_0_i(s),
         .in_1_i(in_3_i),
         .cin_i (cin_i),
