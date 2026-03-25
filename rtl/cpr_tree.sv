@@ -46,11 +46,11 @@ module cpr_tree #(
                 gen_in_width = PP_WIDTH + $clog2(get_in_size(0)) + 1 + 4;
             end else if (stage == 2) begin
                 tmp          = PP_WIDTH + $clog2(get_in_size(0)) + 1 + 4;
-                gen_in_width = tmp + $clog2(get_in_size(1)) + 1 + 8;
+                gen_in_width = tmp + 1 + 8;
             end else if (stage == 3) begin
                 tmp          = PP_WIDTH + $clog2(get_in_size(0)) + 1 + 4;
-                tmp          = tmp + $clog2(get_in_size(1)) + 1 + 8;
-                gen_in_width = tmp + $clog2(get_in_size(2)) + 1 + 8;
+                tmp          = tmp + 1 + 8;
+                gen_in_width = tmp + 1 + 8;
             end else begin
                 gen_in_width = PP_WIDTH;
             end
