@@ -69,12 +69,12 @@ module cpr_n_2 #(
     genvar stage, cpr;
     generate
 
-        if (IN_SIZE < 4) begin
+        if (IN_SIZE < 3) begin
 
             assign sum_o   = '0;
             assign carry_o = '0;
 
-            initial $fatal(1, "compressor_n_2: IN_SIZE must be >= 4, got %0d", IN_SIZE);
+            initial $fatal(1, "compressor_n_2: IN_SIZE must be >= 3, got %0d", IN_SIZE);
 
         end else begin
 

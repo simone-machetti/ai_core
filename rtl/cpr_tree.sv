@@ -2,297 +2,219 @@
 // Author: Simone Machetti
 // -----------------------------------------------------------------------------
 
+/* verilator lint_off UNUSEDSIGNAL */
 /* verilator lint_off GENUNNAMED */
 
 `timescale 1 ns/1 ps
 
-module cpr_tree
-    import pe_pkg::*;
-#(
-    parameter pe_mode_e MODE = BASELINE_4_8,
+module cpr_tree #(
+    parameter int PP_SIZE  = 64,
+    parameter int PP_WIDTH = 12,
+    parameter int ACC_SIZE = 1,
 
-    localparam int PP_SIZE  = calc_pp_size(MODE),
-    localparam int PP_WIDTH = calc_pp_width(MODE)
+    localparam int ACC_WIDTH = 48,
+    localparam int EXT_NUM   = 15,
+    localparam int OUT_WIDTH = ACC_WIDTH
 )(
-    input  logic [ACC_WIDTH-1:0] acc_i,
-    input  logic [ACC_WIDTH-1:0] alpha_i,
-    input  logic [ACC_WIDTH-1:0] beta_i,
-    input  logic [ PP_WIDTH-1:0] pp_i [0:PP_SIZE-1],
+    input  logic [ACC_WIDTH-1:0] acc_i       [0:ACC_SIZE-1],
+    input  logic                 is_signed_i [ 0:EXT_NUM-1],
+    input  logic                 is_shift_i  [ 0:EXT_NUM-1],
+    input  logic [ PP_WIDTH-1:0] pp_i        [ 0:PP_SIZE-1],
     output logic [OUT_WIDTH-1:0] out_o
 );
 
-    genvar i;
+    function automatic int pow2(input int n);
+        return 1 << n;
+    endfunction
+
+    function automatic int get_in_size(input int stage);
+        begin
+            if (stage == 0) begin
+                get_in_size = PP_SIZE / 8;
+            end else begin
+                get_in_size = 4;
+            end
+        end
+    endfunction
+
+    function automatic int gen_in_width(input int stage);
+        int tmp;
+        begin
+            if (stage == 0) begin
+                gen_in_width = PP_WIDTH;
+            end else if (stage == 1) begin
+                gen_in_width = PP_WIDTH + $clog2(get_in_size(0)) + 1 + 4;
+            end else if (stage == 2) begin
+                tmp          = PP_WIDTH + $clog2(get_in_size(0)) + 1 + 4;
+                gen_in_width = tmp + $clog2(get_in_size(1)) + 1 + 8;
+            end else if (stage == 3) begin
+                tmp          = PP_WIDTH + $clog2(get_in_size(0)) + 1 + 4;
+                tmp          = tmp + $clog2(get_in_size(1)) + 1 + 8;
+                gen_in_width = tmp + $clog2(get_in_size(2)) + 1 + 8;
+            end else begin
+                gen_in_width = PP_WIDTH;
+            end
+        end
+    endfunction
+
+    function automatic int get_sel_ext(input int stage, input int lane);
+        int stage_0_offset = 0;
+        int stage_1_offset = 8;
+        int stage_2_offset = 12;
+        int stage_3_offset = 14;
+        begin
+            if (stage == 0) begin
+                get_sel_ext = stage_0_offset + lane;
+            end else if (stage == 1) begin
+                get_sel_ext = stage_1_offset + lane;
+            end else if (stage == 2) begin
+                get_sel_ext = stage_2_offset + lane;
+            end else if (stage == 3) begin
+                get_sel_ext = stage_3_offset + lane;
+            end else begin
+                get_sel_ext = stage_0_offset + lane;
+            end
+        end
+    endfunction
+
+    genvar stage, lane, i;
     generate
 
-        localparam int CPR_LEVEL_0_NUM  = 8;
-        localparam int CPR_LEVEL_0_SIZE = PP_SIZE / CPR_LEVEL_0_NUM;
+        if (PP_WIDTH > ACC_WIDTH) begin
 
-        // -------------------------------------------------------------------------
-        // Level 0: Compression
-        // -------------------------------------------------------------------------
-        localparam int PP_LEVEL_1_SIZE  = (CPR_LEVEL_0_NUM * 2);
-        localparam int PP_LEVEL_1_WIDTH = (PP_WIDTH + (($clog2(CPR_LEVEL_0_SIZE) - 1) * 2));
-        localparam int EXT_LEVEL_1_NUM  = (PP_LEVEL_1_SIZE / 4);
+            assign out_o = '0;
 
-        logic [PP_LEVEL_1_WIDTH-1:0] pp_level_1 [0:PP_LEVEL_1_SIZE-1];
-
-        for (i = 0; i < CPR_LEVEL_0_NUM; i++) begin
-            compressor_n_2 #(
-                .IN_NUM (CPR_LEVEL_0_SIZE),
-                .IN_SIZE(PP_WIDTH)
-            ) compressor_n_2_level_0_i (
-                .in_i   (pp_i[i*CPR_LEVEL_0_SIZE+:CPR_LEVEL_0_SIZE]),
-                .sum_o  (pp_level_1[i*2]),
-                .carry_o(pp_level_1[i*2+1])
-            );
-        end
-
-        // -------------------------------------------------------------------------
-        // Level 1: Shifting and Extension
-        // -------------------------------------------------------------------------
-        localparam int PP_LEVEL_2_SIZE  = PP_LEVEL_1_SIZE;
-        localparam int PP_LEVEL_2_WIDTH = (PP_LEVEL_1_WIDTH + 4);
-        localparam int CPR_LEVEL_2_NUM  = (PP_LEVEL_2_SIZE / 4);
-
-        logic [PP_LEVEL_2_WIDTH-1:0] pp_level_2 [0:PP_LEVEL_2_SIZE-1];
-
-        for (i = 0; i < EXT_LEVEL_1_NUM; i++) begin
-            extender_n #(
-                .IN_NUM   (2),
-                .IN_SIZE  (PP_LEVEL_1_WIDTH),
-                .IS_SIGNED(1),
-                .EXTEND   (4),
-                .IS_SHIFT (0)
-            ) shifter_n_level_1_i (
-                .in_i (pp_level_1[i*4+:2]),
-                .out_o(pp_level_2[i*4+:2])
-            );
-
-            extender_n #(
-                .IN_NUM   (2),
-                .IN_SIZE  (PP_LEVEL_1_WIDTH),
-                .IS_SIGNED(1),
-                .EXTEND   (4),
-                .IS_SHIFT (0)
-            ) extender_n_level_1_i (
-                .in_i (pp_level_1[i*4+2+:2]),
-                .out_o(pp_level_2[i*4+2+:2])
-            );
-        end
-
-        // -------------------------------------------------------------------------
-        // Level 2: Compression
-        // -------------------------------------------------------------------------
-        localparam int PP_LEVEL_3_SIZE  = (CPR_LEVEL_2_NUM * 2);
-        localparam int PP_LEVEL_3_WIDTH = (PP_LEVEL_2_WIDTH + 2);
-        localparam int EXT_LEVEL_3_NUM  = (PP_LEVEL_3_SIZE / 4);
-
-        logic [PP_LEVEL_3_WIDTH-1:0] pp_level_3 [0:PP_LEVEL_3_SIZE-1];
-
-        for (i = 0; i < CPR_LEVEL_2_NUM; i++) begin
-            compressor_n_2 #(
-                .IN_NUM (4),
-                .IN_SIZE(PP_LEVEL_2_WIDTH)
-            ) compressor_n_2_level_2_i (
-                .in_i   (pp_level_2[i*4+:4]),
-                .sum_o  (pp_level_3[i*2]),
-                .carry_o(pp_level_3[i*2+1])
-            );
-        end
-
-        // -------------------------------------------------------------------------
-        // Level 3: Shifting and Extension
-        // -------------------------------------------------------------------------
-        localparam int PP_LEVEL_4_SIZE  = PP_LEVEL_3_SIZE;
-        localparam int PP_LEVEL_4_WIDTH = (PP_LEVEL_3_WIDTH + 8);
-        localparam int CPR_LEVEL_4_NUM  = (PP_LEVEL_4_SIZE / 4);
-
-        logic [PP_LEVEL_4_WIDTH-1:0] pp_level_4 [0:PP_LEVEL_4_SIZE-1];
-
-        for (i = 0; i < EXT_LEVEL_3_NUM; i++) begin
-            extender_n #(
-                .IN_NUM   (2),
-                .IN_SIZE  (PP_LEVEL_3_WIDTH),
-                .IS_SIGNED(1),
-                .EXTEND   (8),
-                .IS_SHIFT (0)
-            ) shifter_n_level_3_i (
-                .in_i (pp_level_3[i*4+:2]),
-                .out_o(pp_level_4[i*4+:2])
-            );
-
-            extender_n #(
-                .IN_NUM   (2),
-                .IN_SIZE  (PP_LEVEL_3_WIDTH),
-                .IS_SIGNED(1),
-                .EXTEND   (8),
-                .IS_SHIFT (0)
-            ) extender_n_level_3_i (
-                .in_i (pp_level_3[i*4+2+:2]),
-                .out_o(pp_level_4[i*4+2+:2])
-            );
-        end
-
-        // -------------------------------------------------------------------------
-        // Level 4: Compression
-        // -------------------------------------------------------------------------
-        localparam int PP_LEVEL_5_SIZE  = (CPR_LEVEL_4_NUM * 2);
-        localparam int PP_LEVEL_5_WIDTH = (PP_LEVEL_4_WIDTH + 2);
-        localparam int EXT_LEVEL_5_NUM  = (PP_LEVEL_5_SIZE / 4);
-
-        logic [PP_LEVEL_5_WIDTH-1:0] pp_level_5 [0:PP_LEVEL_5_SIZE-1];
-
-        for (i = 0; i < CPR_LEVEL_4_NUM; i++) begin
-            compressor_n_2 #(
-                .IN_NUM (4),
-                .IN_SIZE(PP_LEVEL_4_WIDTH)
-            ) compressor_n_2_level_4_i (
-                .in_i   (pp_level_4[i*4+:4]),
-                .sum_o  (pp_level_5[i*2]),
-                .carry_o(pp_level_5[i*2+1])
-            );
-        end
-
-        // -------------------------------------------------------------------------
-        // Level 5: Shifting and Extension
-        // -------------------------------------------------------------------------
-        localparam int PP_LEVEL_6_SIZE  = PP_LEVEL_5_SIZE;
-        localparam int PP_LEVEL_6_WIDTH = (PP_LEVEL_5_WIDTH + 8);
-
-        logic [PP_LEVEL_6_WIDTH-1:0] pp_level_6 [0:PP_LEVEL_6_SIZE-1];
-
-        for (i = 0; i < EXT_LEVEL_5_NUM; i++) begin
-            extender_n #(
-                .IN_NUM   (2),
-                .IN_SIZE  (PP_LEVEL_5_WIDTH),
-                .IS_SIGNED(1),
-                .EXTEND   (8),
-                .IS_SHIFT (0)
-            ) shifter_n_level_5_i (
-                .in_i (pp_level_5[i*4+:2]),
-                .out_o(pp_level_6[i*4+:2])
-            );
-
-            extender_n #(
-                .IN_NUM   (2),
-                .IN_SIZE  (PP_LEVEL_5_WIDTH),
-                .IS_SIGNED(1),
-                .EXTEND   (8),
-                .IS_SHIFT (0)
-            ) extender_n_level_5_i (
-                .in_i (pp_level_5[i*4+2+:2]),
-                .out_o(pp_level_6[i*4+2+:2])
-            );
-        end
-
-        // -------------------------------------------------------------------------
-        // Level 6: Extension
-        // -------------------------------------------------------------------------
-
-        if (MODE == BASELINE_4_8) begin
-
-            localparam int PP_LEVEL_7_SIZE  = 5;
-            localparam int PP_LEVEL_7_WIDTH = ACC_WIDTH;
-
-            logic [PP_LEVEL_7_WIDTH-1:0] pp_level_7 [0:PP_LEVEL_7_SIZE-1];
-
-            extender_n #(
-                .IN_NUM   (4),
-                .IN_SIZE  (PP_LEVEL_6_WIDTH),
-                .IS_SIGNED(1),
-                .EXTEND   (ACC_WIDTH-PP_LEVEL_6_WIDTH),
-                .IS_SHIFT (0)
-            ) extender_n_level_6_i (
-                .in_i (pp_level_6),
-                .out_o(pp_level_7[0:3])
-            );
-
-            assign pp_level_7[4] = acc_i;
-
-            // -------------------------------------------------------------------------
-            // Level 7: Compressor
-            // -------------------------------------------------------------------------
-            localparam int PP_LEVEL_8_SIZE  = 2;
-            localparam int PP_LEVEL_8_WIDTH = ACC_WIDTH + 4;
-
-            logic [PP_LEVEL_8_WIDTH-1:0] pp_level_8 [0:PP_LEVEL_8_SIZE-1];
-
-            compressor_n_2 #(
-                .IN_NUM (5),
-                .IN_SIZE(ACC_WIDTH)
-            ) compressor_n_2_level_7_i (
-                .in_i   (pp_level_7),
-                .sum_o  (pp_level_8[0]),
-                .carry_o(pp_level_8[1])
-            );
-
-            // -------------------------------------------------------------------------
-            // Level 8: Final adder
-            // -------------------------------------------------------------------------
-            adder_n #(
-                .SIZE(PP_LEVEL_8_WIDTH)
-            ) adder_n_i (
-                .in_0_i(pp_level_8[0]),
-                .in_1_i(pp_level_8[1]),
-                .out_o (out_o)
-            );
-
-        end else if (MODE == WINOGRAD_4_4) begin
-
-            localparam int PP_LEVEL_7_SIZE  = 8;
-            localparam int PP_LEVEL_7_WIDTH = ACC_WIDTH;
-
-            logic [PP_LEVEL_7_WIDTH-1:0] pp_level_7 [0:PP_LEVEL_7_SIZE-1];
-
-            extender_n #(
-                .IN_NUM   (4),
-                .IN_SIZE  (PP_LEVEL_6_WIDTH),
-                .IS_SIGNED(1),
-                .EXTEND   (ACC_WIDTH-PP_LEVEL_6_WIDTH),
-                .IS_SHIFT (0)
-            ) extender_n_level_6_i (
-                .in_i (pp_level_6),
-                .out_o(pp_level_7[0:3])
-            );
-
-            assign pp_level_7[4] = acc_i;
-            assign pp_level_7[5] = alpha_i;
-            assign pp_level_7[6] = beta_i;
-            assign pp_level_7[7] = '0;
-
-            // -------------------------------------------------------------------------
-            // Level 7: Compressor
-            // -------------------------------------------------------------------------
-            localparam int PP_LEVEL_8_SIZE  = 2;
-            localparam int PP_LEVEL_8_WIDTH = ACC_WIDTH + 4;
-
-            logic [PP_LEVEL_8_WIDTH-1:0] pp_level_8 [0:PP_LEVEL_8_SIZE-1];
-
-            compressor_n_2 #(
-                .IN_NUM (8),
-                .IN_SIZE(ACC_WIDTH)
-            ) compressor_n_2_level_7_i (
-                .in_i   (pp_level_7),
-                .sum_o  (pp_level_8[0]),
-                .carry_o(pp_level_8[1])
-            );
-
-            // -------------------------------------------------------------------------
-            // Level 8: Final adder
-            // -------------------------------------------------------------------------
-            adder_n #(
-                .SIZE(PP_LEVEL_8_WIDTH)
-            ) adder_n_i (
-                .in_0_i(pp_level_8[0]),
-                .in_1_i(pp_level_8[1]),
-                .out_o (out_o)
-            );
+            initial $fatal(1, "cpr_tree: PP_WIDTH must be <= 48, got %0d", PP_WIDTH);
 
         end else begin
 
-            // todo
+            localparam int NUM_STAGES = 3;
 
-        end;
+            logic [OUT_WIDTH-1:0] tmp [0:NUM_STAGES][0:PP_SIZE-1];
+
+            for (i = 0; i < PP_SIZE; i++)
+                assign tmp[0][i][PP_WIDTH-1:0] = pp_i[i];
+
+            for (stage = 0; stage < NUM_STAGES; stage++) begin
+
+                localparam int CPR_N_2_IN_SIZE      = get_in_size(stage);
+                localparam int CPR_N_2_IN_WIDTH     = gen_in_width(stage);
+                localparam int CPR_N_2_MAX_EXT_BITS = -1;
+                localparam int CPR_N_2_OUT_WIDTH    = CPR_N_2_IN_WIDTH + $clog2(CPR_N_2_IN_SIZE) + 1;
+                localparam int NUM_LANES            = 8 / pow2(stage);
+
+                for (lane = 0; lane < NUM_LANES; lane++) begin
+
+                    logic [ CPR_N_2_IN_WIDTH-1:0] cpr_n_2_in [0:CPR_N_2_IN_SIZE-1];
+                    logic [CPR_N_2_OUT_WIDTH-1:0] cpr_n_2_sum;
+                    logic [CPR_N_2_OUT_WIDTH-1:0] cpr_n_2_carry;
+
+                    for (i = 0; i < CPR_N_2_IN_SIZE; i++)
+                        assign cpr_n_2_in[i] = tmp[stage][lane*CPR_N_2_IN_SIZE+i][CPR_N_2_IN_WIDTH-1:0];
+
+                    cpr_n_2 #(
+                        .IN_SIZE     (CPR_N_2_IN_SIZE),
+                        .IN_WIDTH    (CPR_N_2_IN_WIDTH),
+                        .MAX_EXT_BITS(CPR_N_2_MAX_EXT_BITS)
+                    ) cpr_n_2_i (
+                        .in_i   (cpr_n_2_in),
+                        .sum_o  (cpr_n_2_sum),
+                        .carry_o(cpr_n_2_carry)
+                    );
+
+                    localparam int EXT_N_IN_SIZE   = 2;
+                    localparam int EXT_N_IN_WIDTH  = CPR_N_2_OUT_WIDTH;
+                    localparam int EXT_N_EXTEND    = stage == 0 ? 4 : 8;
+                    localparam int EXT_N_SEL_EXT   = get_sel_ext(stage, lane);
+                    localparam int EXT_N_OUT_SIZE  = EXT_N_IN_SIZE;
+                    localparam int EXT_N_OUT_WIDTH = EXT_N_IN_WIDTH + EXT_N_EXTEND;
+
+                    logic [ EXT_N_IN_WIDTH-1:0] ext_n_in  [ 0:EXT_N_IN_SIZE-1];
+                    logic [EXT_N_OUT_WIDTH-1:0] ext_n_out [0:EXT_N_OUT_SIZE-1];
+
+                    assign ext_n_in[0] = cpr_n_2_sum;
+                    assign ext_n_in[1] = cpr_n_2_carry;
+
+                    ext_n #(
+                        .IN_SIZE (EXT_N_IN_SIZE),
+                        .IN_WIDTH(EXT_N_IN_WIDTH),
+                        .EXTEND  (EXT_N_EXTEND)
+                    ) ext_n_i (
+                        .is_signed_i(is_signed_i[EXT_N_SEL_EXT]),
+                        .is_shift_i (is_shift_i[EXT_N_SEL_EXT]),
+                        .in_i       (ext_n_in),
+                        .out_o      (ext_n_out)
+                    );
+
+                    assign tmp[stage+1][lane*EXT_N_OUT_SIZE+0][EXT_N_OUT_WIDTH-1:0] = ext_n_out[0];
+                    assign tmp[stage+1][lane*EXT_N_OUT_SIZE+1][EXT_N_OUT_WIDTH-1:0] = ext_n_out[1];
+                end
+            end
+
+            localparam int EXT_N_LAST_IN_SIZE   = 4;
+            localparam int EXT_N_LAST_IN_WIDTH  = gen_in_width(3);
+            localparam int EXT_N_LAST_EXTEND    = ACC_WIDTH - EXT_N_LAST_IN_WIDTH;
+            localparam int EXT_N_LAST_SEL_EXT   = get_sel_ext(3, 0);
+            localparam int EXT_N_LAST_OUT_SIZE  = EXT_N_LAST_IN_SIZE;
+            localparam int EXT_N_LAST_OUT_WIDTH = EXT_N_LAST_IN_WIDTH + EXT_N_LAST_EXTEND;
+
+            logic [ EXT_N_LAST_IN_WIDTH-1:0] ext_n_last_in  [ 0:EXT_N_LAST_IN_SIZE-1];
+            logic [EXT_N_LAST_OUT_WIDTH-1:0] ext_n_last_out [0:EXT_N_LAST_OUT_SIZE-1];
+
+            for (i = 0; i < EXT_N_LAST_IN_SIZE; i++)
+                assign ext_n_last_in[i] = tmp[3][i][EXT_N_LAST_IN_WIDTH-1:0];
+
+            ext_n #(
+                .IN_SIZE (EXT_N_LAST_IN_SIZE),
+                .IN_WIDTH(EXT_N_LAST_IN_WIDTH),
+                .EXTEND  (EXT_N_LAST_EXTEND)
+            ) ext_n_i (
+                .is_signed_i(is_signed_i[EXT_N_LAST_SEL_EXT]),
+                .is_shift_i (is_shift_i[EXT_N_LAST_SEL_EXT]),
+                .in_i       (ext_n_last_in),
+                .out_o      (ext_n_last_out)
+            );
+
+            localparam int CPR_N_2_LAST_IN_SIZE      = EXT_N_LAST_OUT_SIZE + ACC_SIZE;
+            localparam int CPR_N_2_LAST_IN_WIDTH     = EXT_N_LAST_OUT_WIDTH;
+            localparam int CPR_N_2_LAST_MAX_EXT_BITS = 0;
+            localparam int CPR_N_2_LAST_OUT_WIDTH    = CPR_N_2_LAST_IN_WIDTH;
+
+            logic [ CPR_N_2_LAST_IN_WIDTH-1:0] cpr_n_2_last_in [0:CPR_N_2_LAST_IN_SIZE-1];
+            logic [CPR_N_2_LAST_OUT_WIDTH-1:0] cpr_n_2_last_sum;
+            logic [CPR_N_2_LAST_OUT_WIDTH-1:0] cpr_n_2_last_carry;
+
+            for (i = 0; i < EXT_N_LAST_OUT_SIZE; i++)
+                assign cpr_n_2_last_in[i] = ext_n_last_out[i];
+
+            for (i = 0; i < ACC_SIZE; i++)
+                assign cpr_n_2_last_in[EXT_N_LAST_OUT_SIZE+i] = acc_i[i];
+
+            cpr_n_2 #(
+                .IN_SIZE     (CPR_N_2_LAST_IN_SIZE),
+                .IN_WIDTH    (CPR_N_2_LAST_IN_WIDTH),
+                .MAX_EXT_BITS(CPR_N_2_LAST_MAX_EXT_BITS)
+            ) cpr_n_2_last_i (
+                .in_i   (cpr_n_2_last_in),
+                .sum_o  (cpr_n_2_last_sum),
+                .carry_o(cpr_n_2_last_carry)
+            );
+
+            localparam int ADD_N_IN_WIDTH = CPR_N_2_LAST_OUT_WIDTH;
+
+            logic [OUT_WIDTH:0] out;
+
+            add_n #(
+                .IN_WIDTH(ADD_N_IN_WIDTH)
+            ) add_n_i (
+                .in_0_i(cpr_n_2_last_sum),
+                .in_1_i(cpr_n_2_last_carry),
+                .out_o (out)
+            );
+
+            assign out_o = out[OUT_WIDTH-1:0];
+
+        end
 
     endgenerate
 
