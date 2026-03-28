@@ -2,14 +2,16 @@
 # Author: Simone Machetti
 # -----------------------------------------------------------------------------
 
-MODE          ?= 0
+ARCH          ?= 0
+MULT_TYPE     ?= 0
 TOP_LEVEL     ?= pe_top
 OUT_DIR       ?= no_name
 NETLIST_DIR   ?= no_name
 VCD_DIR       ?= no_name
 CLK_PERIOD_NS ?= 10
 
-export SEL_MODE          := $(MODE)
+export SEL_ARCH          := $(ARCH)
+export SEL_MULT_TYPE     := $(MULT_TYPE)
 export SEL_TOP_LEVEL     := $(TOP_LEVEL)
 export SEL_OUT_DIR       := $(OUT_DIR)
 export SEL_NETLIST_DIR   := $(NETLIST_DIR)
@@ -28,7 +30,9 @@ sim: clean-sim
 	mkdir -p $(CODE_HOME)/ai_core/sim/$(OUT_DIR)/build && \
 	mkdir -p $(CODE_HOME)/ai_core/sim/$(OUT_DIR)/output && \
 	./run.sh && \
-	mv $(CODE_HOME)/ai_core/scripts/sim/activity.vcd $(CODE_HOME)/ai_core/sim/$(OUT_DIR)/output
+	if [ -f $(CODE_HOME)/ai_core/scripts/sim/activity.vcd ]; then \
+	mv $(CODE_HOME)/ai_core/scripts/sim/activity.vcd $(CODE_HOME)/ai_core/sim/$(OUT_DIR)/output; \
+	fi
 
 syn: clean-imp
 	cd $(CODE_HOME)/ai_core/scripts/syn && \
@@ -50,7 +54,9 @@ post-syn-sim: clean-sim
 	mkdir -p $(CODE_HOME)/ai_core/sim/$(OUT_DIR)/build && \
 	mkdir -p $(CODE_HOME)/ai_core/sim/$(OUT_DIR)/output && \
 	./run.sh && \
-	mv $(CODE_HOME)/ai_core/scripts/post-syn-sim/activity.vcd $(CODE_HOME)/ai_core/sim/$(OUT_DIR)/output
+	if [ -f $(CODE_HOME)/ai_core/scripts/post-syn-sim/activity.vcd ]; then \
+	mv $(CODE_HOME)/ai_core/scripts/post-syn-sim/activity.vcd $(CODE_HOME)/ai_core/sim/$(OUT_DIR)/output; \
+	fi
 
 post-syn-dpa: clean-imp
 	cd $(CODE_HOME)/ai_core/scripts/post-syn-dpa && \
