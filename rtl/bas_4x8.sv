@@ -33,9 +33,9 @@ module bas_4x8 #(
         localparam int MULT_ARRAY_IN_WIDTH_B = IN_WIDTH_B;
         localparam int MULT_ARRAY_MULT_TYPE  = MULT_TYPE;
 
-        localparam int MULT_ARRAY_PP_PER_MUL = MULT_TYPE == 0 ? (IN_WIDTH_A + 1) / 2 : (IN_WIDTH_A + 2) / 3;
+        localparam int MULT_ARRAY_PP_PER_MUL = MULT_TYPE == 0 ? (MULT_ARRAY_IN_WIDTH_A + 1) / 2 : (MULT_ARRAY_IN_WIDTH_A + 2) / 3;
         localparam int MULT_ARRAY_PP_SIZE    = MULT_ARRAY_PP_PER_MUL * MULT_ARRAY_IN_SIZE;
-        localparam int MULT_ARRAY_PP_WIDTH   = MULT_TYPE == 0 ? IN_WIDTH_B + 2 : IN_WIDTH_B + 3;
+        localparam int MULT_ARRAY_PP_WIDTH   = MULT_TYPE == 0 ? MULT_ARRAY_IN_WIDTH_B + 2 : MULT_ARRAY_IN_WIDTH_B + 3;
 
         for (lane = 0; lane < NUM_LANES; lane++) begin : gen_lane
 
