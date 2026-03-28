@@ -36,6 +36,7 @@ module bas_4x8 #(
         localparam int MULT_ARRAY_PP_PER_MUL = MULT_TYPE == 0 ? (MULT_ARRAY_IN_WIDTH_A + 1) / 2 : (MULT_ARRAY_IN_WIDTH_A + 2) / 3;
         localparam int MULT_ARRAY_PP_SIZE    = MULT_ARRAY_PP_PER_MUL * MULT_ARRAY_IN_SIZE;
         localparam int MULT_ARRAY_PP_WIDTH   = MULT_TYPE == 0 ? MULT_ARRAY_IN_WIDTH_B + 2 : MULT_ARRAY_IN_WIDTH_B + 3;
+        localparam bit IS_SIGNED             = 1;
 
         for (lane = 0; lane < NUM_LANES; lane++) begin : gen_lane
 
@@ -47,7 +48,8 @@ module bas_4x8 #(
                 .IN_SIZE   (MULT_ARRAY_IN_SIZE),
                 .IN_WIDTH_A(MULT_ARRAY_IN_WIDTH_A),
                 .IN_WIDTH_B(MULT_ARRAY_IN_WIDTH_B),
-                .MULT_TYPE (MULT_ARRAY_MULT_TYPE)
+                .MULT_TYPE (MULT_ARRAY_MULT_TYPE),
+                .IS_SIGNED (IS_SIGNED)
             ) mult_array_i (
                 .a_i (a_i[MULT_ARRAY_IN_OFFSET +: MULT_ARRAY_IN_SIZE]),
                 .b_i (b_i[MULT_ARRAY_IN_OFFSET +: MULT_ARRAY_IN_SIZE]),
