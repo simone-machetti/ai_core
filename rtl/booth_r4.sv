@@ -7,6 +7,7 @@
 module booth_r4 #(
     parameter int IN_WIDTH_A = 4,
     parameter int IN_WIDTH_B = 8,
+    parameter bit IS_SIGNED  = 1,
 
     localparam int PP_SIZE  = (IN_WIDTH_A + 1) / 2,
     localparam int PP_WIDTH = IN_WIDTH_B + 2
@@ -30,12 +31,14 @@ module booth_r4 #(
             assign sel = mult_ext[2*i +: 3];
 
             booth_r4_cell #(
-                .IN_WIDTH(IN_WIDTH_B)
+                .IN_WIDTH (IN_WIDTH_B),
+                .IS_SIGNED(IS_SIGNED)
             ) booth_r4_cell_i (
                 .mult_i(b_i),
                 .sel_i (sel),
                 .pp_o  (pp_o[i])
             );
+
         end
 
     endgenerate

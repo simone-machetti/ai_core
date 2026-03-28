@@ -5,7 +5,8 @@
 `timescale 1 ns/1 ps
 
 module booth_r4_cell #(
-    parameter int IN_WIDTH = 16,
+    parameter int IN_WIDTH  = 16,
+    parameter bit IS_SIGNED = 1,
 
     localparam int OUT_WIDTH = IN_WIDTH + 2
 )(
@@ -16,7 +17,7 @@ module booth_r4_cell #(
 
     logic [OUT_WIDTH-1:0] m_ext;
 
-    assign m_ext = { {2{mult_i[IN_WIDTH-1]}}, mult_i};
+    assign m_ext = {{2{IS_SIGNED ? mult_i[IN_WIDTH-1] : 1'b0}}, mult_i};
 
     always_comb begin
         unique case (sel_i)

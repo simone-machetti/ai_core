@@ -9,6 +9,7 @@ module mult_array #(
     parameter int IN_WIDTH_A = 4,
     parameter int IN_WIDTH_B = 8,
     parameter int MULT_TYPE  = 0,
+    parameter bit IS_SIGNED  = 1,
 
     localparam int RADIX_4    = 0,
     localparam int RADIX_8    = 1,
@@ -33,7 +34,8 @@ module mult_array #(
                 RADIX_4: begin : gen_radix_4
                     booth_r4 #(
                         .IN_WIDTH_A(IN_WIDTH_A),
-                        .IN_WIDTH_B(IN_WIDTH_B)
+                        .IN_WIDTH_B(IN_WIDTH_B),
+                        .IS_SIGNED (IS_SIGNED)
                     ) booth_r4_i (
                         .a_i (a_i[i]),
                         .b_i (b_i[i]),
@@ -44,7 +46,8 @@ module mult_array #(
                 RADIX_8: begin : gen_radix_8
                     booth_r8 #(
                         .IN_WIDTH_A(IN_WIDTH_A),
-                        .IN_WIDTH_B(IN_WIDTH_B)
+                        .IN_WIDTH_B(IN_WIDTH_B),
+                        .IS_SIGNED (IS_SIGNED)
                     ) booth_r8_i (
                         .a_i (a_i[i]),
                         .b_i (b_i[i]),
