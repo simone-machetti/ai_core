@@ -2,25 +2,39 @@
 // Author: Simone Machetti
 // -----------------------------------------------------------------------------
 
+/* verilator lint_off GENUNNAMED */
+
 `timescale 1 ns/1 ps
 
-module pe_top
-    import pe_pkg::*;
-#(
-    parameter pe_mode_e MODE = BASELINE_4_8,
+module pe_top #(
+    parameter int ARCH      = 0,
+    parameter int MULT_TYPE = 0,
 
-    localparam int PP_SIZE  = calc_pp_size(MODE),
-    localparam int PP_WIDTH = calc_pp_width(MODE)
+    localparam int IN_SIZE    = 64,
+    localparam int IN_WIDTH_A = 4,
+    localparam int IN_WIDTH_B = 8,
+    localparam int ACC_SIZE   = 1,
+    localparam int ACC_WIDTH  = 48,
+    localparam int EXT_NUM    = 15,
+    localparam int OUT_WIDTH  = ACC_WIDTH
 )(
     input  logic                  clk_i,
     input  logic                  rst_ni,
-    input  logic [ ACC_WIDTH-1:0] acc_i,
-    input  logic [ ACC_WIDTH-1:0] alpha_i,
-    input  logic [ ACC_WIDTH-1:0] beta_i,
-    input  logic [IN_WIDTH_A-1:0] a_i [0:IN_SIZE-1],
-    input  logic [IN_WIDTH_B-1:0] b_i [0:IN_SIZE-1],
+    input  logic [ ACC_WIDTH-1:0] acc_i       [0:ACC_SIZE-1],
+    input  logic                  is_signed_i [ 0:EXT_NUM-1],
+    input  logic                  is_shift_i  [ 0:EXT_NUM-1],
+    input  logic [IN_WIDTH_A-1:0] a_i         [ 0:IN_SIZE-1],
+    input  logic [IN_WIDTH_B-1:0] b_i         [ 0:IN_SIZE-1],
     output logic [ OUT_WIDTH-1:0] out_o
 );
+
+    localparam int NUM_LANES    = 8;
+    localparam int PP_PER_MUL   = MULT_TYPE == 0 ? (IN_WIDTH_A + 1) / 2 : (IN_WIDTH_A + 2) / 3;
+    localparam int PP_SIZE      = 2 * PP_PER_MUL * NUM_LANES;
+    localparam int CPR_IN_SIZE  = IN_SIZE / NUM_LANES;
+    localparam int CPR_IN_WIDTH = MULT_TYPE == 0 ? IN_WIDTH_B + 2 : IN_WIDTH_B + 3;
+    localparam int PP_SHIFT     = MULT_TYPE == 0 ? 2 : 3;
+    localparam int PP_WIDTH     = CPR_IN_WIDTH + $clog2(CPR_IN_SIZE) + 1 + PP_SHIFT;
 
     logic [IN_WIDTH_A-1:0] a  [0:IN_SIZE-1];
     logic [IN_WIDTH_B-1:0] b  [0:IN_SIZE-1];
@@ -54,7 +68,8 @@ module pe_top
     // Partial product generator
     // -------------------------------------------------------------------------
     pp_gen #(
-        .MODE(MODE)
+        .ARCH     (ARCH),
+        .MULT_TYPE(MULT_TYPE)
     ) pp_gen_i (
         .a_i (a),
         .b_i (b),
@@ -65,13 +80,15 @@ module pe_top
     // Compression tree
     // -------------------------------------------------------------------------
     cpr_tree #(
-        .MODE(MODE)
+        .PP_SIZE (PP_SIZE),
+        .PP_WIDTH(PP_WIDTH),
+        .ACC_SIZE(ACC_SIZE)
     ) cpr_tree_i (
-        .acc_i  (acc_i),
-        .alpha_i(alpha_i),
-        .beta_i (beta_i),
-        .pp_i   (pp),
-        .out_o  (out)
+        .acc_i      (acc_i),
+        .is_signed_i(is_signed_i),
+        .is_shift_i (is_shift_i),
+        .pp_i       (pp),
+        .out_o      (out)
     );
 
     // -------------------------------------------------------------------------
