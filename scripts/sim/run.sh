@@ -16,7 +16,6 @@ verilator \
     -Wno-fatal \
     -DVCD \
     -DCLK_PERIOD_NS=${SEL_CLK_PERIOD_NS} \
-    -GARCH=${SEL_ARCH} \
     -GMULT_TYPE=${SEL_MULT_TYPE} \
     -I"${CODE_HOME}/ai_core/rtl" \
     --top-module tb_${SEL_TOP_LEVEL} \

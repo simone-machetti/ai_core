@@ -7,7 +7,7 @@
 `timescale 1 ns/1 ps
 
 module bas_4x8 #(
-    parameter int MULT_TYPE  = 0,
+    parameter int MULT_TYPE = 0,
 
     localparam int IN_SIZE      = 64,
     localparam int IN_WIDTH_A   = 4,

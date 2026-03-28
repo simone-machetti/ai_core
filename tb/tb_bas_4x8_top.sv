@@ -7,8 +7,7 @@
 
 `timescale 1 ns/1 ps
 
-module tb_pe_top #(
-    parameter int ARCH      = 0,
+module tb_bas_4x8_top #(
     parameter int MULT_TYPE = 0
 );
     localparam int IN_SIZE    = 64;
@@ -36,10 +35,9 @@ module tb_pe_top #(
     logic [IN_WIDTH_B-1:0] max_pos_1;
     logic [IN_WIDTH_B-1:0] min_neg_1;
 
-    pe_top #(
-        .ARCH     (ARCH),
+    bas_4x8_top #(
         .MULT_TYPE(MULT_TYPE)
-    ) pe_top_i (
+    ) bas_4x8_top (
         .clk_i      (clk),
         .rst_ni     (rst_n),
         .acc_i      (acc),

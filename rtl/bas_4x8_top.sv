@@ -6,8 +6,7 @@
 
 `timescale 1 ns/1 ps
 
-module pe_top #(
-    parameter int ARCH      = 0,
+module bas_4x8_top #(
     parameter int MULT_TYPE = 0,
 
     localparam int IN_SIZE    = 64,
@@ -67,10 +66,9 @@ module pe_top #(
     // -------------------------------------------------------------------------
     // Partial product generator
     // -------------------------------------------------------------------------
-    pp_gen #(
-        .ARCH     (ARCH),
+    bas_4x8 #(
         .MULT_TYPE(MULT_TYPE)
-    ) pp_gen_i (
+    ) bas_4x8_i (
         .a_i (a),
         .b_i (b),
         .pp_o(pp)
