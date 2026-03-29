@@ -37,7 +37,7 @@ module tb_win_4x8_top #(
 
     win_4x8_top #(
         .MULT_TYPE(MULT_TYPE)
-    ) win_4x8_top (
+    ) win_4x8_top_i (
         .clk_i      (clk),
         .rst_ni     (rst_n),
         .acc_i      (acc),

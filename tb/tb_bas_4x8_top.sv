@@ -37,7 +37,7 @@ module tb_bas_4x8_top #(
 
     bas_4x8_top #(
         .MULT_TYPE(MULT_TYPE)
-    ) bas_4x8_top (
+    ) bas_4x8_top_i (
         .clk_i      (clk),
         .rst_ni     (rst_n),
         .acc_i      (acc),
