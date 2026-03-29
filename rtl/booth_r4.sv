@@ -17,14 +17,16 @@ module booth_r4 #(
     output logic [  PP_WIDTH-1:0] pp_o [0:PP_SIZE-1]
 );
 
-    logic [IN_WIDTH_A:0] mult_ext;
+    localparam int MULT_EXT_WIDTH = 2 * PP_SIZE + 1;
 
-    assign mult_ext = {a_i, 1'b0};
+    logic [MULT_EXT_WIDTH-1:0] mult_ext;
+
+    assign mult_ext = {{(MULT_EXT_WIDTH-IN_WIDTH_A-1){a_i[IN_WIDTH_A-1]}}, a_i, 1'b0};
 
     genvar i;
     generate
 
-        for (i = 0; i < PP_SIZE; i++) begin : ben_booth
+        for (i = 0; i < PP_SIZE; i++) begin : gen_booth
 
             logic [2:0] sel;
 

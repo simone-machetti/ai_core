@@ -7,7 +7,7 @@
 module booth_r8 #(
     parameter int IN_WIDTH_A = 4,
     parameter int IN_WIDTH_B = 8,
-    parameter bit IS_SIGNED  = 1'b1,
+    parameter bit IS_SIGNED  = 1,
 
     localparam int PP_SIZE  = (IN_WIDTH_A + 2) / 3,
     localparam int PP_WIDTH = IN_WIDTH_B + 3
@@ -17,14 +17,16 @@ module booth_r8 #(
     output logic [  PP_WIDTH-1:0] pp_o [0:PP_SIZE-1]
 );
 
-    logic [IN_WIDTH_A+2:0] mult_ext;
+    localparam int MULT_EXT_WIDTH = 3 * PP_SIZE + 1;
 
-    assign mult_ext = {{2{a_i[IN_WIDTH_A-1]}}, a_i, 1'b0};
+    logic [MULT_EXT_WIDTH-1:0] mult_ext;
+
+    assign mult_ext = {{(MULT_EXT_WIDTH-IN_WIDTH_A-1){a_i[IN_WIDTH_A-1]}}, a_i, 1'b0};
 
     genvar i;
     generate
 
-        for (i = 0; i < PP_SIZE; i++) begin : ben_booth
+        for (i = 0; i < PP_SIZE; i++) begin : gen_booth
 
             logic [3:0] sel;
 
@@ -38,6 +40,7 @@ module booth_r8 #(
                 .sel_i (sel),
                 .pp_o  (pp_o[i])
             );
+
         end
 
     endgenerate
