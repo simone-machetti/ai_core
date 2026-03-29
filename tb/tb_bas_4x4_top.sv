@@ -141,7 +141,7 @@ module tb_bas_4x4_top #(
         $display("\nStarting verification...\n");
 
         $dumpfile("activity.vcd");
-        $dumpvars(0, tb_pe_top.pe_top_i);
+        $dumpvars(0, tb_bas_4x4_top.bas_4x4_top_i);
 
         reset_dut;
 
