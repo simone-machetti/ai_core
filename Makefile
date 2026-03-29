@@ -2,15 +2,13 @@
 # Author: Simone Machetti
 # -----------------------------------------------------------------------------
 
-ARCH          ?= 0
 MULT_TYPE     ?= 0
 TOP_LEVEL     ?= pe_top
 OUT_DIR       ?= no_name
 NETLIST_DIR   ?= no_name
 VCD_DIR       ?= no_name
-CLK_PERIOD_NS ?= 10
+CLK_PERIOD_NS ?= 1
 
-export SEL_ARCH          := $(ARCH)
 export SEL_MULT_TYPE     := $(MULT_TYPE)
 export SEL_TOP_LEVEL     := $(TOP_LEVEL)
 export SEL_OUT_DIR       := $(OUT_DIR)
