@@ -13,10 +13,10 @@ module win_4x8 #(
     localparam int IN_WIDTH_A   = 4,
     localparam int IN_WIDTH_B   = 8,
     localparam int NUM_LANES    = 8,
-    localparam int PP_PER_MUL   = MULT_TYPE == 0 ? ((IN_WIDTH_B + 1) + 1) / 2 : ((IN_WIDTH_B + 1) + 2) / 3,
+    localparam int PP_PER_MUL   = MULT_TYPE == 0 ? ((IN_WIDTH_B + 2) + 1) / 2 : ((IN_WIDTH_B + 2) + 2) / 3,
     localparam int PP_SIZE      = 2 * PP_PER_MUL * NUM_LANES,
     localparam int CPR_IN_SIZE  = IN_SIZE / NUM_LANES / 2,
-    localparam int CPR_IN_WIDTH = MULT_TYPE == 0 ? (IN_WIDTH_B + 1) + 2 : (IN_WIDTH_B + 1) + 3,
+    localparam int CPR_IN_WIDTH = MULT_TYPE == 0 ? (IN_WIDTH_B + 2) + 2 : (IN_WIDTH_B + 2) + 3,
     localparam int PP_SHIFT     = MULT_TYPE == 0 ? 2 : 3,
     localparam int PP_WIDTH     = CPR_IN_WIDTH + $clog2(CPR_IN_SIZE) + 1 + ((PP_PER_MUL - 1) * PP_SHIFT)
 )(
@@ -33,7 +33,7 @@ module win_4x8 #(
         localparam int MULT_ARRAY_IN_WIDTH_B = IN_WIDTH_B;
         localparam int MULT_ARRAY_MULT_TYPE  = MULT_TYPE;
 
-        localparam int MULT_ARRAY_IN_MUL_WIDTH = MULT_ARRAY_IN_WIDTH_B + 1;
+        localparam int MULT_ARRAY_IN_MUL_WIDTH = MULT_ARRAY_IN_WIDTH_B + 2;
         localparam int MULT_ARRAY_PP_PER_MUL   = MULT_TYPE == 0 ? (MULT_ARRAY_IN_MUL_WIDTH + 1) / 2 : (MULT_ARRAY_IN_MUL_WIDTH + 2) / 3;
         localparam int MULT_ARRAY_PP_SIZE      = MULT_ARRAY_PP_PER_MUL * MULT_ARRAY_IN_SIZE / 2;
         localparam int MULT_ARRAY_PP_WIDTH     = MULT_TYPE == 0 ? MULT_ARRAY_IN_MUL_WIDTH + 2 : MULT_ARRAY_IN_MUL_WIDTH + 3;

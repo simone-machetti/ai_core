@@ -13,7 +13,7 @@ module add_mult_array #(
 
     localparam int RADIX_4      = 0,
     localparam int RADIX_8      = 1,
-    localparam int IN_MUL_WIDTH = IS_SIGNED == 0 ? IN_WIDTH_B + 2 : IN_WIDTH_B + 1,
+    localparam int IN_MUL_WIDTH = IN_WIDTH_B + 2,
     localparam int PP_PER_MUL   = MULT_TYPE == RADIX_4 ? (IN_MUL_WIDTH + 1) / 2 : (IN_MUL_WIDTH + 2) / 3,
     localparam int PP_SIZE      = PP_PER_MUL * IN_SIZE / 2,
     localparam int PP_WIDTH     = MULT_TYPE == RADIX_4 ? IN_MUL_WIDTH + 2 : IN_MUL_WIDTH + 3
@@ -55,7 +55,7 @@ module add_mult_array #(
                     booth_r4 #(
                         .IN_WIDTH_A(IN_MUL_WIDTH),
                         .IN_WIDTH_B(IN_MUL_WIDTH),
-                        .IS_SIGNED (IS_SIGNED)
+                        .IS_SIGNED (1)
                     ) booth_r4_i (
                         .a_i (sum_0),
                         .b_i (sum_1),
@@ -67,7 +67,7 @@ module add_mult_array #(
                     booth_r8 #(
                         .IN_WIDTH_A(IN_MUL_WIDTH),
                         .IN_WIDTH_B(IN_MUL_WIDTH),
-                        .IS_SIGNED (IS_SIGNED)
+                        .IS_SIGNED (1)
                     ) booth_r8_i (
                         .a_i (sum_0),
                         .b_i (sum_1),

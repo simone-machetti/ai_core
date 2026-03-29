@@ -6,7 +6,7 @@
 
 `timescale 1 ns/1 ps
 
-module win_4x8_top #(
+module win_4x4_top #(
     parameter int MULT_TYPE = 0,
 
     localparam int IN_SIZE    = 64,
@@ -27,13 +27,15 @@ module win_4x8_top #(
     output logic [ OUT_WIDTH-1:0] out_o
 );
 
-    localparam int NUM_LANES    = 8;
-    localparam int PP_PER_MUL   = MULT_TYPE == 0 ? ((IN_WIDTH_B + 2) + 1) / 2 : ((IN_WIDTH_B + 2) + 2) / 3;
-    localparam int PP_SIZE      = 2 * PP_PER_MUL * NUM_LANES;
-    localparam int CPR_IN_SIZE  = IN_SIZE / NUM_LANES / 2;
-    localparam int CPR_IN_WIDTH = MULT_TYPE == 0 ? (IN_WIDTH_B + 2) + 2 : (IN_WIDTH_B + 2) + 3;
-    localparam int PP_SHIFT     = MULT_TYPE == 0 ? 2 : 3;
-    localparam int PP_WIDTH     = CPR_IN_WIDTH + $clog2(CPR_IN_SIZE) + 1 + ((PP_PER_MUL - 1) * PP_SHIFT);
+    localparam int NUM_LANES     = 8;
+    localparam int NUM_SUB_LANES = 2;
+    localparam int PP_PER_MUL    = MULT_TYPE == 0 ? ((IN_WIDTH_A + 2) + 1) / 2 : ((IN_WIDTH_A + 2) + 2) / 3;
+    localparam int PP_SIZE       = 2 * PP_PER_MUL * NUM_SUB_LANES * NUM_LANES;
+    localparam int CPR_IN_SIZE   = IN_SIZE / NUM_LANES;
+    localparam int CPR_IN_WIDTH  = MULT_TYPE == 0 ? (IN_WIDTH_A + 2) + 2 : (IN_WIDTH_A + 2) + 3;
+    localparam int PP_SHIFT      = MULT_TYPE == 0 ? 2 : 3;
+    localparam int PP_SUB_SHIFT  = 4;
+    localparam int PP_WIDTH      = CPR_IN_WIDTH + $clog2(CPR_IN_SIZE) + 1 + ((PP_PER_MUL - 1) * PP_SHIFT) + PP_SUB_SHIFT;
 
     logic [IN_WIDTH_A-1:0] a  [0:IN_SIZE-1];
     logic [IN_WIDTH_B-1:0] b  [0:IN_SIZE-1];
@@ -66,9 +68,9 @@ module win_4x8_top #(
     // -------------------------------------------------------------------------
     // Partial product generator
     // -------------------------------------------------------------------------
-    win_4x8 #(
+    win_4x4 #(
         .MULT_TYPE(MULT_TYPE)
-    ) win_4x8_i (
+    ) win_4x4_i (
         .a_i (a),
         .b_i (b),
         .pp_o(pp)

@@ -43,14 +43,14 @@ module cpr_tree #(
             if (stage == 0) begin
                 gen_in_width = PP_WIDTH;
             end else if (stage == 1) begin
-                gen_in_width = PP_WIDTH + 1 + 4;
+                gen_in_width = PP_WIDTH + 4;
             end else if (stage == 2) begin
-                tmp          = PP_WIDTH + 1 + 4;
-                gen_in_width = tmp + 1 + 8;
+                tmp          = PP_WIDTH + 4;
+                gen_in_width = tmp + 8;
             end else if (stage == 3) begin
-                tmp          = PP_WIDTH + 1 + 4;
-                tmp          = tmp + 1 + 8;
-                gen_in_width = tmp + 1 + 8;
+                tmp          = PP_WIDTH + 4;
+                tmp          = tmp + 8;
+                gen_in_width = tmp + 8;
             end else begin
                 gen_in_width = PP_WIDTH;
             end
@@ -99,8 +99,8 @@ module cpr_tree #(
 
                 localparam int CPR_N_2_IN_SIZE      = get_in_size(stage);
                 localparam int CPR_N_2_IN_WIDTH     = gen_in_width(stage);
-                localparam int CPR_N_2_MAX_EXT_BITS = -1;
-                localparam int CPR_N_2_OUT_WIDTH    = CPR_N_2_IN_WIDTH + $clog2(CPR_N_2_IN_SIZE) + 1;
+                localparam int CPR_N_2_MAX_EXT_BITS = 0;
+                localparam int CPR_N_2_OUT_WIDTH    = CPR_N_2_IN_WIDTH;
                 localparam int NUM_LANES            = 8 / pow2(stage);
 
                 for (lane = 0; lane < NUM_LANES; lane++) begin
