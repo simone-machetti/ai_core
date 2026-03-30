@@ -2,16 +2,7 @@
 # Author: Simone Machetti
 # -----------------------------------------------------------------------------
 
-# -----------------------------------------------------------------------------
-# Load RTL & technology
-# -----------------------------------------------------------------------------
 source $env(CODE_HOME)/ai_core/scripts/syn/compile.tcl
-
-# -----------------------------------------------------------------------------
-# Override top parameters
-# -----------------------------------------------------------------------------
-# yosys "chparam -set IN_SIZE_0 $env(SEL_IN_SIZE_0) -set IN_SIZE_1 $env(SEL_IN_SIZE_1) $env(SEL_TOP_LEVEL)"
-# yosys "rename -top $env(SEL_TOP_LEVEL)"
 
 # -----------------------------------------------------------------------------
 # Elaboration / hierarchy
@@ -28,16 +19,8 @@ yosys "fsm"
 yosys "opt"
 yosys "memory"
 yosys "opt"
-# yosys "extract_fa"
-# yosys "techmap -map $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/yoSys/cells_adders_R.v"
 yosys "techmap"
 yosys "opt"
-
-# -----------------------------------------------------------------------------
-# Visualize netlist
-# -----------------------------------------------------------------------------
-# yosys "write_json $env(CODE_HOME)/ai_core/scripts/syn/output/graph.json"
-# exec netlistsvg $env(CODE_HOME)/ai_core/scripts/syn/output/graph.json -o $env(CODE_HOME)/ai_core/scripts/syn/output/graph.svg
 
 # -----------------------------------------------------------------------------
 # Technology mapping
