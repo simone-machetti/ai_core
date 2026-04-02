@@ -14,7 +14,7 @@ module sqr_4x4 #(
     localparam int NUM_SUB_LANES = 2,
     localparam int PP_SIZE       = 2 * NUM_SUB_LANES * NUM_LANES,
     localparam int CPR_IN_SIZE   = IN_SIZE / NUM_LANES,
-    localparam int CPR_IN_WIDTH  = (IN_WIDTH_A + 1) * 2,
+    localparam int CPR_IN_WIDTH  = (IN_WIDTH_A + 2) * 2,
     localparam int PP_SUB_SHIFT  = 4,
     localparam int PP_WIDTH      = CPR_IN_WIDTH + $clog2(CPR_IN_SIZE) + 1 + PP_SUB_SHIFT
 )(
@@ -29,7 +29,7 @@ module sqr_4x4 #(
         localparam int ADD_SQR_ARRAY_IN_SIZE      = IN_SIZE / NUM_LANES;
         localparam int ADD_SQR_ARRAY_IN_WIDTH_A   = IN_WIDTH_A;
         localparam int ADD_SQR_ARRAY_IN_WIDTH_B   = IN_WIDTH_B / 2;
-        localparam int ADD_SQR_ARRAY_IN_SQR_WIDTH = ADD_SQR_ARRAY_IN_WIDTH_A + 1;
+        localparam int ADD_SQR_ARRAY_IN_SQR_WIDTH = ADD_SQR_ARRAY_IN_WIDTH_A + 2;
         localparam int ADD_SQR_ARRAY_PP_SIZE      = ADD_SQR_ARRAY_IN_SIZE;
         localparam int ADD_SQR_ARRAY_PP_WIDTH     = ADD_SQR_ARRAY_IN_SQR_WIDTH * 2;
 

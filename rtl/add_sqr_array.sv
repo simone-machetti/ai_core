@@ -11,8 +11,8 @@ module add_sqr_array #(
     parameter bit IS_SIGNED = 1,
 
     localparam int IN_WIDTH      = 4,
-    localparam int IN_SQR_WIDTH  = 5,
-    localparam int OUT_SQR_WIDTH = 9,
+    localparam int IN_SQR_WIDTH  = 6,
+    localparam int OUT_SQR_WIDTH = 11,
     localparam int PP_SIZE       = IN_SIZE,
     localparam int PP_WIDTH      = OUT_SQR_WIDTH + 1
 )(
@@ -30,12 +30,12 @@ module add_sqr_array #(
             logic        [OUT_SQR_WIDTH-1:0] pp;
 
             if (IS_SIGNED == 0) begin
-                assign sum = IN_SQR_WIDTH'($signed(a_i[i]) + $unsigned(b_i[i]));
+                assign sum = IN_SQR_WIDTH'($signed(a_i[i])) + IN_SQR_WIDTH'($unsigned(b_i[i]));
             end else begin
-                assign sum = IN_SQR_WIDTH'($signed(a_i[i]) + $signed(b_i[i]));
+                assign sum = IN_SQR_WIDTH'($signed(a_i[i])) + IN_SQR_WIDTH'($signed(b_i[i]));
             end
 
-            sqr_5_bit sqr_5_bit_i (
+            sqr_6_bit sqr_6_bit_i (
                 .in_i (sum),
                 .out_o(pp)
             );
