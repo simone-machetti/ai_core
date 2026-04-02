@@ -25,6 +25,7 @@ yosys "read_liberty -lib $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/a
 # Read SystemVerilog sources
 # -----------------------------------------------------------------------------
 yosys "read_slang \
+    $env(CODE_HOME)/ai_core/rtl/ha.sv \
     $env(CODE_HOME)/ai_core/rtl/fa.sv \
     $env(CODE_HOME)/ai_core/rtl/ff.sv \
     $env(CODE_HOME)/ai_core/rtl/ff_n.sv \
@@ -40,13 +41,17 @@ yosys "read_slang \
     $env(CODE_HOME)/ai_core/rtl/cpr_n_2.sv \
     $env(CODE_HOME)/ai_core/rtl/booth_r4.sv \
     $env(CODE_HOME)/ai_core/rtl/booth_r8.sv \
+    $env(CODE_HOME)/ai_core/rtl/sqr_5_bit.sv \
+    $env(CODE_HOME)/ai_core/rtl/sqr_6_bit.sv \
     $env(CODE_HOME)/ai_core/rtl/add_mult_array.sv \
     $env(CODE_HOME)/ai_core/rtl/mult_array.sv \
+    $env(CODE_HOME)/ai_core/rtl/add_sqr_array.sv \
     $env(CODE_HOME)/ai_core/rtl/cpr_tree.sv \
     $env(CODE_HOME)/ai_core/rtl/bas_4x4.sv \
     $env(CODE_HOME)/ai_core/rtl/bas_4x8.sv \
     $env(CODE_HOME)/ai_core/rtl/win_4x4.sv \
     $env(CODE_HOME)/ai_core/rtl/win_4x8.sv \
+    $env(CODE_HOME)/ai_core/rtl/sqr_4x4.sv \
     $env(CODE_HOME)/ai_core/rtl/$env(SEL_TOP_LEVEL).sv \
     -G MULT_TYPE=$env(SEL_MULT_TYPE)"
 
