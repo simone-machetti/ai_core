@@ -2,4 +2,4 @@
 # Author: Simone Machetti
 # -----------------------------------------------------------------------------
 
-${CODE_HOME}/ai_core/tb/tb_${SEL_TOP_LEVEL}.sv
+${CODE_HOME}/ai-core/tb/tb_${SEL_TOP_LEVEL}.sv
