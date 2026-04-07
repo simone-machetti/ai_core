@@ -19,56 +19,56 @@ export SEL_CLK_PERIOD_NS := $(CLK_PERIOD_NS)
 .PHONY: init
 
 init:
-	mkdir -p $(CODE_HOME)/ai_core/sim
-	mkdir -p $(CODE_HOME)/ai_core/imp
+	mkdir -p $(CODE_HOME)/ai-core/sim
+	mkdir -p $(CODE_HOME)/ai-core/imp
 
 sim: clean-sim
-	cd $(CODE_HOME)/ai_core/scripts/sim && \
-	mkdir -p $(CODE_HOME)/ai_core/sim/$(OUT_DIR) && \
-	mkdir -p $(CODE_HOME)/ai_core/sim/$(OUT_DIR)/build && \
-	mkdir -p $(CODE_HOME)/ai_core/sim/$(OUT_DIR)/output && \
+	cd $(CODE_HOME)/ai-core/scripts/sim && \
+	mkdir -p $(CODE_HOME)/ai-core/sim/$(OUT_DIR) && \
+	mkdir -p $(CODE_HOME)/ai-core/sim/$(OUT_DIR)/build && \
+	mkdir -p $(CODE_HOME)/ai-core/sim/$(OUT_DIR)/output && \
 	./run.sh && \
-	if [ -f $(CODE_HOME)/ai_core/scripts/sim/activity.vcd ]; then \
-	mv $(CODE_HOME)/ai_core/scripts/sim/activity.vcd $(CODE_HOME)/ai_core/sim/$(OUT_DIR)/output; \
+	if [ -f $(CODE_HOME)/ai-core/scripts/sim/activity.vcd ]; then \
+	mv $(CODE_HOME)/ai-core/scripts/sim/activity.vcd $(CODE_HOME)/ai-core/sim/$(OUT_DIR)/output; \
 	fi
 
 syn: clean-imp
-	cd $(CODE_HOME)/ai_core/scripts/syn && \
-	mkdir -p $(CODE_HOME)/ai_core/imp/$(OUT_DIR) && \
-	mkdir -p $(CODE_HOME)/ai_core/imp/$(OUT_DIR)/output && \
-	mkdir -p $(CODE_HOME)/ai_core/imp/$(OUT_DIR)/report && \
-	yosys -l $(CODE_HOME)/ai_core/imp/$(OUT_DIR)/output/yosys.log -c $(CODE_HOME)/ai_core/scripts/syn/run.tcl
+	cd $(CODE_HOME)/ai-core/scripts/syn && \
+	mkdir -p $(CODE_HOME)/ai-core/imp/$(OUT_DIR) && \
+	mkdir -p $(CODE_HOME)/ai-core/imp/$(OUT_DIR)/output && \
+	mkdir -p $(CODE_HOME)/ai-core/imp/$(OUT_DIR)/report && \
+	yosys -l $(CODE_HOME)/ai-core/imp/$(OUT_DIR)/output/yosys.log -c $(CODE_HOME)/ai-core/scripts/syn/run.tcl
 
 post-syn-sta: clean-imp
-	cd $(CODE_HOME)/ai_core/scripts/post-syn-sta && \
-	mkdir -p $(CODE_HOME)/ai_core/imp/$(OUT_DIR) && \
-	mkdir -p $(CODE_HOME)/ai_core/imp/$(OUT_DIR)/report && \
-	mkdir -p $(CODE_HOME)/ai_core/imp/$(OUT_DIR)/output && \
-	sta -no_splash -exit $(CODE_HOME)/ai_core/scripts/post-syn-sta/run.tcl | tee $(CODE_HOME)/ai_core/imp/$(OUT_DIR)/output/opensta.log
+	cd $(CODE_HOME)/ai-core/scripts/post-syn-sta && \
+	mkdir -p $(CODE_HOME)/ai-core/imp/$(OUT_DIR) && \
+	mkdir -p $(CODE_HOME)/ai-core/imp/$(OUT_DIR)/report && \
+	mkdir -p $(CODE_HOME)/ai-core/imp/$(OUT_DIR)/output && \
+	sta -no_splash -exit $(CODE_HOME)/ai-core/scripts/post-syn-sta/run.tcl | tee $(CODE_HOME)/ai-core/imp/$(OUT_DIR)/output/opensta.log
 
 post-syn-sim: clean-sim
-	cd $(CODE_HOME)/ai_core/scripts/post-syn-sim && \
-	mkdir -p $(CODE_HOME)/ai_core/sim/$(OUT_DIR) && \
-	mkdir -p $(CODE_HOME)/ai_core/sim/$(OUT_DIR)/build && \
-	mkdir -p $(CODE_HOME)/ai_core/sim/$(OUT_DIR)/output && \
+	cd $(CODE_HOME)/ai-core/scripts/post-syn-sim && \
+	mkdir -p $(CODE_HOME)/ai-core/sim/$(OUT_DIR) && \
+	mkdir -p $(CODE_HOME)/ai-core/sim/$(OUT_DIR)/build && \
+	mkdir -p $(CODE_HOME)/ai-core/sim/$(OUT_DIR)/output && \
 	./run.sh && \
-	if [ -f $(CODE_HOME)/ai_core/scripts/post-syn-sim/activity.vcd ]; then \
-	mv $(CODE_HOME)/ai_core/scripts/post-syn-sim/activity.vcd $(CODE_HOME)/ai_core/sim/$(OUT_DIR)/output; \
+	if [ -f $(CODE_HOME)/ai-core/scripts/post-syn-sim/activity.vcd ]; then \
+	mv $(CODE_HOME)/ai-core/scripts/post-syn-sim/activity.vcd $(CODE_HOME)/ai-core/sim/$(OUT_DIR)/output; \
 	fi
 
 post-syn-dpa: clean-imp
-	cd $(CODE_HOME)/ai_core/scripts/post-syn-dpa && \
-	mkdir -p $(CODE_HOME)/ai_core/imp/$(OUT_DIR) && \
-	mkdir -p $(CODE_HOME)/ai_core/imp/$(OUT_DIR)/report && \
-	mkdir -p $(CODE_HOME)/ai_core/imp/$(OUT_DIR)/output && \
-	sta -no_splash -exit $(CODE_HOME)/ai_core/scripts/post-syn-dpa/run.tcl | tee $(CODE_HOME)/ai_core/imp/$(OUT_DIR)/output/opensta.log
+	cd $(CODE_HOME)/ai-core/scripts/post-syn-dpa && \
+	mkdir -p $(CODE_HOME)/ai-core/imp/$(OUT_DIR) && \
+	mkdir -p $(CODE_HOME)/ai-core/imp/$(OUT_DIR)/report && \
+	mkdir -p $(CODE_HOME)/ai-core/imp/$(OUT_DIR)/output && \
+	sta -no_splash -exit $(CODE_HOME)/ai-core/scripts/post-syn-dpa/run.tcl | tee $(CODE_HOME)/ai-core/imp/$(OUT_DIR)/output/opensta.log
 
 clean-all:
-	rm -rf $(CODE_HOME)/ai_core/sim
-	rm -rf $(CODE_HOME)/ai_core/imp
+	rm -rf $(CODE_HOME)/ai-core/sim
+	rm -rf $(CODE_HOME)/ai-core/imp
 
 clean-sim:
-	rm -rf $(CODE_HOME)/ai_core/sim/$(OUT_DIR)
+	rm -rf $(CODE_HOME)/ai-core/sim/$(OUT_DIR)
 
 clean-imp:
-	rm -rf $(CODE_HOME)/ai_core/imp/$(OUT_DIR)
+	rm -rf $(CODE_HOME)/ai-core/imp/$(OUT_DIR)

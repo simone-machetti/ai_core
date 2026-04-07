@@ -1,29 +1,6 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(make sim*)",
-      "Bash(make syn*)",
-      "Bash(make post-syn-sta*)",
-      "Bash(make post-syn-sim*)",
-      "Bash(make post-syn-dpa*)",
-      "Bash(make clean*)",
-      "Bash(make init*)",
-      "Bash(source /home/simone/work/my_code/ai_core/sourceme.sh*)",
-      "Bash(ls /home/simone/work/my_code/ai_core/*)",
-      "Bash(grep* /home/simone/work/my_code/ai_core/*)",
-      "Bash(tail* /home/simone/work/my_code/ai_core/*)",
-      "Bash(cat /home/simone/work/my_code/ai_core/*)",
-      "Read(/home/simone/work/my_code/ai_core/rtl/**)",
-      "Read(/home/simone/work/my_code/ai_core/tb/**)",
-      "Read(/home/simone/work/my_code/ai_core/scripts/**)",
-      "Read(/home/simone/work/my_code/ai_core/imp/**)",
-      "Read(/home/simone/work/my_code/ai_core/sim/**)",
-      "Read(/home/simone/work/my_code/ai_core/Makefile)",
-      "Read(/home/simone/work/my_code/ai_core/CLAUDE.md)",
-      "Edit(/home/simone/work/my_code/ai_core/rtl/**)",
-      "Edit(/home/simone/work/my_code/ai_core/tb/**)",
-      "Edit(/home/simone/work/my_code/ai_core/scripts/**)",
-      "Edit(/home/simone/work/my_code/ai_core/CLAUDE.md)"
-    ]
-  }
+    "permissions": {
+        "allow": [],
+        "deny": []                                                                                                                                                                                                                                                                                                                                                                                                                                            
+    }
 }
