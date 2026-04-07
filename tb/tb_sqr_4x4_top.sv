@@ -35,6 +35,37 @@ module tb_sqr_4x4_top #(
     logic [IN_WIDTH_B-1:0] max_pos_1;
     logic [IN_WIDTH_B-1:0] min_neg_1;
 
+`ifdef POST_SYNTH
+    logic [IN_SIZE*IN_WIDTH_A-1:0] a_flat;
+    logic [IN_SIZE*IN_WIDTH_B-1:0] b_flat;
+    logic [ACC_SIZE*ACC_WIDTH-1:0] acc_flat;
+    logic [EXT_NUM-1:0]            is_signed_flat;
+    logic [EXT_NUM-1:0]            is_shift_flat;
+
+    always_comb begin
+        for (int i = 0; i < IN_SIZE; i++) begin
+            a_flat[i*IN_WIDTH_A +: IN_WIDTH_A] = a[i];
+            b_flat[i*IN_WIDTH_B +: IN_WIDTH_B] = b[i];
+        end
+        for (int i = 0; i < ACC_SIZE; i++)
+            acc_flat[i*ACC_WIDTH +: ACC_WIDTH] = acc[i];
+        for (int i = 0; i < EXT_NUM; i++) begin
+            is_signed_flat[i] = is_signed[i];
+            is_shift_flat[i]  = is_shift[i];
+        end
+    end
+
+    sqr_4x4_top sqr_4x4_top_i (
+        .clk_i      (clk),
+        .rst_ni     (rst_n),
+        .acc_i      (acc_flat),
+        .is_signed_i(is_signed_flat),
+        .is_shift_i (is_shift_flat),
+        .a_i        (a_flat),
+        .b_i        (b_flat),
+        .out_o      (out)
+    );
+`else
     sqr_4x4_top #(
         .MULT_TYPE(MULT_TYPE)
     ) sqr_4x4_top_i (
@@ -47,6 +78,7 @@ module tb_sqr_4x4_top #(
         .b_i        (b),
         .out_o      (out)
     );
+`endif
 
     // -------------------------------------------------------------------------
     // Reset DUT
