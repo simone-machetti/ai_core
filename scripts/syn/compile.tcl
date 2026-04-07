@@ -41,8 +41,8 @@ yosys "read_slang \
     $env(CODE_HOME)/ai_core/rtl/cpr_n_2.sv \
     $env(CODE_HOME)/ai_core/rtl/booth_r4.sv \
     $env(CODE_HOME)/ai_core/rtl/booth_r8.sv \
+    $env(CODE_HOME)/ai_core/rtl/sqr_4_bit.sv \
     $env(CODE_HOME)/ai_core/rtl/sqr_5_bit.sv \
-    $env(CODE_HOME)/ai_core/rtl/sqr_6_bit.sv \
     $env(CODE_HOME)/ai_core/rtl/add_mult_array.sv \
     $env(CODE_HOME)/ai_core/rtl/mult_array.sv \
     $env(CODE_HOME)/ai_core/rtl/add_sqr_array.sv \

@@ -110,10 +110,11 @@ module tb_sqr_4x4_top #(
 
                 a_ext = OUT_WIDTH'($signed(a[i]));
 
-                b_lo = b[i][3:0];
-                b_hi = b[i][7:4];
+                b_lo    = b[i][3:0];
+                b_lo[3] = ~b_lo[3];
+                b_hi    = b[i][7:4];
 
-                b_lo_ext = OUT_WIDTH'($unsigned(b_lo));
+                b_lo_ext = OUT_WIDTH'($signed(b_lo));
                 b_hi_ext = OUT_WIDTH'($signed(b_hi));
 
                 p_lo = (a_ext + b_lo_ext) * (a_ext + b_lo_ext);

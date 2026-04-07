@@ -14,7 +14,7 @@ module sqr_4x4 #(
     localparam int NUM_SUB_LANES = 2,
     localparam int PP_SIZE       = 2 * NUM_SUB_LANES * NUM_LANES,
     localparam int CPR_IN_SIZE   = IN_SIZE / NUM_LANES,
-    localparam int CPR_IN_WIDTH  = (IN_WIDTH_A + 2) * 2,
+    localparam int CPR_IN_WIDTH  = (IN_WIDTH_A + 1) * 2,
     localparam int PP_SUB_SHIFT  = 4,
     localparam int PP_WIDTH      = CPR_IN_WIDTH + $clog2(CPR_IN_SIZE) + 1 + PP_SUB_SHIFT
 )(
@@ -23,13 +23,13 @@ module sqr_4x4 #(
     output logic [  PP_WIDTH-1:0] pp_o [0:PP_SIZE-1]
 );
 
-    genvar lane, sub_lane, i;
+    genvar lane, sub_lane;
     generate
 
         localparam int ADD_SQR_ARRAY_IN_SIZE      = IN_SIZE / NUM_LANES;
         localparam int ADD_SQR_ARRAY_IN_WIDTH_A   = IN_WIDTH_A;
         localparam int ADD_SQR_ARRAY_IN_WIDTH_B   = IN_WIDTH_B / 2;
-        localparam int ADD_SQR_ARRAY_IN_SQR_WIDTH = ADD_SQR_ARRAY_IN_WIDTH_A + 2;
+        localparam int ADD_SQR_ARRAY_IN_SQR_WIDTH = ADD_SQR_ARRAY_IN_WIDTH_A + 1;
         localparam int ADD_SQR_ARRAY_PP_SIZE      = ADD_SQR_ARRAY_IN_SIZE;
         localparam int ADD_SQR_ARRAY_PP_WIDTH     = ADD_SQR_ARRAY_IN_SQR_WIDTH * 2;
 
@@ -40,20 +40,22 @@ module sqr_4x4 #(
             for (sub_lane = 0; sub_lane < NUM_SUB_LANES; sub_lane++) begin : gen_sub_lane
 
                 localparam int ADD_SQR_ARRAY_IN_WIDTH_BASE = sub_lane * ADD_SQR_ARRAY_IN_WIDTH_B;
-                localparam int ADD_SQR_ARRAY_IS_SIGNED     = sub_lane == 0 ? 0 : 1;
 
                 logic [ADD_SQR_ARRAY_IN_WIDTH_A-1:0] a  [0:ADD_SQR_ARRAY_IN_SIZE-1];
                 logic [ADD_SQR_ARRAY_IN_WIDTH_B-1:0] b  [0:ADD_SQR_ARRAY_IN_SIZE-1];
                 logic [  ADD_SQR_ARRAY_PP_WIDTH-1:0] pp [0:ADD_SQR_ARRAY_PP_SIZE-1];
 
-                for (i = 0; i < ADD_SQR_ARRAY_IN_SIZE; i++) begin
-                    assign a[i] = a_i[ADD_SQR_ARRAY_IN_SIZE_BASE+i];
-                    assign b[i] = b_i[ADD_SQR_ARRAY_IN_SIZE_BASE+i][ADD_SQR_ARRAY_IN_WIDTH_BASE+:ADD_SQR_ARRAY_IN_WIDTH_B];
+                always_comb begin
+                    for (int k = 0; k < ADD_SQR_ARRAY_IN_SIZE; k++) begin
+                        a[k] = a_i[ADD_SQR_ARRAY_IN_SIZE_BASE+k];
+                        b[k] = b_i[ADD_SQR_ARRAY_IN_SIZE_BASE+k][ADD_SQR_ARRAY_IN_WIDTH_BASE+:ADD_SQR_ARRAY_IN_WIDTH_B];
+                        if (sub_lane == 0)
+                            b[k][ADD_SQR_ARRAY_IN_WIDTH_B-1] = ~b[k][ADD_SQR_ARRAY_IN_WIDTH_B-1];
+                    end
                 end
-
+                
                 add_sqr_array #(
-                    .IN_SIZE  (ADD_SQR_ARRAY_IN_SIZE),
-                    .IS_SIGNED(ADD_SQR_ARRAY_IS_SIGNED)
+                    .IN_SIZE (ADD_SQR_ARRAY_IN_SIZE)
                 ) add_sqr_array_i (
                     .a_i (a),
                     .b_i (b),

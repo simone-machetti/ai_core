@@ -6,88 +6,53 @@
 
 module sqr_5_bit (
     input  logic [4:0] in_i,
-    output logic [9:0] out_o
+    output logic [8:0] out_o
 );
 
-    logic [11:0] tmp;
+    logic [3:0] xor_gates;
+    logic       sign;
+    logic [3:0] carry;
+    logic [3:0] sum;
 
-    assign out_o[0] = in_i[0];
-    assign out_o[1] = 1'b0;
+    assign sign         = in_i[4];
+    assign xor_gates[0] = in_i[0] ^ sign;
+    assign xor_gates[1] = in_i[1] ^ sign;
+    assign xor_gates[2] = in_i[2] ^ sign;
+    assign xor_gates[3] = in_i[3] ^ sign;
 
     ha ha_0_i (
-        .in_i  (in_i[1]),
-        .cin_i (in_i[1] & in_i[0]),
-        .sum_o (out_o[2]),
-        .cout_o(tmp[0])
+        .in_i  (xor_gates[0]),
+        .cin_i (sign),
+        .sum_o (sum[0]),
+        .cout_o(carry[0])
     );
 
     ha ha_1_i (
-        .in_i  (in_i[2] & in_i[0]),
-        .cin_i (tmp[0]),
-        .sum_o (out_o[3]),
-        .cout_o(tmp[1])
-    );
-
-    fa fa_0_i (
-        .in_0_i(in_i[2]),
-        .in_1_i(in_i[3] & in_i[0]),
-        .cin_i (in_i[2] & in_i[1]),
-        .sum_o (tmp[2]),
-        .cout_o(tmp[3])
+        .in_i  (xor_gates[1]),
+        .cin_i (carry[0]),
+        .sum_o (sum[1]),
+        .cout_o(carry[1])
     );
 
     ha ha_2_i (
-        .in_i  (tmp[2]),
-        .cin_i (tmp[1]),
-        .sum_o (out_o[4]),
-        .cout_o(tmp[4])
-    );
-
-    fa fa_1_i (
-        .in_0_i(in_i[4] & in_i[0]),
-        .in_1_i(in_i[3] & in_i[1]),
-        .cin_i (tmp[3]),
-        .sum_o (tmp[5]),
-        .cout_o(tmp[6])
+        .in_i  (xor_gates[2]),
+        .cin_i (carry[1]),
+        .sum_o (sum[2]),
+        .cout_o(carry[2])
     );
 
     ha ha_3_i (
-        .in_i  (tmp[5]),
-        .cin_i (tmp[4]),
-        .sum_o (out_o[5]),
-        .cout_o(tmp[7])
+        .in_i  (xor_gates[3]),
+        .cin_i (carry[2]),
+        .sum_o (sum[3]),
+        .cout_o(carry[3])
     );
 
-    fa fa_2_i (
-        .in_0_i(in_i[3]),
-        .in_1_i(in_i[4] & in_i[1]),
-        .cin_i (in_i[3] & in_i[2]),
-        .sum_o (tmp[8]),
-        .cout_o(tmp[9])
+    sqr_4_bit sqr_4_bit_i (
+        .in_i (sum),
+        .out_o(out_o[7:0])
     );
 
-    fa fa_3_i (
-        .in_0_i(tmp[8]),
-        .in_1_i(tmp[6]),
-        .cin_i (tmp[7]),
-        .sum_o (out_o[6]),
-        .cout_o(tmp[10])
-    );
-
-    fa fa_4_i (
-        .in_0_i(in_i[4] & in_i[2]),
-        .in_1_i(tmp[9]),
-        .cin_i (tmp[10]),
-        .sum_o (out_o[7]),
-        .cout_o(tmp[11])
-    );
-
-    fa fa_5_i (
-        .in_0_i(in_i[4]),
-        .in_1_i(in_i[4] & in_i[3]),
-        .cin_i (tmp[11]),
-        .sum_o (out_o[8]),
-        .cout_o(out_o[9])
-    );
+    assign out_o[8] = carry[3];
 
 endmodule
