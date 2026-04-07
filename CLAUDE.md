@@ -1,0 +1,90 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Environment Setup
+
+Before running any commands, source the environment script to set tool paths and `CODE_HOME`:
+
+```bash
+source sourceme.sh
+```
+
+This sets up Verilator, Yosys, Yosys-Slang, OpenSTA, OpenROAD, and `CODE_HOME=/home/simone/work/my_code`.
+
+## Commands
+
+**Pre-synthesis simulation** (Verilator):
+```bash
+make sim TOP_LEVEL=<top_level> CLK_PERIOD_NS=<val> OUT_DIR=<name>
+```
+
+**Logic synthesis** (Yosys + ABC, targeting ASAP7):
+```bash
+make syn TOP_LEVEL=<top_level> OUT_DIR=<name>
+```
+
+**Post-synthesis static timing analysis** (OpenSTA):
+```bash
+make post-syn-sta TOP_LEVEL=<top_level> CLK_PERIOD_NS=<val> OUT_DIR=<name> NETLIST_DIR=<netlist_dir>
+```
+
+**Post-synthesis gate-level simulation**:
+```bash
+make post-syn-sim TOP_LEVEL=<top_level> CLK_PERIOD_NS=<val> OUT_DIR=<name> NETLIST_DIR=<netlist_dir>
+```
+
+**Post-synthesis dynamic power analysis**:
+```bash
+make post-syn-dpa TOP_LEVEL=<top_level> CLK_PERIOD_NS=<val> OUT_DIR=<name> NETLIST_DIR=<netlist_dir> VCD_DIR=<vcd_dir>
+```
+
+**Cleanup**:
+```bash
+make clean-sim OUT_DIR=<name>   # remove one sim run
+make clean-imp OUT_DIR=<name>   # remove one imp run
+make clean-all                  # remove all sim/ and imp/
+```
+
+Outputs go to `sim/<OUT_DIR>/` (simulation) or `imp/<OUT_DIR>/` (synthesis/STA/DPA).
+
+## Architecture
+
+This project implements **Processing Elements (PEs)** for AI/ML inference, specifically fixed-point multiply-accumulate arrays, written in SystemVerilog.
+
+### PE Variants (top-level modules in `rtl/`)
+
+| Module | Algorithm | Accumulators | Array |
+|---|---|---|---|
+| `bas_4x4_top` | Baseline Booth Radix-4/8 | 1 | 64× (4-bit A × 8-bit B) |
+| `bas_4x8_top` | Baseline (extended) | 1 | — |
+| `win_4x4_top` | Winograd | 3 | 64× (4-bit A × 8-bit B) |
+| `win_4x8_top` | Winograd (extended) | 3 | — |
+| `sqr_4x4_top` | Squaring | — | — |
+
+All variants share the same 3-stage pipeline:
+```
+Input FFs (ff_n) → Partial Product Generator → Compression Tree (cpr_tree) → Output FF
+```
+
+### Key RTL Modules
+
+- **`booth_r4.sv` / `booth_r8.sv`** — Radix-4/8 Booth encoder cells; selected via `MULT_TYPE` parameter (0 = R4, 1 = R8)
+- **`mult_array.sv`** — Instantiates the correct Booth encoder array
+- **`bas_4x4.sv` / `win_4x4.sv` / `add_sqr_array.sv`** — Partial product generators for each PE variant
+- **`cpr_tree.sv`** — Multi-stage 4-to-2 compression tree; takes partial products + accumulator inputs and reduces to a 48-bit result
+- **`cpr_n_2.sv` → `cpr_4_2.sv` → `cpr_4_2_bit.sv`** — Hierarchical 4-to-2 compressor building blocks
+- **`ff.sv` / `ff_n.sv`** — Pipeline registers; `ff_n` is an array of N flip-flops
+- **`fa.sv` / `ha.sv`** — Full adder / half adder primitives
+
+### Parameter Conventions
+
+- `MULT_TYPE`: 0 = Booth Radix-4, 1 = Booth Radix-8
+- `IN_SIZE`: number of multiply-accumulate lanes (typically 64)
+- `IN_WIDTH_A` / `IN_WIDTH_B`: bit widths of operands A and B
+- `ACC_SIZE`: number of accumulator inputs to the compression tree
+- `ACC_WIDTH` / `OUT_WIDTH`: output precision (typically 48 bits)
+
+### Testbenches
+
+Each PE has a matching testbench at `tb/tb_<top_level>.sv`. The simulation flow compiles the testbench via Verilator, generating a VCD activity trace (`activity.vcd`) that is also used for dynamic power analysis.
