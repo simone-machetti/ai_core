@@ -16,7 +16,7 @@ module cpr_tree #(
     localparam int EXT_NUM   = 15,
     localparam int OUT_WIDTH = ACC_WIDTH
 )(
-    input  logic [ACC_WIDTH-1:0] acc_i       [0:ACC_SIZE-1],
+    input  logic [ACC_WIDTH-1:0] acc_i       [0:((ACC_SIZE > 0) ? ACC_SIZE-1 : 0)],
     input  logic                 is_signed_i [ 0:EXT_NUM-1],
     input  logic                 is_shift_i  [ 0:EXT_NUM-1],
     input  logic [ PP_WIDTH-1:0] pp_i        [ 0:PP_SIZE-1],
