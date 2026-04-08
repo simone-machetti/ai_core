@@ -6,6 +6,13 @@
 
 set -euo pipefail
 
+g_flags=()
+if [ "${SEL_PARAMS}" != "none" ]; then
+    for param in ${SEL_PARAMS}; do
+        g_flags+=("-G${param}")
+    done
+fi
+
 verilator \
     -sv \
     --binary \
@@ -16,10 +23,10 @@ verilator \
     -Wall \
     -Wno-fatal \
     -DVCD \
-    -DCLK_PERIOD_NS=${SEL_CLK_PERIOD_NS} \
-    -GMULT_TYPE=${SEL_MULT_TYPE} \
+    -DCLK_PERIOD_NS="${SEL_CLK_PERIOD_NS}" \
+    "${g_flags[@]}" \
     -I"${CODE_HOME}/ai-core/rtl" \
-    --top-module tb_${SEL_TOP_LEVEL} \
+    --top-module "tb_${SEL_TOP_LEVEL}" \
     -f "${CODE_HOME}/ai-core/scripts/sim/filelist.f" \
     -Mdir "${CODE_HOME}/ai-core/sim/${SEL_OUT_DIR}/build/obj_dir" \
     -o "${CODE_HOME}/ai-core/sim/${SEL_OUT_DIR}/build/simv" \

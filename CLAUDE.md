@@ -16,13 +16,15 @@ This sets up Verilator, Yosys, Yosys-Slang, OpenSTA, OpenROAD, and `CODE_HOME=/h
 
 **Pre-synthesis simulation** (Verilator):
 ```bash
-make sim TOP_LEVEL=<top_level> CLK_PERIOD_NS=<val> OUT_DIR=<name>
+make sim TOP_LEVEL=<top_level> CLK_PERIOD_NS=<val> OUT_DIR=<name> [PARAMS="KEY=VAL ..."]
 ```
 
 **Logic synthesis** (Yosys + ABC, targeting ASAP7):
 ```bash
-make syn TOP_LEVEL=<top_level> OUT_DIR=<name>
+make syn TOP_LEVEL=<top_level> OUT_DIR=<name> [PARAMS="KEY=VAL ..."]
 ```
+
+`TOP_LEVEL` can be any module in the hierarchy (e.g. `cpr_tree`, `mult_array`), not only PE top-levels. Module parameters are passed via `PARAMS` as a space-separated list of `KEY=VALUE` pairs (e.g. `PARAMS="MULT_TYPE=1 PP_SIZE=32"`).
 
 **Post-synthesis static timing analysis** (OpenSTA):
 ```bash
@@ -31,7 +33,7 @@ make post-syn-sta TOP_LEVEL=<top_level> CLK_PERIOD_NS=<val> OUT_DIR=<name> NETLI
 
 **Post-synthesis gate-level simulation**:
 ```bash
-make post-syn-sim TOP_LEVEL=<top_level> CLK_PERIOD_NS=<val> OUT_DIR=<name> NETLIST_DIR=<netlist_dir>
+make post-syn-sim TOP_LEVEL=<top_level> CLK_PERIOD_NS=<val> OUT_DIR=<name> NETLIST_DIR=<netlist_dir> [PARAMS="KEY=VAL ..."]
 ```
 
 **Post-synthesis dynamic power analysis**:

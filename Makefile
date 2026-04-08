@@ -2,19 +2,19 @@
 # Author: Simone Machetti
 # -----------------------------------------------------------------------------
 
-MULT_TYPE     ?= 0
 TOP_LEVEL     ?= pe_top
 OUT_DIR       ?= no_name
 NETLIST_DIR   ?= no_name
 VCD_DIR       ?= no_name
 CLK_PERIOD_NS ?= 1
+PARAMS        ?= none
 
-export SEL_MULT_TYPE     := $(MULT_TYPE)
 export SEL_TOP_LEVEL     := $(TOP_LEVEL)
 export SEL_OUT_DIR       := $(OUT_DIR)
 export SEL_NETLIST_DIR   := $(NETLIST_DIR)
 export SEL_VCD_DIR       := $(VCD_DIR)
 export SEL_CLK_PERIOD_NS := $(CLK_PERIOD_NS)
+export SEL_PARAMS        := $(PARAMS)
 
 .PHONY: init
 

@@ -24,7 +24,7 @@ yosys "read_liberty -lib $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/a
 # -----------------------------------------------------------------------------
 # Read SystemVerilog sources
 # -----------------------------------------------------------------------------
-yosys "read_slang \
+set rtl_files [list \
     $env(CODE_HOME)/ai-core/rtl/ha.sv \
     $env(CODE_HOME)/ai-core/rtl/fa.sv \
     $env(CODE_HOME)/ai-core/rtl/ff.sv \
@@ -52,7 +52,19 @@ yosys "read_slang \
     $env(CODE_HOME)/ai-core/rtl/win_4x4.sv \
     $env(CODE_HOME)/ai-core/rtl/win_4x8.sv \
     $env(CODE_HOME)/ai-core/rtl/sqr_4x4.sv \
-    $env(CODE_HOME)/ai-core/rtl/$env(SEL_TOP_LEVEL).sv \
-    -G MULT_TYPE=$env(SEL_MULT_TYPE)"
+]
 
-# Add --keep-hierarchy option to preserve internal instances
+set top_file "$env(CODE_HOME)/ai-core/rtl/$env(SEL_TOP_LEVEL).sv"
+
+if {[lsearch $rtl_files $top_file] == -1} {
+    lappend rtl_files $top_file
+}
+
+set g_flags ""
+if {$env(SEL_PARAMS) ne "none"} {
+    foreach param [split $env(SEL_PARAMS)] {
+        append g_flags " -G $param"
+    }
+}
+
+yosys "read_slang [join $rtl_files]$g_flags"

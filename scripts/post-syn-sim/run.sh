@@ -6,6 +6,13 @@
 
 set -euo pipefail
 
+g_flags=()
+if [ "${SEL_PARAMS}" != "none" ]; then
+    for param in ${SEL_PARAMS}; do
+        g_flags+=("-G${param}")
+    done
+fi
+
 verilator \
     -sv \
     --binary \
@@ -18,7 +25,7 @@ verilator \
     -DPOST_SYN_SIM \
     -DVCD \
     -DCLK_PERIOD_NS="${SEL_CLK_PERIOD_NS}" \
-    -GMULT_TYPE="${SEL_MULT_TYPE}" \
+    "${g_flags[@]}" \
     --top-module "tb_${SEL_TOP_LEVEL}" \
     -DPOST_SYNTH=1 \
     --x-initial fast \
