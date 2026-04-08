@@ -100,14 +100,13 @@ module cpr_tree #(
                 localparam int CPR_N_2_IN_SIZE      = get_in_size(stage);
                 localparam int CPR_N_2_IN_WIDTH     = gen_in_width(stage);
                 localparam int CPR_N_2_MAX_EXT_BITS = 0;
-                localparam int CPR_N_2_OUT_WIDTH    = CPR_N_2_IN_WIDTH;
                 localparam int NUM_LANES            = 8 / pow2(stage);
 
                 for (lane = 0; lane < NUM_LANES; lane++) begin
 
-                    logic [ CPR_N_2_IN_WIDTH-1:0] cpr_n_2_in [0:CPR_N_2_IN_SIZE-1];
-                    logic [CPR_N_2_OUT_WIDTH-1:0] cpr_n_2_sum;
-                    logic [CPR_N_2_OUT_WIDTH-1:0] cpr_n_2_carry;
+                    logic [CPR_N_2_IN_WIDTH-1:0] cpr_n_2_in [0:CPR_N_2_IN_SIZE-1];
+                    logic [CPR_N_2_IN_WIDTH-1:0] cpr_n_2_sum;
+                    logic [CPR_N_2_IN_WIDTH-1:0] cpr_n_2_carry;
 
                     for (i = 0; i < CPR_N_2_IN_SIZE; i++)
                         assign cpr_n_2_in[i] = tmp[stage][lane*CPR_N_2_IN_SIZE+i][CPR_N_2_IN_WIDTH-1:0];
@@ -123,21 +122,19 @@ module cpr_tree #(
                     );
 
                     localparam int EXT_N_IN_SIZE   = 2;
-                    localparam int EXT_N_IN_WIDTH  = CPR_N_2_OUT_WIDTH;
                     localparam int EXT_N_EXTEND    = stage == 0 ? 4 : 8;
                     localparam int EXT_N_SEL_EXT   = get_sel_ext(stage, lane);
-                    localparam int EXT_N_OUT_SIZE  = EXT_N_IN_SIZE;
-                    localparam int EXT_N_OUT_WIDTH = EXT_N_IN_WIDTH + EXT_N_EXTEND;
+                    localparam int EXT_N_OUT_WIDTH = CPR_N_2_IN_WIDTH + EXT_N_EXTEND;
 
-                    logic [ EXT_N_IN_WIDTH-1:0] ext_n_in  [ 0:EXT_N_IN_SIZE-1];
-                    logic [EXT_N_OUT_WIDTH-1:0] ext_n_out [0:EXT_N_OUT_SIZE-1];
+                    logic [CPR_N_2_IN_WIDTH-1:0] ext_n_in  [0:EXT_N_IN_SIZE-1];
+                    logic [ EXT_N_OUT_WIDTH-1:0] ext_n_out [0:EXT_N_IN_SIZE-1];
 
                     assign ext_n_in[0] = cpr_n_2_sum;
                     assign ext_n_in[1] = cpr_n_2_carry;
 
                     ext_n #(
                         .IN_SIZE (EXT_N_IN_SIZE),
-                        .IN_WIDTH(EXT_N_IN_WIDTH),
+                        .IN_WIDTH(CPR_N_2_IN_WIDTH),
                         .EXTEND  (EXT_N_EXTEND)
                     ) ext_n_i (
                         .is_signed_i(is_signed_i[EXT_N_SEL_EXT]),
@@ -146,8 +143,8 @@ module cpr_tree #(
                         .out_o      (ext_n_out)
                     );
 
-                    assign tmp[stage+1][lane*EXT_N_OUT_SIZE+0][EXT_N_OUT_WIDTH-1:0] = ext_n_out[0];
-                    assign tmp[stage+1][lane*EXT_N_OUT_SIZE+1][EXT_N_OUT_WIDTH-1:0] = ext_n_out[1];
+                    assign tmp[stage+1][lane*EXT_N_IN_SIZE+0][EXT_N_OUT_WIDTH-1:0] = ext_n_out[0];
+                    assign tmp[stage+1][lane*EXT_N_IN_SIZE+1][EXT_N_OUT_WIDTH-1:0] = ext_n_out[1];
                 end
             end
 
@@ -155,11 +152,10 @@ module cpr_tree #(
             localparam int EXT_N_LAST_IN_WIDTH  = gen_in_width(3);
             localparam int EXT_N_LAST_EXTEND    = ACC_WIDTH - EXT_N_LAST_IN_WIDTH;
             localparam int EXT_N_LAST_SEL_EXT   = get_sel_ext(3, 0);
-            localparam int EXT_N_LAST_OUT_SIZE  = EXT_N_LAST_IN_SIZE;
             localparam int EXT_N_LAST_OUT_WIDTH = EXT_N_LAST_IN_WIDTH + EXT_N_LAST_EXTEND;
 
-            logic [ EXT_N_LAST_IN_WIDTH-1:0] ext_n_last_in  [ 0:EXT_N_LAST_IN_SIZE-1];
-            logic [EXT_N_LAST_OUT_WIDTH-1:0] ext_n_last_out [0:EXT_N_LAST_OUT_SIZE-1];
+            logic [ EXT_N_LAST_IN_WIDTH-1:0] ext_n_last_in  [0:EXT_N_LAST_IN_SIZE-1];
+            logic [EXT_N_LAST_OUT_WIDTH-1:0] ext_n_last_out [0:EXT_N_LAST_IN_SIZE-1];
 
             for (i = 0; i < EXT_N_LAST_IN_SIZE; i++)
                 assign ext_n_last_in[i] = tmp[3][i][EXT_N_LAST_IN_WIDTH-1:0];
@@ -175,20 +171,19 @@ module cpr_tree #(
                 .out_o      (ext_n_last_out)
             );
 
-            localparam int CPR_N_2_LAST_IN_SIZE      = EXT_N_LAST_OUT_SIZE + ACC_SIZE;
+            localparam int CPR_N_2_LAST_IN_SIZE      = EXT_N_LAST_IN_SIZE + ACC_SIZE;
             localparam int CPR_N_2_LAST_IN_WIDTH     = EXT_N_LAST_OUT_WIDTH;
             localparam int CPR_N_2_LAST_MAX_EXT_BITS = 0;
-            localparam int CPR_N_2_LAST_OUT_WIDTH    = CPR_N_2_LAST_IN_WIDTH;
 
-            logic [ CPR_N_2_LAST_IN_WIDTH-1:0] cpr_n_2_last_in [0:CPR_N_2_LAST_IN_SIZE-1];
-            logic [CPR_N_2_LAST_OUT_WIDTH-1:0] cpr_n_2_last_sum;
-            logic [CPR_N_2_LAST_OUT_WIDTH-1:0] cpr_n_2_last_carry;
+            logic [CPR_N_2_LAST_IN_WIDTH-1:0] cpr_n_2_last_in [0:CPR_N_2_LAST_IN_SIZE-1];
+            logic [CPR_N_2_LAST_IN_WIDTH-1:0] cpr_n_2_last_sum;
+            logic [CPR_N_2_LAST_IN_WIDTH-1:0] cpr_n_2_last_carry;
 
-            for (i = 0; i < EXT_N_LAST_OUT_SIZE; i++)
+            for (i = 0; i < EXT_N_LAST_IN_SIZE; i++)
                 assign cpr_n_2_last_in[i] = ext_n_last_out[i];
 
             for (i = 0; i < ACC_SIZE; i++)
-                assign cpr_n_2_last_in[EXT_N_LAST_OUT_SIZE+i] = acc_i[i];
+                assign cpr_n_2_last_in[EXT_N_LAST_IN_SIZE+i] = acc_i[i];
 
             cpr_n_2 #(
                 .IN_SIZE     (CPR_N_2_LAST_IN_SIZE),
@@ -200,12 +195,10 @@ module cpr_tree #(
                 .carry_o(cpr_n_2_last_carry)
             );
 
-            localparam int ADD_N_IN_WIDTH = CPR_N_2_LAST_OUT_WIDTH;
-
             logic [OUT_WIDTH:0] out;
 
             add_n #(
-                .IN_WIDTH(ADD_N_IN_WIDTH)
+                .IN_WIDTH(CPR_N_2_LAST_IN_WIDTH)
             ) add_n_i (
                 .in_0_i(cpr_n_2_last_sum),
                 .in_1_i(cpr_n_2_last_carry),
