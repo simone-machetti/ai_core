@@ -41,7 +41,7 @@ yosys "clean"
 # -----------------------------------------------------------------------------
 # Generate hierarchical area report
 # -----------------------------------------------------------------------------
-yosys "tee -o $env(CODE_HOME)/ai-core/imp/$env(SEL_OUT_DIR)/report/cell.rpt stat -hierarchy \
+yosys "tee -o $env(CODE_HOME)/ai-core/imp/$env(SEL_OUT_DIR)/report/area.rpt stat -hierarchy \
     -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SEQ_RVT_TT_nldm_220123.lib \
     -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib \
     -liberty $env(TOOLS_HOME)/OpenROAD-flow-scripts/flow/platforms/asap7/lib/NLDM/asap7sc7p5t_INVBUF_RVT_TT_nldm_220122.lib \
