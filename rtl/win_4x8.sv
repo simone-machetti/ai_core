@@ -59,7 +59,7 @@ module win_4x8 #(
                 localparam int CPR_N_2_OUT_OFFSET = (lane * PP_PER_MUL * 2) + (cpr * 2);
                 localparam int CPR_N_2_OUT_SHIFT  = cpr * PP_SHIFT;
                 localparam int CPR_N_2_OUT_MARG   = PP_WIDTH - CPR_N_2_PP_OUT_WIDTH - CPR_N_2_OUT_SHIFT;
-                localparam int CPR_N_2_OUT_CUT = CPR_N_2_OUT_MARG > 0 ? CPR_N_2_PP_OUT_WIDTH : CPR_N_2_PP_OUT_WIDTH + CPR_N_2_OUT_MARG;
+                localparam int CPR_N_2_OUT_CUT    = CPR_N_2_OUT_MARG > 0 ? CPR_N_2_PP_OUT_WIDTH : CPR_N_2_PP_OUT_WIDTH + CPR_N_2_OUT_MARG;
 
                 logic [        CPR_IN_WIDTH-1:0] pp_in  [0:CPR_N_2_IN_SIZE-1];
                 logic [CPR_N_2_PP_OUT_WIDTH-1:0] pp_out [                0:1];
