@@ -27,7 +27,7 @@ verilator \
     "${g_flags[@]}" \
     -I"${CODE_HOME}/ai-core/rtl" \
     --top-module "tb_${SEL_TOP_LEVEL}" \
-    -f "${CODE_HOME}/ai-core/scripts/sim/filelist.f" \
+    "${CODE_HOME}/ai-core/tb/tb_${SEL_TOP_LEVEL}.sv" \
     -Mdir "${CODE_HOME}/ai-core/sim/${SEL_OUT_DIR}/build/obj_dir" \
     -o "${CODE_HOME}/ai-core/sim/${SEL_OUT_DIR}/build/simv" \
     | tee "${CODE_HOME}/ai-core/sim/${SEL_OUT_DIR}/output/compile.log"
