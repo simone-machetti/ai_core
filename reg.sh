@@ -62,8 +62,16 @@ run "syn  win_4x8_top  R8"  syn  TOP_LEVEL=win_4x8_top                      OUT_
 # -----------------------------------------------------------------------------
 # sqr_4x4_top (no MULT_TYPE)
 # -----------------------------------------------------------------------------
-run "sim  sqr_4x4_top"      sim  TOP_LEVEL=sqr_4x4_top  CLK_PERIOD_NS=$CLK  OUT_DIR=reg_sqr_4x4
-run "syn  sqr_4x4_top"      syn  TOP_LEVEL=sqr_4x4_top                      OUT_DIR=reg_sqr_4x4
+run "sim  sqr_4x4_top"  sim  TOP_LEVEL=sqr_4x4_top  CLK_PERIOD_NS=$CLK  OUT_DIR=reg_sqr_4x4
+run "syn  sqr_4x4_top"  syn  TOP_LEVEL=sqr_4x4_top                      OUT_DIR=reg_sqr_4x4
+
+# -----------------------------------------------------------------------------
+# sqr_4x4_alpha_top (no MULT_TYPE)
+# -----------------------------------------------------------------------------
+run "sim  sqr_4x4_alpha_top  linear"  sim  TOP_LEVEL=sqr_4x4_alpha_top  CLK_PERIOD_NS=$CLK  OUT_DIR=reg_sqr_4x4_alpha_lin  PARAMS="IS_SQUARE=0"
+run "sim  sqr_4x4_alpha_top  square"  sim  TOP_LEVEL=sqr_4x4_alpha_top  CLK_PERIOD_NS=$CLK  OUT_DIR=reg_sqr_4x4_alpha_sqr  PARAMS="IS_SQUARE=1"
+run "syn  sqr_4x4_alpha_top  linear"  syn  TOP_LEVEL=sqr_4x4_alpha_top                      OUT_DIR=reg_sqr_4x4_alpha_lin  PARAMS="IS_SQUARE=0"
+run "syn  sqr_4x4_alpha_top  square"  syn  TOP_LEVEL=sqr_4x4_alpha_top                      OUT_DIR=reg_sqr_4x4_alpha_sqr  PARAMS="IS_SQUARE=1"
 
 # -----------------------------------------------------------------------------
 # Summary
