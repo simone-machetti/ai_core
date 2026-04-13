@@ -4,7 +4,7 @@
 
 `timescale 1 ns/1 ps
 
-module sqr_5_bit (
+module sqr_s_5_bit (
     input  logic [4:0] in_i,
     output logic [8:0] out_o
 );
@@ -48,7 +48,7 @@ module sqr_5_bit (
         .cout_o(carry[3])
     );
 
-    sqr_4_bit sqr_4_bit_i (
+    sqr_u_4_bit sqr_u_4_bit_i (
         .in_i (sum),
         .out_o(out_o[7:0])
     );

@@ -6,7 +6,7 @@
 
 `timescale 1 ns/1 ps
 
-module sqr_4_bit (
+module sqr_u_4_bit (
     input  logic [3:0] in_i,
     output logic [7:0] out_o
 );

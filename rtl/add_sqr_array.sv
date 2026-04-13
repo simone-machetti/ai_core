@@ -30,7 +30,7 @@ module add_sqr_array #(
 
             assign sum = IN_SQR_WIDTH'($signed(a_i[i])) + IN_SQR_WIDTH'($signed(b_i[i]));
 
-            sqr_5_bit sqr_5_bit_i (
+            sqr_s_5_bit sqr_s_5_bit_i (
                 .in_i (sum),
                 .out_o(pp)
             );
