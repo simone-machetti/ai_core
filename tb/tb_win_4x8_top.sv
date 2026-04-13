@@ -113,7 +113,7 @@ module tb_win_4x8_top #(
                 exp  = exp + prod;
             end
 
-            repeat(2) @(posedge clk);
+            repeat(3) @(posedge clk);
 
             if (out !== OUT_WIDTH'($signed(exp) + $signed(acc[0]) + $signed(acc[1]) + $signed(acc[2]))) begin
                 $error("Error!\n");

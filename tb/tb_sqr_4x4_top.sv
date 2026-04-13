@@ -155,7 +155,7 @@ module tb_sqr_4x4_top #(
                 exp = OUT_WIDTH'($signed(exp)) + OUT_WIDTH'($signed(p_lo + (p_hi <<< 4)));
             end
 
-            repeat (2) @(posedge clk);
+            repeat (3) @(posedge clk);
 
             if (out !== OUT_WIDTH'($signed(exp) + $signed(acc[0]) + $signed(acc[1]) + $signed(acc[2]))) begin
                 $error("Error!\n");

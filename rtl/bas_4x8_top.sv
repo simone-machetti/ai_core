@@ -82,6 +82,8 @@ module bas_4x8_top #(
         .PP_WIDTH(PP_WIDTH),
         .ACC_SIZE(ACC_SIZE)
     ) cpr_tree_i (
+        .clk_i      (clk_i),
+        .rst_ni     (rst_ni),
         .acc_i      (acc_i),
         .is_signed_i(is_signed_i),
         .is_shift_i (is_shift_i),

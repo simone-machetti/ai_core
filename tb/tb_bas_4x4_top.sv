@@ -101,7 +101,7 @@ module tb_bas_4x4_top #(
                 exp = OUT_WIDTH'($signed(exp) + OUT_WIDTH'($signed(a[i]) * $signed(b[i])));
             end
 
-            repeat(2) @(posedge clk);
+            repeat(3) @(posedge clk);
 
             if (out !== OUT_WIDTH'($signed(exp) + $signed(acc[0]))) begin
                 $dumpoff;

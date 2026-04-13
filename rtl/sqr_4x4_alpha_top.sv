@@ -60,6 +60,8 @@ module sqr_4x4_alpha_top #(
         .PP_SIZE (PP_SIZE),
         .PP_WIDTH(PP_WIDTH)
     ) cpr_tree_alpha_i (
+        .clk_i      (clk_i),
+        .rst_ni     (rst_ni),
         .is_signed_i(is_signed_i),
         .is_shift_i (is_shift_i),
         .pp_i       (pp),

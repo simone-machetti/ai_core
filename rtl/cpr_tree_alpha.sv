@@ -14,6 +14,8 @@ module cpr_tree_alpha #(
     localparam int EXT_NUM   = 15,
     localparam int OUT_WIDTH = PP_WIDTH + $clog2(PP_SIZE) + 20
 )(
+    input  logic                 clk_i,
+    input  logic                 rst_ni,
     input  logic                 is_signed_i [ 0:EXT_NUM-1],
     input  logic                 is_shift_i  [ 0:EXT_NUM-1],
     input  logic [ PP_WIDTH-1:0] pp_i        [ 0:PP_SIZE-1],
@@ -117,7 +119,7 @@ module cpr_tree_alpha #(
                 localparam int EXT_N_OUT_WIDTH = CPR_N_2_OUT_WIDTH + EXT_N_EXTEND;
 
                 logic [CPR_N_2_OUT_WIDTH-1:0] ext_n_in  [0:EXT_N_IN_SIZE-1];
-                logic [ EXT_N_OUT_WIDTH-1:0] ext_n_out [0:EXT_N_IN_SIZE-1];
+                logic [  EXT_N_OUT_WIDTH-1:0] ext_n_out [0:EXT_N_IN_SIZE-1];
 
                 assign ext_n_in[0] = cpr_n_2_sum;
                 assign ext_n_in[1] = cpr_n_2_carry;
@@ -133,8 +135,29 @@ module cpr_tree_alpha #(
                     .out_o      (ext_n_out)
                 );
 
-                assign tmp[stage+1][lane*EXT_N_IN_SIZE+0][EXT_N_OUT_WIDTH-1:0] = ext_n_out[0];
-                assign tmp[stage+1][lane*EXT_N_IN_SIZE+1][EXT_N_OUT_WIDTH-1:0] = ext_n_out[1];
+                if (stage == 0) begin
+
+                    logic [EXT_N_OUT_WIDTH-1:0] ext_n_out_tmp [0:EXT_N_IN_SIZE-1];
+
+                    always_ff @(posedge clk_i or negedge rst_ni) begin
+                        if (!rst_ni) begin
+                            ext_n_out_tmp[0] <= '0;
+                            ext_n_out_tmp[1] <= '0;
+                        end else begin
+                            ext_n_out_tmp[0] <= ext_n_out[0];
+                            ext_n_out_tmp[1] <= ext_n_out[1];
+                        end
+                    end
+
+                    assign tmp[stage+1][lane*EXT_N_IN_SIZE+0][EXT_N_OUT_WIDTH-1:0] = ext_n_out_tmp[0];
+                    assign tmp[stage+1][lane*EXT_N_IN_SIZE+1][EXT_N_OUT_WIDTH-1:0] = ext_n_out_tmp[1];
+
+                end else begin
+
+                    assign tmp[stage+1][lane*EXT_N_IN_SIZE+0][EXT_N_OUT_WIDTH-1:0] = ext_n_out[0];
+                    assign tmp[stage+1][lane*EXT_N_IN_SIZE+1][EXT_N_OUT_WIDTH-1:0] = ext_n_out[1];
+
+                end
             end
         end
 

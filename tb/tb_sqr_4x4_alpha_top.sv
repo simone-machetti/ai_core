@@ -125,7 +125,7 @@ module tb_sqr_4x4_alpha_top #(
                 end
             end
 
-            repeat (2) @(posedge clk);
+            repeat (3) @(posedge clk);
 
             if (out !== exp) begin
                 $error("Error!\n");
