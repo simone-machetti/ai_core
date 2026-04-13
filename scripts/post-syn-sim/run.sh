@@ -18,6 +18,7 @@ verilator \
     --binary \
     --timing \
     --trace \
+    --trace-underscore \
     --trace-max-array 0 \
     --trace-max-width 0 \
     -Wall \
