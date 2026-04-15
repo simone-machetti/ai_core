@@ -8,7 +8,8 @@
 `timescale 1 ns/1 ps
 
 module tb_sqr_4x4_top #(
-    parameter int MULT_TYPE = 0
+    parameter bit IS_PIPELINED = 1,
+    parameter int MULT_TYPE    = 0
 );
     localparam int IN_SIZE    = 64;
     localparam int IN_WIDTH_A = 4;
@@ -67,7 +68,8 @@ module tb_sqr_4x4_top #(
     );
 `else
     sqr_4x4_top #(
-        .MULT_TYPE(MULT_TYPE)
+        .IS_PIPELINED(IS_PIPELINED),
+        .MULT_TYPE   (MULT_TYPE)
     ) sqr_4x4_top_i (
         .clk_i      (clk),
         .rst_ni     (rst_n),
@@ -155,7 +157,11 @@ module tb_sqr_4x4_top #(
                 exp = OUT_WIDTH'($signed(exp)) + OUT_WIDTH'($signed(p_lo + (p_hi <<< 4)));
             end
 
-            repeat (3) @(posedge clk);
+            if (IS_PIPELINED) begin
+                repeat(3) @(posedge clk);
+            end else begin
+                repeat(2) @(posedge clk);
+            end
 
             if (out !== OUT_WIDTH'($signed(exp) + $signed(acc[0]) + $signed(acc[1]) + $signed(acc[2]))) begin
                 $error("Error!\n");

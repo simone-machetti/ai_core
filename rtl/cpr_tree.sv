@@ -8,9 +8,10 @@
 `timescale 1 ns/1 ps
 
 module cpr_tree #(
-    parameter int PP_SIZE  = 64,
-    parameter int PP_WIDTH = 12,
-    parameter int ACC_SIZE = 1,
+    parameter bit IS_PIPELINED = 1,
+    parameter int PP_SIZE      = 64,
+    parameter int PP_WIDTH     = 12,
+    parameter int ACC_SIZE     = 1,
 
     localparam int ACC_WIDTH = 48,
     localparam int EXT_NUM   = 15,
@@ -145,28 +146,37 @@ module cpr_tree #(
                         .out_o      (ext_n_out)
                     );
 
-                    if (stage == 0) begin
+                    if (IS_PIPELINED) begin
 
-                        logic [EXT_N_OUT_WIDTH-1:0] ext_n_out_tmp [0:EXT_N_IN_SIZE-1];
+                        if (stage == 1) begin
 
-                        always_ff @(posedge clk_i or negedge rst_ni) begin
-                            if (!rst_ni) begin
-                                ext_n_out_tmp[0] <= '0;
-                                ext_n_out_tmp[1] <= '0;
-                            end else begin
-                                ext_n_out_tmp[0] <= ext_n_out[0];
-                                ext_n_out_tmp[1] <= ext_n_out[1]; 
+                            logic [EXT_N_OUT_WIDTH-1:0] ext_n_out_tmp [0:EXT_N_IN_SIZE-1];
+
+                            always_ff @(posedge clk_i or negedge rst_ni) begin
+                                if (!rst_ni) begin
+                                    ext_n_out_tmp[0] <= '0;
+                                    ext_n_out_tmp[1] <= '0;
+                                end else begin
+                                    ext_n_out_tmp[0] <= ext_n_out[0];
+                                    ext_n_out_tmp[1] <= ext_n_out[1]; 
+                                end
                             end
-                        end
 
-                        assign tmp[stage+1][lane*EXT_N_IN_SIZE+0][EXT_N_OUT_WIDTH-1:0] = ext_n_out_tmp[0];
-                        assign tmp[stage+1][lane*EXT_N_IN_SIZE+1][EXT_N_OUT_WIDTH-1:0] = ext_n_out_tmp[1];
+                            assign tmp[stage+1][lane*EXT_N_IN_SIZE+0][EXT_N_OUT_WIDTH-1:0] = ext_n_out_tmp[0];
+                            assign tmp[stage+1][lane*EXT_N_IN_SIZE+1][EXT_N_OUT_WIDTH-1:0] = ext_n_out_tmp[1];
+
+                        end else begin
+
+                            assign tmp[stage+1][lane*EXT_N_IN_SIZE+0][EXT_N_OUT_WIDTH-1:0] = ext_n_out[0];
+                            assign tmp[stage+1][lane*EXT_N_IN_SIZE+1][EXT_N_OUT_WIDTH-1:0] = ext_n_out[1];
+                            
+                        end
 
                     end else begin
 
                         assign tmp[stage+1][lane*EXT_N_IN_SIZE+0][EXT_N_OUT_WIDTH-1:0] = ext_n_out[0];
                         assign tmp[stage+1][lane*EXT_N_IN_SIZE+1][EXT_N_OUT_WIDTH-1:0] = ext_n_out[1];
-                        
+
                     end
                 end
             end

@@ -8,7 +8,8 @@
 `timescale 1 ns/1 ps
 
 module sqr_4x4_top #(
-    parameter int MULT_TYPE = 0,
+    parameter bit IS_PIPELINED = 1,
+    parameter int MULT_TYPE    = 0,
 
     localparam int IN_SIZE    = 64,
     localparam int IN_WIDTH_A = 4,
@@ -77,9 +78,10 @@ module sqr_4x4_top #(
     // Compression tree
     // -------------------------------------------------------------------------
     cpr_tree #(
-        .PP_SIZE (PP_SIZE),
-        .PP_WIDTH(PP_WIDTH),
-        .ACC_SIZE(ACC_SIZE)
+        .IS_PIPELINED(IS_PIPELINED),
+        .PP_SIZE     (PP_SIZE),
+        .PP_WIDTH    (PP_WIDTH),
+        .ACC_SIZE    (ACC_SIZE)
     ) cpr_tree_i (
         .clk_i      (clk_i),
         .rst_ni     (rst_ni),

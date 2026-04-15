@@ -8,7 +8,8 @@
 `timescale 1 ns/1 ps
 
 module tb_sqr_4x4_alpha_top #(
-    parameter bit IS_SQUARE = 0
+    parameter bit IS_PIPELINED = 1,
+    parameter bit IS_SQUARE    = 0
 );
     localparam int IN_SIZE    = 32;
     localparam int IN_WIDTH_A = 4;
@@ -55,7 +56,8 @@ module tb_sqr_4x4_alpha_top #(
     );
 `else
     sqr_4x4_alpha_top #(
-        .IS_SQUARE(IS_SQUARE)
+        .IS_PIPELINED(IS_PIPELINED),
+        .IS_SQUARE   (IS_SQUARE)
     ) sqr_4x4_alpha_top_i (
         .clk_i      (clk),
         .rst_ni     (rst_n),
@@ -125,7 +127,11 @@ module tb_sqr_4x4_alpha_top #(
                 end
             end
 
-            repeat (3) @(posedge clk);
+            if (IS_PIPELINED) begin
+                repeat(3) @(posedge clk);
+            end else begin
+                repeat(2) @(posedge clk);
+            end
 
             if (out !== exp) begin
                 $error("Error!\n");

@@ -8,8 +8,9 @@
 `timescale 1 ns/1 ps
 
 module cpr_tree_alpha #(
-    parameter int PP_SIZE  = 32,
-    parameter int PP_WIDTH = 4,
+    parameter bit IS_PIPELINE = 1,
+    parameter int PP_SIZE     = 32,
+    parameter int PP_WIDTH    = 4,
 
     localparam int EXT_NUM   = 15,
     localparam int OUT_WIDTH = PP_WIDTH + $clog2(PP_SIZE) + 20
@@ -135,22 +136,31 @@ module cpr_tree_alpha #(
                     .out_o      (ext_n_out)
                 );
 
-                if (stage == 0) begin
+                if (IS_PIPELINE) begin
 
-                    logic [EXT_N_OUT_WIDTH-1:0] ext_n_out_tmp [0:EXT_N_IN_SIZE-1];
+                    if (stage == 2) begin
 
-                    always_ff @(posedge clk_i or negedge rst_ni) begin
-                        if (!rst_ni) begin
-                            ext_n_out_tmp[0] <= '0;
-                            ext_n_out_tmp[1] <= '0;
-                        end else begin
-                            ext_n_out_tmp[0] <= ext_n_out[0];
-                            ext_n_out_tmp[1] <= ext_n_out[1];
+                        logic [EXT_N_OUT_WIDTH-1:0] ext_n_out_tmp [0:EXT_N_IN_SIZE-1];
+
+                        always_ff @(posedge clk_i or negedge rst_ni) begin
+                            if (!rst_ni) begin
+                                ext_n_out_tmp[0] <= '0;
+                                ext_n_out_tmp[1] <= '0;
+                            end else begin
+                                ext_n_out_tmp[0] <= ext_n_out[0];
+                                ext_n_out_tmp[1] <= ext_n_out[1];
+                            end
                         end
-                    end
 
-                    assign tmp[stage+1][lane*EXT_N_IN_SIZE+0][EXT_N_OUT_WIDTH-1:0] = ext_n_out_tmp[0];
-                    assign tmp[stage+1][lane*EXT_N_IN_SIZE+1][EXT_N_OUT_WIDTH-1:0] = ext_n_out_tmp[1];
+                        assign tmp[stage+1][lane*EXT_N_IN_SIZE+0][EXT_N_OUT_WIDTH-1:0] = ext_n_out_tmp[0];
+                        assign tmp[stage+1][lane*EXT_N_IN_SIZE+1][EXT_N_OUT_WIDTH-1:0] = ext_n_out_tmp[1];
+
+                    end else begin
+
+                        assign tmp[stage+1][lane*EXT_N_IN_SIZE+0][EXT_N_OUT_WIDTH-1:0] = ext_n_out[0];
+                        assign tmp[stage+1][lane*EXT_N_IN_SIZE+1][EXT_N_OUT_WIDTH-1:0] = ext_n_out[1];
+
+                    end
 
                 end else begin
 
