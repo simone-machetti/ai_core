@@ -148,7 +148,7 @@ module cpr_tree #(
 
                     if (IS_PIPELINED) begin
 
-                        if (stage == 1) begin
+                        if (stage == 0) begin
 
                             logic [EXT_N_OUT_WIDTH-1:0] ext_n_out_tmp [0:EXT_N_IN_SIZE-1];
 
