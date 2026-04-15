@@ -142,15 +142,15 @@ module cpr_tree_alpha #(
 
                         logic [EXT_N_OUT_WIDTH-1:0] ext_n_out_tmp [0:EXT_N_IN_SIZE-1];
 
-                        always_ff @(posedge clk_i or negedge rst_ni) begin
-                            if (!rst_ni) begin
-                                ext_n_out_tmp[0] <= '0;
-                                ext_n_out_tmp[1] <= '0;
-                            end else begin
-                                ext_n_out_tmp[0] <= ext_n_out[0];
-                                ext_n_out_tmp[1] <= ext_n_out[1];
-                            end
-                        end
+                        ff_n #(
+                            .WIDTH(EXT_N_OUT_WIDTH),
+                            .SIZE (EXT_N_IN_SIZE)
+                        ) ff_n_i (
+                            .clk_i (clk_i),
+                            .rst_ni(rst_ni),
+                            .d_i   (ext_n_out),
+                            .q_o   (ext_n_out_tmp)
+                        );
 
                         assign tmp[stage+1][lane*EXT_N_IN_SIZE+0][EXT_N_OUT_WIDTH-1:0] = ext_n_out_tmp[0];
                         assign tmp[stage+1][lane*EXT_N_IN_SIZE+1][EXT_N_OUT_WIDTH-1:0] = ext_n_out_tmp[1];
