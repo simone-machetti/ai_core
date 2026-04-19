@@ -11,12 +11,14 @@ module acc_tree #(
     parameter int ACC_SIZE  = 1,
     parameter int ACC_WIDTH = 40,
 
-    localparam int OUT_WIDTH = ACC_SIZE > 0 ? ACC_WIDTH : IN_WIDTH;
+    localparam int OUT_WIDTH = ACC_SIZE > 0 ? ACC_WIDTH : IN_WIDTH
 )(
     input  logic [ IN_WIDTH-1:0] in_i  [         0:1],
     input  logic [ACC_WIDTH-1:0] acc_i [0:ACC_SIZE-1],
     output logic [OUT_WIDTH-1:0] out_o [         0:1]
 );
+
+    genvar i;
     generate 
 
         if (ACC_SIZE > 0) begin
@@ -45,17 +47,12 @@ module acc_tree #(
 
             logic [ACC_WIDTH-1:0] cpr_n_in [0:CPR_N_2_IN_SIZE-1];
 
-            genvar i;
-            generate
+            assign cpr_n_in[0] = ext_n_out[0];
+            assign cpr_n_in[1] = ext_n_out[1];
 
-                assign cpr_n_in[0] = ext_n_out[0];
-                assign cpr_n_in[1] = ext_n_out[1];
-
-                for (i = 0; i < ACC_SIZE; i++) begin
-                    assign cpr_n_in[2+i] = acc_i[i];
-                end
-
-            endgenerate
+            for (i = 0; i < ACC_SIZE; i++) begin
+                assign cpr_n_in[2+i] = acc_i[i];
+            end
 
             cpr_n_2 #(
                 .IN_SIZE     (CPR_N_2_IN_SIZE),
