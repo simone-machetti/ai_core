@@ -14,27 +14,25 @@ module cpr_4_2 #(
 
     localparam int OUT_WIDTH = IN_WIDTH + EXT_BITS
 )(
-    input  logic [ IN_WIDTH-1:0] in_i [4],
+    input  logic [ IN_WIDTH-1:0] in_i [0:3],
     output logic [OUT_WIDTH-1:0] sum_o,
     output logic [OUT_WIDTH-1:0] carry_o
 );
     localparam int EXT_WIDTH = OUT_WIDTH + 1;
 
-    logic [EXT_WIDTH-1:0] ext_in [4];
+    logic [EXT_WIDTH-1:0] ext_in [0:3];
     logic [EXT_WIDTH-1:0] s, c;
     logic [  EXT_WIDTH:0] cout;
 
-    generate
-        for (genvar i = 0; i < 4; i++) begin : gen_extenders
-            sign_ext #(
-                .IN_WIDTH (IN_WIDTH),
-                .OUT_WIDTH(EXT_WIDTH)
-            ) sign_ext_i (
-                .in_i (in_i[i]),
-                .out_o(ext_in[i])
-            );
-        end
-    endgenerate
+    ext_n #(
+        .IN_SIZE  (4),
+        .IN_WIDTH (IN_WIDTH),
+        .EXTEND   (EXT_BITS+1),
+        .IS_SIGNED(1)
+    ) ext_n_i (
+        .in_i (in_i),
+        .out_o(ext_in)
+    );
 
     assign cout[0] = 1'b0;
 
