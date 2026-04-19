@@ -26,6 +26,7 @@ verilator \
     -DCLK_PERIOD_NS="${SEL_CLK_PERIOD_NS}" \
     "${g_flags[@]}" \
     -I"${CODE_HOME}/ai-core/rtl" \
+    -I"${CODE_HOME}/ai-core/tb" \
     --top-module "tb_${SEL_TOP_LEVEL}" \
     "${CODE_HOME}/ai-core/tb/tb_${SEL_TOP_LEVEL}.sv" \
     -Mdir "${CODE_HOME}/ai-core/sim/${SEL_OUT_DIR}/build/obj_dir" \
