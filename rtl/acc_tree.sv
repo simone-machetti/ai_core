@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off GENUNNAMED */
+/* verilator lint_off UNUSEDSIGNAL */
 
 `timescale 1 ns/1 ps
 
