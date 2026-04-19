@@ -8,12 +8,12 @@
 `timescale 1 ns/1 ps
 
 module cpr_tree #(
-    parameter int PP_SIZE  = 64,
+    parameter int PP_SIZE  = 128,
     parameter int PP_WIDTH = 10,
     parameter int PP_GROUP = 2,
     parameter int PP_SHIFT = 2,
 
-    localparam int OUT_WIDTH = PP_WIDTH + $clog2(PP_SIZE) + 1 + (PP_SHIFT * (PP_GROUP - 1))
+    localparam int OUT_WIDTH = PP_WIDTH + $clog2(PP_SIZE / PP_GROUP) + 1 + (PP_SHIFT * (PP_GROUP - 1))
 )(
     input  logic [ PP_WIDTH-1:0] pp_i  [0:PP_SIZE-1],
     output logic [OUT_WIDTH-1:0] out_o [        0:1]
