@@ -58,7 +58,7 @@ module pe_top
     // -------------------------------------------------------------------------
     // Partial product generator
     // -------------------------------------------------------------------------
-    localparam int PP_GEN_PP_SIZE  = pe_top_pkg::get_pp_gen_pp_size(ARCH, MULT_TYPE, IN_WIDTH_A, IN_SIZE);
+    localparam int PP_GEN_PP_SIZE  = pe_top_pkg::get_pp_gen_pp_size(ARCH, MULT_TYPE, IN_WIDTH_A, IN_WIDTH_B, IN_SIZE);
     localparam int PP_GEN_PP_WIDTH = pe_top_pkg::get_pp_gen_pp_width(ARCH, MULT_TYPE, IN_WIDTH_B);
 
     logic [PP_GEN_PP_WIDTH-1:0] pp_gen_out [0:PP_GEN_PP_SIZE-1];
@@ -78,7 +78,7 @@ module pe_top
     // -------------------------------------------------------------------------
     // Compression tree
     // -------------------------------------------------------------------------
-    localparam int CPR_TREE_PP_GROUP  = pe_top_pkg::get_cpr_tree_pp_group(ARCH, MULT_TYPE, IN_WIDTH_A);
+    localparam int CPR_TREE_PP_GROUP  = pe_top_pkg::get_cpr_tree_pp_group(ARCH, MULT_TYPE, IN_WIDTH_A, IN_WIDTH_B);
     localparam int CPR_TREE_PP_SHIFT  = pe_top_pkg::get_cpr_tree_pp_shift(ARCH, MULT_TYPE);
     localparam int CPR_TREE_OUT_WIDTH = pe_top_pkg::get_cpr_tree_out_width(ARCH, MULT_TYPE, IN_WIDTH_A, IN_WIDTH_B, IN_SIZE);
 

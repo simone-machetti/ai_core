@@ -13,8 +13,8 @@ module pp_gen
     parameter int IN_WIDTH_B = 8,
     parameter int MULT_TYPE  = 0,
 
-    localparam int PP_SIZE  = pp_gen_pkg::get_pp_size(MULT_TYPE, IN_WIDTH_A, IN_SIZE),
-    localparam int PP_WIDTH = pp_gen_pkg::get_pp_width(MULT_TYPE, IN_WIDTH_B)
+    localparam int PP_SIZE  = pp_gen_pkg::get_pp_size_arch(ARCH, MULT_TYPE, IN_WIDTH_A, IN_WIDTH_B, IN_SIZE),
+    localparam int PP_WIDTH = pp_gen_pkg::get_pp_width_arch(ARCH, MULT_TYPE, IN_WIDTH_B)
 )(
     input  logic [IN_WIDTH_A-1:0] a_i  [0:IN_SIZE-1],
     input  logic [IN_WIDTH_B-1:0] b_i  [0:IN_SIZE-1],
@@ -33,6 +33,20 @@ module pp_gen
                     .MULT_TYPE (MULT_TYPE),
                     .IS_SIGNED (1)
                 ) mult_array_i (
+                    .a_i (a_i),
+                    .b_i (b_i),
+                    .pp_o(pp_o)
+                );
+            end
+
+            WINOGRAD: begin : gen_winograd
+                add_mult_array #(
+                    .IN_SIZE   (IN_SIZE),
+                    .IN_WIDTH_A(IN_WIDTH_A),
+                    .IN_WIDTH_B(IN_WIDTH_B),
+                    .MULT_TYPE (MULT_TYPE),
+                    .IS_SIGNED (1)
+                ) add_mult_array_i (
                     .a_i (a_i),
                     .b_i (b_i),
                     .pp_o(pp_o)
