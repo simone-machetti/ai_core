@@ -6,9 +6,6 @@
 
 set -uo pipefail
 
-# shellcheck disable=SC1091
-source "$(dirname "$0")/sourceme.sh"
-
 PASS=0
 FAIL=0
 RESULTS=()
@@ -25,53 +22,43 @@ run() {
     fi
 }
 
-CLK=1
+CLK=1.35
 
 # -----------------------------------------------------------------------------
-# bas_4x4_top
+# Baseline 4x8
 # -----------------------------------------------------------------------------
-run "sim  bas_4x4_top  R4"  sim  TOP_LEVEL=bas_4x4_top  CLK_PERIOD_NS=$CLK  OUT_DIR=reg_bas_4x4_r4  PARAMS="MULT_TYPE=0"
-run "sim  bas_4x4_top  R8"  sim  TOP_LEVEL=bas_4x4_top  CLK_PERIOD_NS=$CLK  OUT_DIR=reg_bas_4x4_r8  PARAMS="MULT_TYPE=1"
-run "syn  bas_4x4_top  R4"  syn  TOP_LEVEL=bas_4x4_top                      OUT_DIR=reg_bas_4x4_r4  PARAMS="MULT_TYPE=0"
-run "syn  bas_4x4_top  R8"  syn  TOP_LEVEL=bas_4x4_top                      OUT_DIR=reg_bas_4x4_r8  PARAMS="MULT_TYPE=1"
+run "sim          Baseline 4x8"  sim          TOP_LEVEL=bas_4x8_top  CLK_PERIOD_NS=$CLK  OUT_DIR=bas_4x8_sim                                    PARAMS="IS_PIPELINED=1 MULT_TYPE=0"
+run "syn          Baseline 4x8"  syn          TOP_LEVEL=bas_4x8_top                      OUT_DIR=bas_4x8_syn                                    PARAMS="IS_PIPELINED=1 MULT_TYPE=0"
+run "post-syn-sim Baseline 4x8"  post-syn-sim TOP_LEVEL=bas_4x8_top  CLK_PERIOD_NS=$CLK  OUT_DIR=bas_4x8_post_syn_sim  NETLIST_DIR=bas_4x8_syn  PARAMS="IS_PIPELINED=1 MULT_TYPE=0"
+run "post-syn-sta Baseline 4x8"  post-syn-sta TOP_LEVEL=bas_4x8_top  CLK_PERIOD_NS=$CLK  OUT_DIR=bas_4x8_post_syn_sta  NETLIST_DIR=bas_4x8_syn
+run "post-syn-dpa Baseline 4x8"  post-syn-dpa TOP_LEVEL=bas_4x8_top  CLK_PERIOD_NS=$CLK  OUT_DIR=bas_4x8_post_syn_dpa  NETLIST_DIR=bas_4x8_syn  VCD_DIR=bas_4x8_post_syn_sim
 
 # -----------------------------------------------------------------------------
-# bas_4x8_top
+# Square 4x4
 # -----------------------------------------------------------------------------
-run "sim  bas_4x8_top  R4"  sim  TOP_LEVEL=bas_4x8_top  CLK_PERIOD_NS=$CLK  OUT_DIR=reg_bas_4x8_r4  PARAMS="MULT_TYPE=0"
-run "sim  bas_4x8_top  R8"  sim  TOP_LEVEL=bas_4x8_top  CLK_PERIOD_NS=$CLK  OUT_DIR=reg_bas_4x8_r8  PARAMS="MULT_TYPE=1"
-run "syn  bas_4x8_top  R4"  syn  TOP_LEVEL=bas_4x8_top                      OUT_DIR=reg_bas_4x8_r4  PARAMS="MULT_TYPE=0"
-run "syn  bas_4x8_top  R8"  syn  TOP_LEVEL=bas_4x8_top                      OUT_DIR=reg_bas_4x8_r8  PARAMS="MULT_TYPE=1"
+run "sim          Square 4x4"  sim          TOP_LEVEL=sqr_4x4_top  CLK_PERIOD_NS=$CLK  OUT_DIR=sqr_4x4_sim                                    PARAMS="IS_PIPELINED=1"
+run "syn          Square 4x4"  syn          TOP_LEVEL=sqr_4x4_top                      OUT_DIR=sqr_4x4_syn                                    PARAMS="IS_PIPELINED=1"
+run "post-syn-sim Square 4x4"  post-syn-sim TOP_LEVEL=sqr_4x4_top  CLK_PERIOD_NS=$CLK  OUT_DIR=sqr_4x4_post_syn_sim  NETLIST_DIR=sqr_4x4_syn  PARAMS="IS_PIPELINED=1"
+run "post-syn-sta Square 4x4"  post-syn-sta TOP_LEVEL=sqr_4x4_top  CLK_PERIOD_NS=$CLK  OUT_DIR=sqr_4x4_post_syn_sta  NETLIST_DIR=sqr_4x4_syn
+run "post-syn-dpa Square 4x4"  post-syn-dpa TOP_LEVEL=sqr_4x4_top  CLK_PERIOD_NS=$CLK  OUT_DIR=sqr_4x4_post_syn_dpa  NETLIST_DIR=sqr_4x4_syn  VCD_DIR=sqr_4x4_post_syn_sim
 
 # -----------------------------------------------------------------------------
-# win_4x4_top
+# Alpha
 # -----------------------------------------------------------------------------
-run "sim  win_4x4_top  R4"  sim  TOP_LEVEL=win_4x4_top  CLK_PERIOD_NS=$CLK  OUT_DIR=reg_win_4x4_r4  PARAMS="MULT_TYPE=0"
-run "sim  win_4x4_top  R8"  sim  TOP_LEVEL=win_4x4_top  CLK_PERIOD_NS=$CLK  OUT_DIR=reg_win_4x4_r8  PARAMS="MULT_TYPE=1"
-run "syn  win_4x4_top  R4"  syn  TOP_LEVEL=win_4x4_top                      OUT_DIR=reg_win_4x4_r4  PARAMS="MULT_TYPE=0"
-run "syn  win_4x4_top  R8"  syn  TOP_LEVEL=win_4x4_top                      OUT_DIR=reg_win_4x4_r8  PARAMS="MULT_TYPE=1"
+run "sim          Alpha"  sim          TOP_LEVEL=sqr_4x4_alpha_top  CLK_PERIOD_NS=$CLK  OUT_DIR=alpha_sim                                  PARAMS="IS_PIPELINED=1 IS_SQUARE=0"
+run "syn          Alpha"  syn          TOP_LEVEL=sqr_4x4_alpha_top                      OUT_DIR=alpha_syn                                  PARAMS="IS_PIPELINED=1 IS_SQUARE=0"
+run "post-syn-sim Alpha"  post-syn-sim TOP_LEVEL=sqr_4x4_alpha_top  CLK_PERIOD_NS=$CLK  OUT_DIR=alpha_post_syn_sim  NETLIST_DIR=alpha_syn  PARAMS="IS_PIPELINED=1 IS_SQUARE=0"
+run "post-syn-sta Alpha"  post-syn-sta TOP_LEVEL=sqr_4x4_alpha_top  CLK_PERIOD_NS=$CLK  OUT_DIR=alpha_post_syn_sta  NETLIST_DIR=alpha_syn
+run "post-syn-dpa Alpha"  post-syn-dpa TOP_LEVEL=sqr_4x4_alpha_top  CLK_PERIOD_NS=$CLK  OUT_DIR=alpha_post_syn_dpa  NETLIST_DIR=alpha_syn  VCD_DIR=alpha_post_syn_sim
 
 # -----------------------------------------------------------------------------
-# win_4x8_top
+# Alpha Squared
 # -----------------------------------------------------------------------------
-run "sim  win_4x8_top  R4"  sim  TOP_LEVEL=win_4x8_top  CLK_PERIOD_NS=$CLK  OUT_DIR=reg_win_4x8_r4  PARAMS="MULT_TYPE=0"
-run "sim  win_4x8_top  R8"  sim  TOP_LEVEL=win_4x8_top  CLK_PERIOD_NS=$CLK  OUT_DIR=reg_win_4x8_r8  PARAMS="MULT_TYPE=1"
-run "syn  win_4x8_top  R4"  syn  TOP_LEVEL=win_4x8_top                      OUT_DIR=reg_win_4x8_r4  PARAMS="MULT_TYPE=0"
-run "syn  win_4x8_top  R8"  syn  TOP_LEVEL=win_4x8_top                      OUT_DIR=reg_win_4x8_r8  PARAMS="MULT_TYPE=1"
-
-# -----------------------------------------------------------------------------
-# sqr_4x4_top (no MULT_TYPE)
-# -----------------------------------------------------------------------------
-run "sim  sqr_4x4_top"  sim  TOP_LEVEL=sqr_4x4_top  CLK_PERIOD_NS=$CLK  OUT_DIR=reg_sqr_4x4
-run "syn  sqr_4x4_top"  syn  TOP_LEVEL=sqr_4x4_top                      OUT_DIR=reg_sqr_4x4
-
-# -----------------------------------------------------------------------------
-# sqr_4x4_alpha_top (no MULT_TYPE)
-# -----------------------------------------------------------------------------
-run "sim  sqr_4x4_alpha_top  linear"  sim  TOP_LEVEL=sqr_4x4_alpha_top  CLK_PERIOD_NS=$CLK  OUT_DIR=reg_sqr_4x4_alpha_lin  PARAMS="IS_SQUARE=0"
-run "sim  sqr_4x4_alpha_top  square"  sim  TOP_LEVEL=sqr_4x4_alpha_top  CLK_PERIOD_NS=$CLK  OUT_DIR=reg_sqr_4x4_alpha_sqr  PARAMS="IS_SQUARE=1"
-run "syn  sqr_4x4_alpha_top  linear"  syn  TOP_LEVEL=sqr_4x4_alpha_top                      OUT_DIR=reg_sqr_4x4_alpha_lin  PARAMS="IS_SQUARE=0"
-run "syn  sqr_4x4_alpha_top  square"  syn  TOP_LEVEL=sqr_4x4_alpha_top                      OUT_DIR=reg_sqr_4x4_alpha_sqr  PARAMS="IS_SQUARE=1"
+run "sim          Alpha Squared"  sim          TOP_LEVEL=sqr_4x4_alpha_top  CLK_PERIOD_NS=$CLK  OUT_DIR=alpha_sqr_sim                                      PARAMS="IS_PIPELINED=1 IS_SQUARE=1"
+run "syn          Alpha Squared"  syn          TOP_LEVEL=sqr_4x4_alpha_top                      OUT_DIR=alpha_sqr_syn                                      PARAMS="IS_PIPELINED=1 IS_SQUARE=1"
+run "post-syn-sim Alpha Squared"  post-syn-sim TOP_LEVEL=sqr_4x4_alpha_top  CLK_PERIOD_NS=$CLK  OUT_DIR=alpha_sqr_post_syn_sim  NETLIST_DIR=alpha_sqr_syn  PARAMS="IS_PIPELINED=1 IS_SQUARE=1"
+run "post-syn-sta Alpha Squared"  post-syn-sta TOP_LEVEL=sqr_4x4_alpha_top  CLK_PERIOD_NS=$CLK  OUT_DIR=alpha_sqr_post_syn_sta  NETLIST_DIR=alpha_sqr_syn
+run "post-syn-dpa Alpha Squared"  post-syn-dpa TOP_LEVEL=sqr_4x4_alpha_top  CLK_PERIOD_NS=$CLK  OUT_DIR=alpha_sqr_post_syn_dpa  NETLIST_DIR=alpha_sqr_syn  VCD_DIR=alpha_sqr_post_syn_sim
 
 # -----------------------------------------------------------------------------
 # Summary
