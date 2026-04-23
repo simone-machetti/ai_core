@@ -23,6 +23,9 @@ verilator \
     --trace-max-width 0 \
     -Wall \
     -Wno-fatal \
+    -Wno-SPECIFYIGN \
+    -Wno-DECLFILENAME \
+    -Wno-UNUSEDSIGNAL \
     -DPOST_SYN_SIM \
     -DVCD \
     -DCLK_PERIOD_NS="${SEL_CLK_PERIOD_NS}" \
