@@ -33,4 +33,9 @@ if {$env(SEL_PARAMS) ne "none"} {
     }
 }
 
-yosys "read_slang [join $rtl_files] --top $env(SEL_TOP_LEVEL)$g_flags"
+set kh_flag ""
+if {$env(SEL_KEEP_HIERARCHY) eq "1"} {
+    set kh_flag " --keep-hierarchy"
+}
+
+yosys "read_slang [join $rtl_files] --top $env(SEL_TOP_LEVEL)$g_flags$kh_flag"

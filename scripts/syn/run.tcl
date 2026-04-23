@@ -50,10 +50,13 @@ yosys "tee -o $env(CODE_HOME)/ai-core/imp/$env(SEL_OUT_DIR)/report/area.rpt stat
 
 # -----------------------------------------------------------------------------
 # Flatten full design, optimize and clean for netlist output
+# (skipped when SEL_KEEP_HIERARCHY=1)
 # -----------------------------------------------------------------------------
-yosys "flatten"
-yosys "opt_clean"
-yosys "rename -hide"
+if {$env(SEL_KEEP_HIERARCHY) eq "0"} {
+    yosys "flatten"
+    yosys "opt_clean"
+    yosys "rename -hide"
+}
 
 # -----------------------------------------------------------------------------
 # Write synthesized netlist

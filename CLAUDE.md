@@ -21,8 +21,10 @@ make sim TOP_LEVEL=<top_level> CLK_PERIOD_NS=<val> OUT_DIR=<name> [PARAMS="KEY=V
 
 **Logic synthesis** (Yosys + ABC, targeting ASAP7):
 ```bash
-make syn TOP_LEVEL=<top_level> OUT_DIR=<name> [PARAMS="KEY=VAL ..."]
+make syn TOP_LEVEL=<top_level> OUT_DIR=<name> [PARAMS="KEY=VAL ..."] [KEEP_HIERARCHY=1]
 ```
+
+Set `KEEP_HIERARCHY=1` to preserve module boundaries in the output netlist (skips `flatten`). Default is `0` (fully flattened netlist).
 
 `TOP_LEVEL` can be any module in the hierarchy (e.g. `cpr_tree`, `mult_array`), not only PE top-levels. Module parameters are passed via `PARAMS` as a space-separated list of `KEY=VALUE` pairs (e.g. `PARAMS="MULT_TYPE=1 PP_SIZE=32"`).
 
