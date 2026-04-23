@@ -40,8 +40,10 @@ make post-syn-sim TOP_LEVEL=<top_level> CLK_PERIOD_NS=<val> OUT_DIR=<name> NETLI
 
 **Post-synthesis dynamic power analysis**:
 ```bash
-make post-syn-dpa TOP_LEVEL=<top_level> CLK_PERIOD_NS=<val> OUT_DIR=<name> NETLIST_DIR=<netlist_dir> VCD_DIR=<vcd_dir>
+make post-syn-dpa TOP_LEVEL=<top_level> CLK_PERIOD_NS=<val> OUT_DIR=<name> NETLIST_DIR=<netlist_dir> VCD_DIR=<vcd_dir> [KEEP_HIERARCHY=1]
 ```
+
+Set `KEEP_HIERARCHY=1` (requires a hierarchical netlist from `make syn ... KEEP_HIERARCHY=1`) to also generate `power_hierarchy.rpt` with a per-instance power breakdown.
 
 **Cleanup**:
 ```bash

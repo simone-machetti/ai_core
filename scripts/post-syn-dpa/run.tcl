@@ -40,4 +40,8 @@ report_activity_annotation -report_unannotated > $REPORT_DIR/vcd_unannotated.rpt
 # Power reports
 # -----------------------------------------------------------------------------
 report_power > $REPORT_DIR/power_summary.rpt
+
+if {$env(SEL_KEEP_HIERARCHY) eq "1"} {
+    report_power -instances [get_cells -hierarchical *] > $REPORT_DIR/power_hierarchy.rpt
+}
 # report_units
