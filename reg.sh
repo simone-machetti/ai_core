@@ -63,8 +63,8 @@ run "post-syn-dpa Winograd 4x8"  post-syn-dpa TOP_LEVEL=top_win_4x8  CLK_PERIOD_
 # -----------------------------------------------------------------------------
 # Square 4x8 SC
 # -----------------------------------------------------------------------------
-run "sim          Square 4x8 SC"  sim          TOP_LEVEL=top_sqr_4x8_sc  CLK_PERIOD_NS=$CLK  OUT_DIR=sqr_4x8_sc_sim                                          PARAMS="IS_PIPELINED=1"
-run "syn          Square 4x8 SC"  syn          TOP_LEVEL=top_sqr_4x8_sc                      OUT_DIR=sqr_4x8_sc_syn                                          PARAMS="IS_PIPELINED=1"
+run "sim          Square 4x8 SC"  sim          TOP_LEVEL=top_sqr_4x8_sc  CLK_PERIOD_NS=$CLK  OUT_DIR=sqr_4x8_sc_sim                                       PARAMS="IS_PIPELINED=1"
+run "syn          Square 4x8 SC"  syn          TOP_LEVEL=top_sqr_4x8_sc                      OUT_DIR=sqr_4x8_sc_syn                                       PARAMS="IS_PIPELINED=1"
 run "post-syn-sim Square 4x8 SC"  post-syn-sim TOP_LEVEL=top_sqr_4x8_sc  CLK_PERIOD_NS=$CLK  OUT_DIR=sqr_4x8_sc_post_syn_sim  NETLIST_DIR=sqr_4x8_sc_syn  PARAMS="IS_PIPELINED=1"
 run "post-syn-sta Square 4x8 SC"  post-syn-sta TOP_LEVEL=top_sqr_4x8_sc  CLK_PERIOD_NS=$CLK  OUT_DIR=sqr_4x8_sc_post_syn_sta  NETLIST_DIR=sqr_4x8_sc_syn
 run "post-syn-dpa Square 4x8 SC"  post-syn-dpa TOP_LEVEL=top_sqr_4x8_sc  CLK_PERIOD_NS=$CLK  OUT_DIR=sqr_4x8_sc_post_syn_dpa  NETLIST_DIR=sqr_4x8_sc_syn  VCD_DIR=sqr_4x8_sc_post_syn_sim
