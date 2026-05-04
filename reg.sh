@@ -25,6 +25,15 @@ run() {
 CLK=1.35
 
 # -----------------------------------------------------------------------------
+# Baseline 4x8 SC
+# -----------------------------------------------------------------------------
+run "sim          Baseline 4x8 SC"  sim          TOP_LEVEL=top_bas_4x8_sc  CLK_PERIOD_NS=$CLK  OUT_DIR=bas_4x8_sc_sim                                       PARAMS="IS_PIPELINED=1 MULT_TYPE=0"
+run "syn          Baseline 4x8 SC"  syn          TOP_LEVEL=top_bas_4x8_sc                      OUT_DIR=bas_4x8_sc_syn                                       PARAMS="IS_PIPELINED=1 MULT_TYPE=0"
+run "post-syn-sim Baseline 4x8 SC"  post-syn-sim TOP_LEVEL=top_bas_4x8_sc  CLK_PERIOD_NS=$CLK  OUT_DIR=bas_4x8_sc_post_syn_sim  NETLIST_DIR=bas_4x8_sc_syn  PARAMS="IS_PIPELINED=1 MULT_TYPE=0"
+run "post-syn-sta Baseline 4x8 SC"  post-syn-sta TOP_LEVEL=top_bas_4x8_sc  CLK_PERIOD_NS=$CLK  OUT_DIR=bas_4x8_sc_post_syn_sta  NETLIST_DIR=bas_4x8_sc_syn
+run "post-syn-dpa Baseline 4x8 SC"  post-syn-dpa TOP_LEVEL=top_bas_4x8_sc  CLK_PERIOD_NS=$CLK  OUT_DIR=bas_4x8_sc_post_syn_dpa  NETLIST_DIR=bas_4x8_sc_syn  VCD_DIR=bas_4x8_sc_post_syn_sim
+
+# -----------------------------------------------------------------------------
 # Baseline 4x8
 # -----------------------------------------------------------------------------
 run "sim          Baseline 4x8"  sim          TOP_LEVEL=top_bas_4x8  CLK_PERIOD_NS=$CLK  OUT_DIR=bas_4x8_sim                                    PARAMS="IS_PIPELINED=1 MULT_TYPE=0"
@@ -32,6 +41,24 @@ run "syn          Baseline 4x8"  syn          TOP_LEVEL=top_bas_4x8             
 run "post-syn-sim Baseline 4x8"  post-syn-sim TOP_LEVEL=top_bas_4x8  CLK_PERIOD_NS=$CLK  OUT_DIR=bas_4x8_post_syn_sim  NETLIST_DIR=bas_4x8_syn  PARAMS="IS_PIPELINED=1 MULT_TYPE=0"
 run "post-syn-sta Baseline 4x8"  post-syn-sta TOP_LEVEL=top_bas_4x8  CLK_PERIOD_NS=$CLK  OUT_DIR=bas_4x8_post_syn_sta  NETLIST_DIR=bas_4x8_syn
 run "post-syn-dpa Baseline 4x8"  post-syn-dpa TOP_LEVEL=top_bas_4x8  CLK_PERIOD_NS=$CLK  OUT_DIR=bas_4x8_post_syn_dpa  NETLIST_DIR=bas_4x8_syn  VCD_DIR=bas_4x8_post_syn_sim
+
+# -----------------------------------------------------------------------------
+# Winograd 4x8 SC
+# -----------------------------------------------------------------------------
+run "sim          Winograd 4x8 SC"  sim          TOP_LEVEL=top_win_4x8_sc  CLK_PERIOD_NS=$CLK  OUT_DIR=win_4x8_sc_sim                                       PARAMS="IS_PIPELINED=1 MULT_TYPE=0"
+run "syn          Winograd 4x8 SC"  syn          TOP_LEVEL=top_win_4x8_sc                      OUT_DIR=win_4x8_sc_syn                                       PARAMS="IS_PIPELINED=1 MULT_TYPE=0"
+run "post-syn-sim Winograd 4x8 SC"  post-syn-sim TOP_LEVEL=top_win_4x8_sc  CLK_PERIOD_NS=$CLK  OUT_DIR=win_4x8_sc_post_syn_sim  NETLIST_DIR=win_4x8_sc_syn  PARAMS="IS_PIPELINED=1 MULT_TYPE=0"
+run "post-syn-sta Winograd 4x8 SC"  post-syn-sta TOP_LEVEL=top_win_4x8_sc  CLK_PERIOD_NS=$CLK  OUT_DIR=win_4x8_sc_post_syn_sta  NETLIST_DIR=win_4x8_sc_syn
+run "post-syn-dpa Winograd 4x8 SC"  post-syn-dpa TOP_LEVEL=top_win_4x8_sc  CLK_PERIOD_NS=$CLK  OUT_DIR=win_4x8_sc_post_syn_dpa  NETLIST_DIR=win_4x8_sc_syn  VCD_DIR=win_4x8_sc_post_syn_sim
+
+# -----------------------------------------------------------------------------
+# Winograd 4x8
+# -----------------------------------------------------------------------------
+run "sim          Winograd 4x8"  sim          TOP_LEVEL=top_win_4x8  CLK_PERIOD_NS=$CLK  OUT_DIR=win_4x8_sim                                    PARAMS="IS_PIPELINED=1 MULT_TYPE=0"
+run "syn          Winograd 4x8"  syn          TOP_LEVEL=top_win_4x8                      OUT_DIR=win_4x8_syn                                    PARAMS="IS_PIPELINED=1 MULT_TYPE=0"
+run "post-syn-sim Winograd 4x8"  post-syn-sim TOP_LEVEL=top_win_4x8  CLK_PERIOD_NS=$CLK  OUT_DIR=win_4x8_post_syn_sim  NETLIST_DIR=win_4x8_syn  PARAMS="IS_PIPELINED=1 MULT_TYPE=0"
+run "post-syn-sta Winograd 4x8"  post-syn-sta TOP_LEVEL=top_win_4x8  CLK_PERIOD_NS=$CLK  OUT_DIR=win_4x8_post_syn_sta  NETLIST_DIR=win_4x8_syn
+run "post-syn-dpa Winograd 4x8"  post-syn-dpa TOP_LEVEL=top_win_4x8  CLK_PERIOD_NS=$CLK  OUT_DIR=win_4x8_post_syn_dpa  NETLIST_DIR=win_4x8_syn  VCD_DIR=win_4x8_post_syn_sim
 
 # -----------------------------------------------------------------------------
 # Square 4x8 SC
