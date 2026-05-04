@@ -11,12 +11,13 @@ module sqr_4x4_alpha_top #(
     parameter bit IS_PIPELINED = 1,
     parameter bit IS_SQUARE    = 0,
 
-    localparam int IN_SIZE    = 32,
-    localparam int IN_WIDTH_A = 4,
-    localparam int EXT_NUM    = 15,
-    localparam int PP_SIZE    = IN_SIZE,
-    localparam int PP_WIDTH   = IS_SQUARE ? (2 * IN_WIDTH_A) : IN_WIDTH_A,
-    localparam int OUT_WIDTH  = PP_WIDTH + $clog2(PP_SIZE) + 20
+    localparam int IN_SIZE      = 32,
+    localparam int IN_WIDTH_A   = 4,
+    localparam int EXT_NUM      = 15,
+    localparam int PP_SIZE      = IN_SIZE,
+    localparam int PP_WIDTH     = IS_SQUARE ? (2 * IN_WIDTH_A) : IN_WIDTH_A,
+    localparam int CPR_EXT_BITS = 4,
+    localparam int OUT_WIDTH    = PP_WIDTH + CPR_EXT_BITS + 20
 )(
     input  logic                  clk_i,
     input  logic                  rst_ni,

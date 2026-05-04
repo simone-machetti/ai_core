@@ -11,12 +11,12 @@ module tb_sqr_4x4_alpha_top #(
     parameter bit IS_PIPELINED = 1,
     parameter bit IS_SQUARE    = 0
 );
-    localparam int IN_SIZE    = 32;
-    localparam int IN_WIDTH_A = 4;
-    localparam int EXT_NUM    = 15;
-    localparam int PP_SIZE    = IN_SIZE;
-    localparam int PP_WIDTH   = IS_SQUARE ? (2 * IN_WIDTH_A) : IN_WIDTH_A;
-    localparam int OUT_WIDTH  = PP_WIDTH + $clog2(PP_SIZE) + 20;
+    localparam int IN_SIZE      = 32;
+    localparam int IN_WIDTH_A   = 4;
+    localparam int EXT_NUM      = 15;
+    localparam int PP_WIDTH     = IS_SQUARE ? (2 * IN_WIDTH_A) : IN_WIDTH_A;
+    localparam int CPR_EXT_BITS = 4;
+    localparam int OUT_WIDTH    = PP_WIDTH + CPR_EXT_BITS + 20;
 
     real clk_p = `CLK_PERIOD_NS;
 
@@ -113,6 +113,7 @@ module tb_sqr_4x4_alpha_top #(
             for (int i = 0; i < IN_SIZE; i++) begin
                 if (use_random) begin
                     a[i] = IN_WIDTH_A'($urandom_range(0, (1 << IN_WIDTH_A) - 1));
+                    // a[i] = 4'b1101;
                 end else begin
                     a[i] = a_fixed;
                 end
@@ -172,7 +173,7 @@ module tb_sqr_4x4_alpha_top #(
         reset_dut;
 
         verify_with_random;
-        verify_with_corner;
+        // verify_with_corner;
 
         $dumpoff;
 

@@ -12,8 +12,9 @@ module cpr_tree_alpha #(
     parameter int PP_SIZE     = 32,
     parameter int PP_WIDTH    = 4,
 
-    localparam int EXT_NUM   = 15,
-    localparam int OUT_WIDTH = PP_WIDTH + $clog2(PP_SIZE) + 20
+    localparam int EXT_NUM      = 15,
+    localparam int CPR_EXT_BITS = 4,
+    localparam int OUT_WIDTH    = PP_WIDTH + CPR_EXT_BITS + 20
 )(
     input  logic                 clk_i,
     input  logic                 rst_ni,
@@ -43,14 +44,14 @@ module cpr_tree_alpha #(
             if (stage == 0) begin
                 gen_in_width = PP_WIDTH;
             end else if (stage == 1) begin
-                gen_in_width = PP_WIDTH + 4 + 4;
+                gen_in_width = PP_WIDTH + 4 + CPR_EXT_BITS;
             end else if (stage == 2) begin
-                tmp          = PP_WIDTH + 4 + 4;
-                gen_in_width = tmp + 8 + 1;
+                tmp          = PP_WIDTH + 4 + CPR_EXT_BITS;
+                gen_in_width = tmp + 8;
             end else if (stage == 3) begin
-                tmp          = PP_WIDTH + 4 + 4;
-                tmp          = tmp + 8 + 1;
-                gen_in_width = tmp + 8 + 1;
+                tmp          = PP_WIDTH + 4 + CPR_EXT_BITS;
+                tmp          = tmp + 8;
+                gen_in_width = tmp + 8;
             end else begin
                 gen_in_width = PP_WIDTH;
             end
@@ -91,7 +92,7 @@ module cpr_tree_alpha #(
 
             localparam int CPR_N_2_IN_SIZE      = get_in_size(stage);
             localparam int CPR_N_2_IN_WIDTH     = gen_in_width(stage);
-            localparam int CPR_N_2_MAX_EXT_BITS = stage == 0 ? 4 : 1;
+            localparam int CPR_N_2_MAX_EXT_BITS = stage == 0 ? CPR_EXT_BITS : 0;
             localparam int CPR_N_2_OUT_WIDTH    = CPR_N_2_IN_WIDTH + CPR_N_2_MAX_EXT_BITS;
             localparam int NUM_LANES            = 4 / pow2(stage);
 
@@ -172,14 +173,14 @@ module cpr_tree_alpha #(
         end
 
         localparam int ADD_N_IN_WIDTH  = gen_in_width(3);
-        localparam int ADD_N_OUT_WIDTH = ADD_N_IN_WIDTH + 1;  
+        localparam int ADD_N_OUT_WIDTH = ADD_N_IN_WIDTH + 1;
 
         logic [ ADD_N_IN_WIDTH-1:0] add_n_sum;
         logic [ ADD_N_IN_WIDTH-1:0] add_n_carry;
         logic [ADD_N_OUT_WIDTH-1:0] out;
 
-        assign add_n_sum   = tmp[3][0][ADD_N_IN_WIDTH-1:0]; 
-        assign add_n_carry = tmp[3][1][ADD_N_IN_WIDTH-1:0]; 
+        assign add_n_sum   = tmp[3][0][ADD_N_IN_WIDTH-1:0];
+        assign add_n_carry = tmp[3][1][ADD_N_IN_WIDTH-1:0];
 
         add_n #(
             .IN_WIDTH(ADD_N_IN_WIDTH)
