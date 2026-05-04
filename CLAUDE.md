@@ -62,7 +62,7 @@ This project implements **Processing Elements (PEs)** for AI/ML inference, speci
 
 | Module | Algorithm | Accumulators | Array |
 |---|---|---|---|
-| `bas_4x4_top` | Baseline Booth Radix-4/8 | 1 | 64× (4-bit A × 8-bit B) |
+| `bas_4x8_sc_top` | Baseline Booth Radix-4/8, split-cell (4×4 sub-muls) | 1 | 64× (4-bit A × 8-bit B) |
 | `bas_4x8_top` | Baseline (extended) | 1 | — |
 | `win_4x4_top` | Winograd | 3 | 64× (4-bit A × 8-bit B) |
 | `win_4x8_top` | Winograd (extended) | 3 | — |
@@ -77,7 +77,7 @@ Input FFs (ff_n) → Partial Product Generator → Compression Tree (cpr_tree) �
 
 - **`booth_r4.sv` / `booth_r8.sv`** — Radix-4/8 Booth encoder cells; selected via `MULT_TYPE` parameter (0 = R4, 1 = R8)
 - **`mult_array.sv`** — Instantiates the correct Booth encoder array
-- **`bas_4x4.sv` / `win_4x4.sv` / `add_sqr_array.sv`** — Partial product generators for each PE variant
+- **`bas_4x8_sc.sv` / `win_4x4.sv` / `add_sqr_array.sv`** — Partial product generators for each PE variant
 - **`cpr_tree.sv`** — Multi-stage 4-to-2 compression tree; takes partial products + accumulator inputs and reduces to a 48-bit result
 - **`cpr_n_2.sv` → `cpr_4_2.sv` → `cpr_4_2_bit.sv`** — Hierarchical 4-to-2 compressor building blocks
 - **`ff.sv` / `ff_n.sv`** — Pipeline registers; `ff_n` is an array of N flip-flops

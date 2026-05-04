@@ -7,7 +7,7 @@
 
 `timescale 1 ns/1 ps
 
-module tb_bas_4x4_top #(
+module tb_bas_4x8_sc_top #(
     parameter bit IS_PIPELINED = 1,
     parameter int MULT_TYPE    = 0
 );
@@ -56,7 +56,7 @@ module tb_bas_4x4_top #(
         end
     end
 
-    bas_4x4_top bas_4x4_top_i (
+    bas_4x8_sc_top bas_4x8_sc_top_i (
         .clk_i      (clk),
         .rst_ni     (rst_n),
         .acc_i      (acc_flat),
@@ -67,10 +67,10 @@ module tb_bas_4x4_top #(
         .out_o      (out)
     );
 `else
-    bas_4x4_top #(
+    bas_4x8_sc_top #(
         .IS_PIPELINED(IS_PIPELINED),
         .MULT_TYPE   (MULT_TYPE)
-    ) bas_4x4_top_i (
+    ) bas_4x8_sc_top_i (
         .clk_i      (clk),
         .rst_ni     (rst_n),
         .acc_i      (acc),
@@ -179,7 +179,7 @@ module tb_bas_4x4_top #(
         $display("\nStarting verification...\n");
 
         $dumpfile("activity.vcd");
-        $dumpvars(0, tb_bas_4x4_top.bas_4x4_top_i);
+        $dumpvars(0, tb_bas_4x8_sc_top.bas_4x8_sc_top_i);
 
         reset_dut;
 
