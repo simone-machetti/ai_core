@@ -62,11 +62,11 @@ This project implements **Processing Elements (PEs)** for AI/ML inference, speci
 
 | Module | Algorithm | Accumulators | Array |
 |---|---|---|---|
-| `bas_4x8_sc_top` | Baseline Booth Radix-4/8, split-cell (4×4 sub-muls) | 1 | 64× (4-bit A × 8-bit B) |
-| `bas_4x8_top` | Baseline (extended) | 1 | — |
-| `win_4x8_sc_top` | Winograd, split-cell (4×4 sub-muls) | 3 | 64× (4-bit A × 8-bit B) |
-| `win_4x8_top` | Winograd | 3 | — |
-| `sqr_4x8_sc_top` | Squaring, split-cell (4×4 sub-muls) | — | — |
+| `top_bas_4x8_sc` | Baseline Booth Radix-4/8, split-cell (4×4 sub-muls) | 1 | 64× (4-bit A × 8-bit B) |
+| `top_bas_4x8` | Baseline (extended) | 1 | — |
+| `top_win_4x8_sc` | Winograd, split-cell (4×4 sub-muls) | 3 | 64× (4-bit A × 8-bit B) |
+| `top_win_4x8` | Winograd | 3 | — |
+| `top_sqr_4x8_sc` | Squaring, split-cell (4×4 sub-muls) | — | — |
 
 All variants share the same 3-stage pipeline:
 ```

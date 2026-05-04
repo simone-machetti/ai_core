@@ -7,7 +7,7 @@
 
 `timescale 1 ns/1 ps
 
-module tb_win_4x8_top #(
+module tb_top_sqr_4x8_sc #(
     parameter bit IS_PIPELINED = 1,
     parameter int MULT_TYPE    = 0
 );
@@ -56,7 +56,7 @@ module tb_win_4x8_top #(
         end
     end
 
-    win_4x8_top win_4x8_top_i (
+    top_sqr_4x8_sc top_sqr_4x8_sc_i (
         .clk_i      (clk),
         .rst_ni     (rst_n),
         .acc_i      (acc_flat),
@@ -67,10 +67,10 @@ module tb_win_4x8_top #(
         .out_o      (out)
     );
 `else
-    win_4x8_top #(
+    top_sqr_4x8_sc #(
         .IS_PIPELINED(IS_PIPELINED),
         .MULT_TYPE   (MULT_TYPE)
-    ) win_4x8_top_i (
+    ) top_sqr_4x8_sc_i (
         .clk_i      (clk),
         .rst_ni     (rst_n),
         .acc_i      (acc),
@@ -111,40 +111,50 @@ module tb_win_4x8_top #(
     // -------------------------------------------------------------------------
     task automatic run_and_check(
         input bit                           use_random,
-        input logic signed [IN_WIDTH_A-1:0] a0_fixed,
-        input logic signed [IN_WIDTH_B-1:0] b0_fixed,
-        input logic signed [IN_WIDTH_A-1:0] a1_fixed,
-        input logic signed [IN_WIDTH_B-1:0] b1_fixed
+        input logic signed [IN_WIDTH_A-1:0] a_fixed,
+        input logic signed [IN_WIDTH_B-1:0] b_fixed
     );
-        logic signed [OUT_WIDTH-1:0] s0, s1, prod;
+        logic signed [OUT_WIDTH-1:0] a_ext;
+        logic signed [OUT_WIDTH-1:0] b_lo_ext;
+        logic signed [OUT_WIDTH-1:0] b_hi_ext;
+        logic signed [OUT_WIDTH-1:0] p_lo, p_hi;
+
+        logic        [3:0] b_lo;
+        logic signed [3:0] b_hi;
+
         begin
             exp    = '0;
             acc[0] = ACC_WIDTH'($urandom_range(0, (1 << ACC_WIDTH) - 1));
             acc[1] = ACC_WIDTH'($urandom_range(0, (1 << ACC_WIDTH) - 1));
             acc[2] = ACC_WIDTH'($urandom_range(0, (1 << ACC_WIDTH) - 1));
 
-            for (int k = 0; k < EXT_NUM; k ++) begin
+            for (int k = 0; k < EXT_NUM; k++) begin
                 is_signed[k] = 1'b1;
                 is_shift[k]  = 1'b0;
             end
 
-            for (int i = 0; i < IN_SIZE; i = i + 2) begin
+            for (int i = 0; i < IN_SIZE; i++) begin
                 if (use_random) begin
-                    a[i]   = IN_WIDTH_A'($urandom_range(0, (1 << IN_WIDTH_A) - 1));
-                    b[i]   = IN_WIDTH_B'($urandom_range(0, (1 << IN_WIDTH_B) - 1));
-                    a[i+1] = IN_WIDTH_A'($urandom_range(0, (1 << IN_WIDTH_A) - 1));
-                    b[i+1] = IN_WIDTH_B'($urandom_range(0, (1 << IN_WIDTH_B) - 1));
+                    a[i] = IN_WIDTH_A'($urandom_range(0, (1 << IN_WIDTH_A) - 1));
+                    b[i] = IN_WIDTH_B'($urandom_range(0, (1 << IN_WIDTH_B) - 1));
                 end else begin
-                    a[i]   = a0_fixed;
-                    b[i]   = b0_fixed;
-                    a[i+1] = a1_fixed;
-                    b[i+1] = b1_fixed;
+                    a[i] = a_fixed;
+                    b[i] = b_fixed;
                 end
 
-                s0   = OUT_WIDTH'($signed(a[i+1])) + OUT_WIDTH'($signed(b[i]));
-                s1   = OUT_WIDTH'($signed(a[i]))   + OUT_WIDTH'($signed(b[i+1]));
-                prod = s0 * s1;
-                exp  = exp + prod;
+                a_ext = OUT_WIDTH'($signed(a[i]));
+
+                b_lo    = b[i][3:0];
+                b_lo[3] = ~b_lo[3];
+                b_hi    = b[i][7:4];
+
+                b_lo_ext = OUT_WIDTH'($signed(b_lo));
+                b_hi_ext = OUT_WIDTH'($signed(b_hi));
+
+                p_lo = (a_ext + b_lo_ext) * (a_ext + b_lo_ext);
+                p_hi = (a_ext + b_hi_ext) * (a_ext + b_hi_ext);
+
+                exp = OUT_WIDTH'($signed(exp)) + OUT_WIDTH'($signed(p_lo + (p_hi <<< 4)));
             end
 
             if (IS_PIPELINED) begin
@@ -158,12 +168,13 @@ module tb_win_4x8_top #(
                 $fatal;
             end
         end
+
     endtask
 
     task automatic verify_with_random;
         begin
             for (int i = 0; i < 1000; i++) begin
-                run_and_check(1'b1, '0, '0, '0, '0);
+                run_and_check(1'b1, '0, '0);
             end
         end
     endtask
@@ -175,11 +186,11 @@ module tb_win_4x8_top #(
             max_pos_1 = (1 <<< (IN_WIDTH_B - 1)) - 1;
             min_neg_1 =  1 <<< (IN_WIDTH_B - 1);
 
-            run_and_check(1'b0, max_pos_0, max_pos_1, max_pos_0, max_pos_1);
-            run_and_check(1'b0, min_neg_0, min_neg_1, min_neg_0, min_neg_1);
-            run_and_check(1'b0, max_pos_0, min_neg_1, max_pos_0, min_neg_1);
-            run_and_check(1'b0, min_neg_0, max_pos_1, min_neg_0, max_pos_1);
-            run_and_check(1'b0,        '0,        '0,        '0,        '0);
+            run_and_check(1'b0, max_pos_0, max_pos_1);
+            run_and_check(1'b0, min_neg_0, min_neg_1);
+            run_and_check(1'b0, max_pos_0, min_neg_1);
+            run_and_check(1'b0, min_neg_0, max_pos_1);
+            run_and_check(1'b0,        '0,        '0);
         end
     endtask
 
@@ -190,7 +201,7 @@ module tb_win_4x8_top #(
         $display("\nStarting verification...\n");
 
         $dumpfile("activity.vcd");
-        $dumpvars(0, tb_win_4x8_top.win_4x8_top_i);
+        $dumpvars(0, tb_top_sqr_4x8_sc.top_sqr_4x8_sc_i);
 
         reset_dut;
 

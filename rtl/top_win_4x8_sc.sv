@@ -6,14 +6,14 @@
 
 `timescale 1 ns/1 ps
 
-module bas_4x8_sc_top #(
+module top_win_4x8_sc #(
     parameter bit IS_PIPELINED = 1,
     parameter int MULT_TYPE    = 0,
 
     localparam int IN_SIZE    = 64,
     localparam int IN_WIDTH_A = 4,
     localparam int IN_WIDTH_B = 8,
-    localparam int ACC_SIZE   = 1,
+    localparam int ACC_SIZE   = 3,
     localparam int ACC_WIDTH  = 48,
     localparam int EXT_NUM    = 15,
     localparam int OUT_WIDTH  = ACC_WIDTH
@@ -30,13 +30,13 @@ module bas_4x8_sc_top #(
 
     localparam int NUM_LANES     = 8;
     localparam int NUM_SUB_LANES = 2;
-    localparam int PP_PER_MUL    = MULT_TYPE == 0 ? (IN_WIDTH_A + 1) / 2 : (IN_WIDTH_A + 2) / 3;
+    localparam int PP_PER_MUL    = MULT_TYPE == 0 ? ((IN_WIDTH_A + 2) + 1) / 2 : ((IN_WIDTH_A + 2) + 2) / 3;
     localparam int PP_SIZE       = 2 * PP_PER_MUL * NUM_SUB_LANES * NUM_LANES;
     localparam int CPR_IN_SIZE   = IN_SIZE / NUM_LANES;
-    localparam int CPR_IN_WIDTH  = MULT_TYPE == 0 ? (IN_WIDTH_B / 2) + 2 : (IN_WIDTH_B / 2) + 3;
+    localparam int CPR_IN_WIDTH  = MULT_TYPE == 0 ? (IN_WIDTH_A + 2) + 2 : (IN_WIDTH_A + 2) + 3;
     localparam int PP_SHIFT      = MULT_TYPE == 0 ? 2 : 3;
     localparam int PP_SUB_SHIFT  = 4;
-    localparam int PP_WIDTH      = CPR_IN_WIDTH + $clog2(CPR_IN_SIZE) + 1 + PP_SHIFT + PP_SUB_SHIFT;
+    localparam int PP_WIDTH      = CPR_IN_WIDTH + $clog2(CPR_IN_SIZE) + 1 + ((PP_PER_MUL - 1) * PP_SHIFT) + PP_SUB_SHIFT;
 
     logic [IN_WIDTH_A-1:0] a  [0:IN_SIZE-1];
     logic [IN_WIDTH_B-1:0] b  [0:IN_SIZE-1];
@@ -69,9 +69,9 @@ module bas_4x8_sc_top #(
     // -------------------------------------------------------------------------
     // Partial product generator
     // -------------------------------------------------------------------------
-    bas_4x8_sc #(
+    win_4x8_sc #(
         .MULT_TYPE(MULT_TYPE)
-    ) bas_4x8_sc_i (
+    ) win_4x8_sc_i (
         .a_i (a),
         .b_i (b),
         .pp_o(pp)

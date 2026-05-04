@@ -7,7 +7,7 @@
 
 `timescale 1 ns/1 ps
 
-module sqr_4x8_sc_top #(
+module top_sqr_4x8_sc #(
     parameter bit IS_PIPELINED = 1,
     parameter int MULT_TYPE    = 0,
 

@@ -7,7 +7,7 @@
 
 `timescale 1 ns/1 ps
 
-module sqr_4x8_sc_alpha_top #(
+module top_sqr_4x8_sc_alpha #(
     parameter bit IS_PIPELINED = 1,
     parameter bit IS_SQUARE    = 0,
 
