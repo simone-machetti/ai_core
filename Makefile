@@ -65,9 +65,21 @@ post-syn-dpa: clean-imp
 	mkdir -p $(CODE_HOME)/ai-core/imp/$(OUT_DIR)/output && \
 	sta -no_splash -exit $(CODE_HOME)/ai-core/scripts/post-syn-dpa/run.tcl | tee $(CODE_HOME)/ai-core/imp/$(OUT_DIR)/output/opensta.log
 
+run-regres:
+	bash $(CODE_HOME)/ai-core/scripts/flow/run_regres.sh
+
+ext-results:
+	bash $(CODE_HOME)/ai-core/scripts/flow/ext_results.sh
+
+gen-charts:
+	bash $(CODE_HOME)/ai-core/scripts/flow/gen_charts.sh
+
 clean-all:
 	rm -rf $(CODE_HOME)/ai-core/sim
 	rm -rf $(CODE_HOME)/ai-core/imp
+
+clean-doc:
+	rm -rf $(CODE_HOME)/ai-core/doc
 
 clean-sim:
 	rm -rf $(CODE_HOME)/ai-core/sim/$(OUT_DIR)
