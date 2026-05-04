@@ -6,7 +6,7 @@
 
 `timescale 1 ns/1 ps
 
-module win_4x4_top #(
+module win_4x8_sc_top #(
     parameter bit IS_PIPELINED = 1,
     parameter int MULT_TYPE    = 0,
 
@@ -69,9 +69,9 @@ module win_4x4_top #(
     // -------------------------------------------------------------------------
     // Partial product generator
     // -------------------------------------------------------------------------
-    win_4x4 #(
+    win_4x8_sc #(
         .MULT_TYPE(MULT_TYPE)
-    ) win_4x4_i (
+    ) win_4x8_sc_i (
         .a_i (a),
         .b_i (b),
         .pp_o(pp)

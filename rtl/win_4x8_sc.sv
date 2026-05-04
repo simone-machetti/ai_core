@@ -6,7 +6,7 @@
 
 `timescale 1 ns/1 ps
 
-module win_4x4 #(
+module win_4x8_sc #(
     parameter int MULT_TYPE = 0,
 
     localparam int IN_SIZE       = 64,

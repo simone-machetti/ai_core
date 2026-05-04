@@ -6,7 +6,7 @@
 
 `timescale 1 ns/1 ps
 
-module sqr_4x4 #(
+module sqr_4x8_sc #(
     localparam int IN_SIZE       = 64,
     localparam int IN_WIDTH_A    = 4,
     localparam int IN_WIDTH_B    = 8,

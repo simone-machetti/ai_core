@@ -7,7 +7,7 @@
 
 `timescale 1 ns/1 ps
 
-module tb_sqr_4x4_alpha_top #(
+module tb_sqr_4x8_sc_alpha_top #(
     parameter bit IS_PIPELINED = 1,
     parameter bit IS_SQUARE    = 0
 );
@@ -46,7 +46,7 @@ module tb_sqr_4x4_alpha_top #(
         end
     end
 
-    sqr_4x4_alpha_top sqr_4x4_alpha_top_i (
+    sqr_4x8_sc_alpha_top sqr_4x8_sc_alpha_top_i (
         .clk_i      (clk),
         .rst_ni     (rst_n),
         .is_signed_i(is_signed_flat),
@@ -55,10 +55,10 @@ module tb_sqr_4x4_alpha_top #(
         .out_o      (out)
     );
 `else
-    sqr_4x4_alpha_top #(
+    sqr_4x8_sc_alpha_top #(
         .IS_PIPELINED(IS_PIPELINED),
         .IS_SQUARE   (IS_SQUARE)
-    ) sqr_4x4_alpha_top_i (
+    ) sqr_4x8_sc_alpha_top_i (
         .clk_i      (clk),
         .rst_ni     (rst_n),
         .is_signed_i(is_signed),
@@ -168,7 +168,7 @@ module tb_sqr_4x4_alpha_top #(
         $display("\nStarting verification...\n");
 
         $dumpfile("activity.vcd");
-        $dumpvars(0, tb_sqr_4x4_alpha_top.sqr_4x4_alpha_top_i);
+        $dumpvars(0, tb_sqr_4x8_sc_alpha_top.sqr_4x8_sc_alpha_top_i);
 
         reset_dut;
 
