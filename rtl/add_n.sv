@@ -1,5 +1,10 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Signed IN_WIDTH-bit adder. Computes in_0_i + in_1_i as signed values and
+//   produces an (IN_WIDTH + 1)-bit result to accommodate carry. Used as the
+//   final summation step in the compression trees.
 // -----------------------------------------------------------------------------
 
 `timescale 1 ns/1 ps

@@ -1,5 +1,9 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Signed N-bit adder. Interprets both inputs as SIZE-bit signed values and
+//   produces a (SIZE + 1)-bit result to accommodate carry.
 // -----------------------------------------------------------------------------
 
 `timescale 1 ns/1 ps

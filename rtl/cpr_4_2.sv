@@ -1,5 +1,16 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Multi-bit 4:2 compressor. Reduces four IN_WIDTH-bit signed inputs to two
+//   (OUT_WIDTH = IN_WIDTH + EXT_BITS)-bit outputs: sum_o and carry_o, whose
+//   sum equals the arithmetic sum of all four inputs. Each input is first
+//   sign-extended to OUT_WIDTH bits; then a chain of cpr_4_2_bit cells
+//   processes bit-slices with an internal cout propagating across positions.
+//
+// Parameters:
+//   IN_WIDTH  - bit width of each of the four inputs
+//   EXT_BITS  - bits added by sign extension (provides carry headroom)
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off UNUSEDSIGNAL */

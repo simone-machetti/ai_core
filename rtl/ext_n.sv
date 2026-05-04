@@ -1,5 +1,13 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Conditional sign/zero extension with optional left shift for an array
+//   of IN_SIZE values. Controlled at runtime by is_signed_i and is_shift_i:
+//     - is_signed_i = 1: sign-extend; 0: zero-extend by EXTEND bits.
+//     - is_shift_i  = 1: left-shift the original value into the upper bits
+//                        after extension (equivalent to multiplying by 2^EXTEND).
+//   Used by cpr_tree to align compression-tree outputs before each stage.
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off GENUNNAMED */

@@ -1,5 +1,11 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Static barrel shifter for an array of IN_NUM values, each IN_SIZE bits
+//   wide. All elements are shifted by the same constant SHIFT amount in the
+//   direction selected by IS_LEFT. Left shift inserts zeros in the LSBs;
+//   right shift replicates the sign bit (arithmetic right shift).
 // -----------------------------------------------------------------------------
 
 `timescale 1 ns/1 ps

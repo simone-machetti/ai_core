@@ -1,5 +1,9 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   WIDTH-bit D flip-flop with active-low asynchronous reset.
+//   Resets to zero on rst_ni de-assertion; captures d_i on rising clk_i edge.
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off UNOPTFLAT */

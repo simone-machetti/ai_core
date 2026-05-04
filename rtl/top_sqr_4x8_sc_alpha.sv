@@ -1,5 +1,22 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Top-level Processing Element (alpha variant): 32-input squaring or
+//   identity PE with no accumulator.
+//
+//   Uses sqr_alpha_array as the partial product generator: either squares each
+//   4-bit signed input (IS_SQUARE = 1, via sqr_s_4_bit) or passes it through
+//   unchanged (IS_SQUARE = 0). The cpr_tree_alpha variant then reduces the 32
+//   partial products to a single output.
+//
+//   Function (IS_SQUARE = 1): out = sum_i(a[i]^2)
+//   Function (IS_SQUARE = 0): out = sum_i(a[i])
+//
+// Parameters:
+//   IS_PIPELINED - 1 = pipeline register in cpr_tree_alpha after stage 2;
+//                  0 = no register
+//   IS_SQUARE    - 1 = square each input; 0 = accumulate inputs directly
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off GENUNNAMED */

@@ -1,5 +1,15 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Winograd split-cell partial product generator. Combines the Winograd
+//   pairing of win_4x8 with the sub-lane B decomposition of bas_4x8_sc:
+//   8 lanes × 2 sub-lanes. Each sub-lane extracts a 4-bit B half and applies
+//   add_mult_array + cpr_n_2; sub-lane 1 outputs are shifted by PP_SUB_SHIFT
+//   = 4 bits relative to sub-lane 0 to implement B = B_lo + 16 * B_hi.
+//
+// Parameters:
+//   MULT_TYPE - 0 = Radix-4 Booth, 1 = Radix-8 Booth
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off GENUNNAMED */

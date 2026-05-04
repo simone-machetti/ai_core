@@ -1,5 +1,18 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Multi-stage tree of 4:2 compressors that reduces IN_SIZE inputs of
+//   IN_WIDTH bits to two outputs (sum_o, carry_o) whose arithmetic sum equals
+//   the sum of all inputs. Each stage groups inputs into blocks of four,
+//   applies cpr_4_2, and produces two outputs per block, halving the operand
+//   count per stage. Bit width grows by log2-related terms to accommodate
+//   carry propagation. Minimum IN_SIZE is 3.
+//
+// Parameters:
+//   IN_SIZE      - number of inputs to compress (must be >= 3)
+//   IN_WIDTH     - bit width of each input
+//   MAX_EXT_BITS - optional cap on per-stage bit-width growth (-1 = no cap)
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off GENUNNAMED */

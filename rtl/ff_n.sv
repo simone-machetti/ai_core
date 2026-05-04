@@ -1,5 +1,10 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Array of SIZE D flip-flops, each WIDTH bits wide, with active-low
+//   asynchronous reset. Used as input and intermediate pipeline registers
+//   throughout the PE datapath.
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off UNOPTFLAT */

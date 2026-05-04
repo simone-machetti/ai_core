@@ -1,5 +1,16 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Testbench for top_bas_4x8_sc. Identical verification strategy to
+//   tb_top_bas_4x8: 1000 random tests + 5 corner cases, checking:
+//     out = sum_i(a[i] * b[i]) + acc[0]
+//   Supports RTL and post-synthesis simulation via POST_SYNTH define.
+//   Dumps activity.vcd for dynamic power analysis.
+//
+// Parameters:
+//   IS_PIPELINED - forwarded to DUT (1 = 3-cycle latency, 0 = 2-cycle)
+//   MULT_TYPE    - 0 = Radix-4 Booth, 1 = Radix-8 Booth
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off UNUSEDSIGNAL */

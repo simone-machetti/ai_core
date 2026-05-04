@@ -1,5 +1,11 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Array of IN_SIZE squaring units. Each unit computes pp[i] = (a[i]+b[i])^2
+//   using sqr_s_5_bit on the sign-extended 5-bit sum. Both a_i and b_i are
+//   4-bit signed inputs. Output partial products are PP_WIDTH = 10 bits wide.
+//   Used by sqr_4x8_sc to implement the squaring-based multiply-accumulate.
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off GENUNNAMED */

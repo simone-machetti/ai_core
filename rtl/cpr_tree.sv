@@ -1,5 +1,27 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Three-stage 4:2 compression tree. Reduces PP_SIZE partial products of
+//   PP_WIDTH bits plus ACC_SIZE 48-bit accumulators to a single 48-bit result.
+//
+//   Stage structure:
+//     Stage 0: 8 groups of PP_SIZE/8 inputs compressed to 2 per group;
+//              pipeline register inserted here when IS_PIPELINED = 1.
+//     Stage 1: 4 groups of 4 inputs compressed to 2 per group.
+//     Stage 2: 2 groups of 4 inputs compressed to 2 per group.
+//     Final:   4 outputs + ACC_SIZE accumulators fed into cpr_n_2, then add_n.
+//
+//   Between each stage, ext_n sign/zero-extends (and optionally shifts) the
+//   compressor outputs to grow bit width. The is_signed_i / is_shift_i arrays
+//   (EXT_NUM = 15 entries) select the extension mode for every stage/lane.
+//
+// Parameters:
+//   IS_PIPELINED - 1 = insert pipeline register after stage 0 (3-cycle total
+//                      latency from input FFs); 0 = no register (2-cycle)
+//   PP_SIZE      - number of partial product inputs (must be a multiple of 8)
+//   PP_WIDTH     - bit width of each partial product (must be <= 48)
+//   ACC_SIZE     - number of 48-bit accumulator inputs added at the final stage
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off UNUSEDSIGNAL */

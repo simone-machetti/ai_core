@@ -1,5 +1,17 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Testbench for top_sqr_4x8_sc. Drives 64 (a, b) inputs through the DUT
+//   and checks against the squaring split-cell expected result:
+//     out = sum_k[(a[k]+b_lo[k])^2 + 16*(a[k]+b_hi[k])^2] + sum(acc)
+//   where b_lo = B[3:0] with MSB inverted, b_hi = B[7:4].
+//   Runs 1000 random tests followed by 5 corner cases. Supports RTL and
+//   post-synthesis simulation via POST_SYNTH define. Dumps activity.vcd.
+//
+// Parameters:
+//   IS_PIPELINED - forwarded to DUT (1 = 3-cycle latency, 0 = 2-cycle)
+//   MULT_TYPE    - unused by DUT (included for interface consistency)
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off UNUSEDSIGNAL */

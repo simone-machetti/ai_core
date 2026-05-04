@@ -1,5 +1,21 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Top-level Processing Element: Baseline 4-bit × 8-bit multiply-accumulate
+//   array with 64 lanes and 1 accumulator.
+//
+//   Pipeline (IS_PIPELINED = 1, 3-cycle latency):
+//     Cycle 1: ff_n registers a_i and b_i.
+//     Cycle 2: bas_4x8 generates partial products; cpr_tree stage 0 compresses
+//              and registers intermediate results.
+//     Cycle 3: cpr_tree completes; ff registers the 48-bit result.
+//
+//   Function: out = sum_i(a[i] * b[i]) + acc[0]
+//
+// Parameters:
+//   IS_PIPELINED - 1 = 3-cycle latency; 0 = 2-cycle (no cpr_tree register)
+//   MULT_TYPE    - 0 = Radix-4 Booth, 1 = Radix-8 Booth
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off GENUNNAMED */

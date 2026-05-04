@@ -1,5 +1,19 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Top-level Processing Element: Winograd split-cell 4-bit × 8-bit
+//   multiply-accumulate array with 64 lanes and 3 accumulators.
+//
+//   Combines the Winograd pairing of top_win_4x8 with B sub-lane decomposition
+//   (win_4x8_sc). Each adjacent pair is processed across two sub-lanes:
+//     sub-lane 0: (a[i+1]+b_lo[i]) * (a[i]+b_lo[i+1])
+//     sub-lane 1: (a[i+1]+b_hi[i]) * (a[i]+b_hi[i+1])  (shifted by 16)
+//   where b_lo = B[3:0] (unsigned) and b_hi = B[7:4] (signed).
+//
+// Parameters:
+//   IS_PIPELINED - 1 = 3-cycle latency; 0 = 2-cycle (no cpr_tree register)
+//   MULT_TYPE    - 0 = Radix-4 Booth, 1 = Radix-8 Booth
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off GENUNNAMED */

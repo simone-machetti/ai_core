@@ -1,5 +1,16 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Array of IN_SIZE elements that either computes a[i]^2 (IS_SQUARE = 1,
+//   using sqr_s_4_bit) or passes a[i] through unchanged (IS_SQUARE = 0).
+//   All inputs are 4-bit signed. Squared outputs are 8 bits wide; passthrough
+//   outputs are 4 bits wide. Used as the partial product generator for
+//   top_sqr_4x8_sc_alpha.
+//
+// Parameters:
+//   IN_SIZE   - number of elements
+//   IS_SQUARE - 1 = compute a[i]^2; 0 = passthrough
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off GENUNNAMED */

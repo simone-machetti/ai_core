@@ -1,5 +1,16 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Radix-8 Booth encoder cell. Maps a 4-bit selector (sel_i) derived from
+//   three consecutive bits of multiplier A plus a 1-bit overlap onto one of
+//   nine operations on multiplicand B: {0, ±B, ±2B, ±3B, ±4B}.
+//   Output partial product is IN_WIDTH + 3 bits wide to accommodate the 4B
+//   case without overflow.
+//
+// Parameters:
+//   IN_WIDTH  - bit width of the multiplicand (B)
+//   IS_SIGNED - 1 = signed B (sign-extended before shifting); 0 = unsigned
 // -----------------------------------------------------------------------------
 
 `timescale 1 ns/1 ps

@@ -1,5 +1,19 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Top-level Processing Element: Squaring split-cell array with 64 input
+//   pairs and 3 accumulators.
+//
+//   Uses sqr_4x8_sc as the partial product generator, which decomposes each
+//   8-bit B operand into two 4-bit halves and computes:
+//     pp = (a[k]+b_lo[k])^2 + 16*(a[k]+b_hi[k])^2  per lane element
+//
+//   Function: out = sum_k[(a[k]+b_lo[k])^2 + 16*(a[k]+b_hi[k])^2] + sum(acc)
+//
+// Parameters:
+//   IS_PIPELINED - 1 = 3-cycle latency; 0 = 2-cycle (no cpr_tree register)
+//   MULT_TYPE    - unused; squaring does not use Booth encoding
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off GENUNNAMED */

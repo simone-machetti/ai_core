@@ -1,5 +1,16 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Baseline split-cell partial product generator. Extends bas_4x8 by
+//   decomposing the 8-bit B operand into two 4-bit sub-lanes: the low half
+//   (unsigned, sub-lane 0) and the high half (signed, sub-lane 1). Each
+//   sub-lane runs an independent mult_array + cpr_n_2 chain. Sub-lane 1
+//   outputs are shifted by PP_SUB_SHIFT = 4 bits relative to sub-lane 0,
+//   implementing B = B_lo + 16 * B_hi before the final cpr_tree.
+//
+// Parameters:
+//   MULT_TYPE - 0 = Radix-4 Booth, 1 = Radix-8 Booth
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off GENUNNAMED */

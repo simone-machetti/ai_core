@@ -1,5 +1,19 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Array of IN_SIZE parallel Booth multipliers, one per (a_i, b_i) input
+//   pair. MULT_TYPE selects between Radix-4 (0) and Radix-8 (1) encoding.
+//   All multipliers share the same type and signedness. Partial products are
+//   laid out in pp_o as:
+//     pp_o[i * PP_PER_MUL + j] = j-th partial product of the i-th multiplier.
+//
+// Parameters:
+//   IN_SIZE    - number of parallel multipliers
+//   IN_WIDTH_A - bit width of operand A (the encoded multiplier)
+//   IN_WIDTH_B - bit width of operand B (the multiplicand)
+//   MULT_TYPE  - 0 = Radix-4 Booth, 1 = Radix-8 Booth
+//   IS_SIGNED  - 1 = signed operands, 0 = unsigned
 // -----------------------------------------------------------------------------
 
 `timescale 1 ns/1 ps

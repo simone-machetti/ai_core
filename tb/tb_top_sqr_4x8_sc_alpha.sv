@@ -1,5 +1,18 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Testbench for top_sqr_4x8_sc_alpha. Drives 32 a_i inputs through the
+//   DUT and checks against the expected result, selected by IS_SQUARE:
+//     IS_SQUARE = 1: out = sum_i(a[i]^2)
+//     IS_SQUARE = 0: out = sum_i(a[i])
+//   Runs 1000 random tests followed by corner cases (max-positive,
+//   min-negative, zero). Supports RTL and post-synthesis simulation via
+//   POST_SYNTH define. Dumps activity.vcd for dynamic power analysis.
+//
+// Parameters:
+//   IS_PIPELINED - forwarded to DUT
+//   IS_SQUARE    - 1 = squaring mode; 0 = accumulate mode
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off UNUSEDSIGNAL */

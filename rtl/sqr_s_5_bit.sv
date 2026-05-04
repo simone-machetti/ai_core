@@ -1,5 +1,11 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Signed 5-bit squarer. Same algorithm as sqr_s_4_bit: converts the
+//   2's-complement input to its 4-bit magnitude using sign-bit XOR and a
+//   ripple half-adder increment chain, then calls sqr_u_4_bit. The carry
+//   from the increment chain becomes bit 8 of the 9-bit output.
 // -----------------------------------------------------------------------------
 
 `timescale 1 ns/1 ps

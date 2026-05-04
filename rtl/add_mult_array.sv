@@ -1,5 +1,22 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Winograd-style partial product generator for paired inputs. Processes
+//   input pairs (i, i+1) and computes, for each pair:
+//     sum_0 = a[i+1] + b[i]
+//     sum_1 = a[i]   + b[i+1]
+//     pp    = Booth(sum_0, sum_1)   [PP_PER_MUL partial products]
+//   This exploits the identity (a+b)*(c+d) = ... to implement Winograd-style
+//   convolution, halving the multiplier count relative to baseline.
+//   Total output: PP_SIZE = PP_PER_MUL * IN_SIZE / 2 partial products.
+//
+// Parameters:
+//   IN_SIZE    - total number of inputs (must be even)
+//   IN_WIDTH_A - bit width of operands in the A array
+//   IN_WIDTH_B - bit width of operands in the B array
+//   MULT_TYPE  - 0 = Radix-4 Booth, 1 = Radix-8 Booth
+//   IS_SIGNED  - 1 = signed inputs, 0 = unsigned
 // -----------------------------------------------------------------------------
 
 `timescale 1 ns/1 ps

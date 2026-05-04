@@ -1,5 +1,13 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Signed 4-bit squarer. Converts the 2's-complement input to its absolute
+//   value using sign-bit XOR on each data bit followed by a ripple half-adder
+//   increment chain. The resulting 3-bit magnitude is then squared by
+//   sqr_u_3_bit; the final carry of the increment chain becomes bit 6 of the
+//   8-bit output (bit 7 is always 0, since |min| = 8 and 8^2 = 64 fits in 7
+//   bits).
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off UNUSEDSIGNAL */

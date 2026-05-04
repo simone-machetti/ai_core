@@ -1,5 +1,10 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Unsigned 4-bit squarer. Computes out_o = in_i^2 using a minimal
+//   combinational logic expression derived from the 4-bit truth table.
+//   Output is 8 bits wide (2 * 4 bits).
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off UNUSEDSIGNAL */

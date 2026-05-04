@@ -1,5 +1,19 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Testbench for top_win_4x8_sc. Drives 64 (a, b) inputs through the DUT
+//   and checks against the Winograd split-cell expected result, which combines
+//   the Winograd pairing with B sub-lane decomposition (b_lo = B[3:0],
+//   b_hi = B[7:4]):
+//     out = sum_{i=0,2,...}[(a[i+1]+b_lo[i])*(a[i]+b_lo[i+1])
+//                         + 16*(a[i+1]+b_hi[i])*(a[i]+b_hi[i+1])] + sum(acc)
+//   Runs 1000 random tests followed by 5 corner cases. Supports RTL and
+//   post-synthesis simulation via POST_SYNTH define. Dumps activity.vcd.
+//
+// Parameters:
+//   IS_PIPELINED - forwarded to DUT (1 = 3-cycle latency, 0 = 2-cycle)
+//   MULT_TYPE    - 0 = Radix-4 Booth, 1 = Radix-8 Booth
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off UNUSEDSIGNAL */

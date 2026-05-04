@@ -1,5 +1,9 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   1-bit full adder. Computes sum = a ^ b ^ cin and
+//   cout = majority(a, b, cin).
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off UNOPTFLAT */

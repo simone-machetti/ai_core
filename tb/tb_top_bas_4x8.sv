@@ -1,5 +1,18 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Testbench for top_bas_4x8. Drives 64 pairs of random or fixed (a, b)
+//   inputs through the DUT and checks against the expected result:
+//     out = sum_i(a[i] * b[i]) + acc[0]
+//   Runs 1000 random tests followed by 5 corner cases (max-positive,
+//   min-negative, mixed, zero). Supports both RTL and post-synthesis gate-level
+//   simulation via the POST_SYNTH compile-time define. Dumps activity.vcd for
+//   dynamic power analysis.
+//
+// Parameters:
+//   IS_PIPELINED - forwarded to DUT (1 = 3-cycle latency, 0 = 2-cycle)
+//   MULT_TYPE    - 0 = Radix-4 Booth, 1 = Radix-8 Booth
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off UNUSEDSIGNAL */

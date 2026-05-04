@@ -1,5 +1,19 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Top-level Processing Element: Winograd 4-bit × 8-bit multiply-accumulate
+//   array with 64 lanes and 3 accumulators.
+//
+//   Uses the Winograd identity to reduce the multiplier count by half: each
+//   adjacent input pair (a[i], b[i]) and (a[i+1], b[i+1]) shares one multiply:
+//     product_i = (a[i+1] + b[i]) * (a[i] + b[i+1])
+//
+//   Function: out = sum_{i=0,2,...,62}[(a[i+1]+b[i])*(a[i]+b[i+1])] + sum(acc)
+//
+// Parameters:
+//   IS_PIPELINED - 1 = 3-cycle latency; 0 = 2-cycle (no cpr_tree register)
+//   MULT_TYPE    - 0 = Radix-4 Booth, 1 = Radix-8 Booth
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off GENUNNAMED */

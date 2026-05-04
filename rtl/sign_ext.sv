@@ -1,5 +1,9 @@
 // -----------------------------------------------------------------------------
-// Author: Jaime Joven Murillo
+// Author: Simone Machetti
+//
+// Description:
+//   Sign-extends an IN_WIDTH-bit value to OUT_WIDTH bits by replicating
+//   the sign bit in the upper (OUT_WIDTH - IN_WIDTH) positions.
 // -----------------------------------------------------------------------------
 
 `timescale 1 ns/1 ps

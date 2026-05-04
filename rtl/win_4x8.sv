@@ -1,5 +1,16 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Winograd partial product generator for a 64-element 4×8 array.
+//   Splits the 64 inputs into 8 lanes of 8 pairs each. Within each lane,
+//   add_mult_array computes the Winograd product:
+//     (a[i+1] + b[i]) * (a[i] + b[i+1])
+//   for each adjacent pair, halving the multiplier count vs. baseline.
+//   Results are compressed by cpr_n_2 and shift-aligned for cpr_tree.
+//
+// Parameters:
+//   MULT_TYPE - 0 = Radix-4 Booth, 1 = Radix-8 Booth
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off GENUNNAMED */

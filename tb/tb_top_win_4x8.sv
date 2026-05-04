@@ -1,5 +1,16 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Testbench for top_win_4x8. Drives 64 (a, b) inputs through the DUT
+//   and checks against the Winograd expected result:
+//     out = sum_{i=0,2,...,62}[(a[i+1]+b[i])*(a[i]+b[i+1])] + sum(acc)
+//   Runs 1000 random tests followed by 5 corner cases. Supports RTL and
+//   post-synthesis simulation via POST_SYNTH define. Dumps activity.vcd.
+//
+// Parameters:
+//   IS_PIPELINED - forwarded to DUT (1 = 3-cycle latency, 0 = 2-cycle)
+//   MULT_TYPE    - 0 = Radix-4 Booth, 1 = Radix-8 Booth
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off UNUSEDSIGNAL */

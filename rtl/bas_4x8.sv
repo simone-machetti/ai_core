@@ -1,5 +1,16 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Baseline partial product generator for a 64-element 4×8 multiply-
+//   accumulate array. Splits the 64 (a_i, b_i) pairs into 8 lanes of 8 pairs
+//   each. Within each lane, mult_array generates PP_PER_MUL partial products
+//   per pair; a first-level cpr_n_2 compresses all PP_PER_MUL sets of 8
+//   partial products down to 2 outputs each. The outputs are sign-extended and
+//   shift-aligned so that all PP_SIZE entries of pp_o are ready for cpr_tree.
+//
+// Parameters:
+//   MULT_TYPE - 0 = Radix-4 Booth, 1 = Radix-8 Booth
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off GENUNNAMED */

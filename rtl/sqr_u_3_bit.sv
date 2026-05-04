@@ -1,5 +1,10 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Unsigned 3-bit squarer. Computes out_o = in_i^2 using a minimal
+//   combinational logic expression derived from the 3-bit truth table.
+//   Output is 6 bits wide (2 * 3 bits).
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off UNUSEDSIGNAL */

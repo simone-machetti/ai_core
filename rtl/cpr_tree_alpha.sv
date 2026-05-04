@@ -1,5 +1,19 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   Variant of cpr_tree used exclusively by top_sqr_4x8_sc_alpha. Processes
+//   PP_SIZE = 32 partial products (no accumulator inputs) through three
+//   compression stages. Stage 0 groups PP_SIZE/4 = 8 inputs per lane and
+//   applies an additional CPR_EXT_BITS = 4 of bit-width expansion to capture
+//   the wider dynamic range of squaring outputs. Output width is
+//   PP_WIDTH + CPR_EXT_BITS + 20. The pipeline register is placed after
+//   stage 2 (the last compression stage) when IS_PIPELINE = 1.
+//
+// Parameters:
+//   IS_PIPELINE - 1 = insert pipeline register after stage 2; 0 = no register
+//   PP_SIZE     - number of partial product inputs (must be a multiple of 4)
+//   PP_WIDTH    - bit width of each partial product
 // -----------------------------------------------------------------------------
 
 /* verilator lint_off UNUSEDSIGNAL */

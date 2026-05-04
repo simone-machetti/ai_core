@@ -1,5 +1,11 @@
 // -----------------------------------------------------------------------------
 // Author: Simone Machetti
+//
+// Description:
+//   1-bit 4:2 compressor cell built from two cascaded full adders.
+//   Reduces four single-bit inputs (in_0..in_3) and a carry-in (cin_i) to
+//   a sum bit (sum_o), a carry-out to the next bit position (carry_o), and
+//   a cout (cout_o) chained to the cin of the adjacent bit's cell.
 // -----------------------------------------------------------------------------
 
 `timescale 1 ns/1 ps
