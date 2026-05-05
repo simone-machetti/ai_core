@@ -7,5 +7,4 @@
 /doc/charts/*/*.png
 /doc/data/*
 /doc/diagrams/*.excalidraw
-/doc/formulas/*
 __pycache__
